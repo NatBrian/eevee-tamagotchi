@@ -5,23 +5,26 @@
 - [x] Create README, TODO, RESEARCH log
 - [x] Define requirements (9 forms, shinies, animation states, any style, free OK)
 
-## Phase 1 — Research (find the best assets)
-- [ ] Search: official Bulbapedia Pokémon sprites (all Eeveelutions + shinies, per-gen)
-- [ ] Search: 2D sprite-sheet packs (pixel art) with multiple animation states
-- [ ] Search: itch.io / OpenGameArt free Pokémon / Eevee packs
-- [ ] Search: 3D rigged Eevee / Pokémon models (glb/fbx) with animations (Sketchfab, CGTrader, Quaternius, CraftPix)
-- [ ] Search: "Eevee evolution" complete art sets / fan packs
-- [ ] Search: generic "pet / tamagotchi" sprite packs that can be reskinned (idle/walk/happy/sad/angry/eating/poop)
-- [ ] Inspect promising image/asset pages with Playwright (verify quality + available states)
-- [ ] For each candidate: log to RESEARCH.md (name, URL, style, formats, states, license, status)
-- [ ] Shortlist 2-3 best options per form-set (or one master set)
-- [ ] Decide final asset strategy (single consistent set vs. mix)
+## Phase 1 — Research (find the best assets) — DONE
+- [x] Search: official Pokémon sprites (PokeAPI raw repo — all 9 + shinies, verified)
+- [x] Search: Eevee × Tamagotchi (real product) — full official sprite set + care/evolution mechanics
+- [x] Search: 3D rigged/animated Eevee (Sketchfab "pokedex 3d pro eeveelutions", free3d, turbosquid)
+- [x] Search: itch.io / DeviantArt / PMD fan packs
+- [x] Search: generic pet/tamagotchi + "holy grail" single pack (none exists — combine sources)
+- [x] Inspect asset pages with Playwright + view every asset with vision
+- [x] Log all candidates to RESEARCH.md (18 searches, 4 groups)
+- [x] Shortlist: **Top 3 usable groups** (PokeAPI 2D / Eevee×Tamagotchi chibi / 3D Pokedex) + PMD bonus
+- [ ] **DECIDE: which group(s) + style tier to use** ← user decision
 
 ## Phase 2 — Acquisition
-- [ ] Download / rip chosen assets into `assets/downloaded/`
-- [ ] Organize into `assets/2d/` and `assets/3d/`
-- [ ] Capture reference screenshots into `assets/ref/`
-- [ ] Verify each form has the needed animation states (fill gaps list)
+- [ ] Pick group(s) + style tier(s) (see RESEARCH.md Top 3)
+- [ ] Bulk-rip chosen 2D assets into `assets/2d/` (script the PokeAPI/Serebii/DeviantArt downloads)
+- [ ] Bulk-rip/3D models into `assets/3d/` (if Group 3)
+- [ ] Verify 3D animation clips (download Pokedex 3D Pro Eevee, inspect clips)
+- [ ] Find matching 3D Sylveon (if Group 3)
+- [ ] Gather/author overlay FX: hearts, tears, anger mark, Zzz, poop, food, hand, evolve-flash
+- [ ] Colorize chibi set + add shinies (if Group 2)
+- [ ] Verify each form has the needed states (fill-gaps list)
 
 ## Phase 3 — Gap filling
 - [ ] Identify missing animation states (esp. `poop`, `petting`, `evolve`)
