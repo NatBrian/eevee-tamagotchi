@@ -147,7 +147,7 @@ export const CFG = {
   BANDS: { sky: [0, 390], far: [390, 470], grass: [470, 932] },
   TILES: { sky: 72, far: 72, grass: 54 },          // logical px per tile (3x / 3x / 3x)
   PET: { x0: 60, x1: 370, y0: 540, y1: 840, scale0: 0.85, scale1: 1.15,
-         pmdPx: 92, chibiPx: 110, speed: 62 },     // display heights @ scale 1
+         pmdPx: 92, chibiPx: 90, speed: 62 },     // display heights @ scale 1
   DECOR_DEFAULT: [
     { art: 'tree.png',     x: 260, y: 480, s: 4 },
     { art: 'tuft_0.png',   x: 52,  y: 520, s: 3 },
@@ -173,7 +173,7 @@ export const CFG = {
         { key: 'heart', w: 24, pay: 4,  art: 'sweet-heart.png' },
         { key: 'eevee', w: 28, pay: 3,  art: 'chibi:eevee' },
       ],
-      pairPay: 1.4,                 // ×1.4 (RTP ≈ 96.6%)
+      pairPay: 1.2,                 // x1.2 (M9 balance: base RTP ~86.4%; 88.4-94.7% across lucky symbols - S15 band 85-98%)
       luckyMul: 1.2,
       lucky: 'heart',               // M6: per-personality lucky symbol
       reelStopMs: [500, 900, 1300],

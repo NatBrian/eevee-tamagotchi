@@ -118,7 +118,8 @@ export class Casino {
       this.rtWinT = 0;
       this.msg(this.rtBets.size ? '' : 'PICK A BET ON THE WHEEL');
     } else {
-      this.cards = rng.shuffle([0, 1, 2, 3]);
+      const forcedDeal = rng.takeForce('cards'); // M9: parity — forceNext({cards:[r0..r3]}) (ties allowed for push tests)
+      this.cards = Array.isArray(forcedDeal) && forcedDeal.length === 4 ? forcedDeal : rng.shuffle([0, 1, 2, 3]);
       this.cardPick = -1;
       this.cardSpinT = 0;
       this.cardWinT = 0;
@@ -295,14 +296,14 @@ export class Casino {
         total += w;
       }
     }
-    const win = Math.round(total);
+    const win = total; // M9 balance: fractional coins (displays round) — keeps bet-1 RTP honest (S15)
     this.lineWins = wins;
     this.slotsWinT = 0;
     this.spinning = false;
     if (win > 0) {
       changeCoins(s, win, this.G.events);
       playGame(s, true, this.G.events);
-      this.msg(`WIN +${win}${this.lineWins.some((w) => w.lucky) ? ' · LUCKY ×1.2' : ''}!`);
+      this.msg(`WIN +${Math.round(win)}${this.lineWins.some((w) => w.lucky) ? ' · LUCKY ×1.2' : ''}!`);
       if (this.lineWins.some((w) => w.triple && w.key === 'seven')) {
         this.G.events.push('cas:jackpot');
         s.life.jackpots = (s.life.jackpots || 0) + 1;
@@ -442,7 +443,7 @@ export class Casino {
     }
 
     const el = document.getElementById('casino-coins-v');
-    if (el && s) el.textContent = s.day.coins;
+    if (el && s) el.textContent = Math.round(s.day.coins); // M9: coins are fractional, display rounds
   }
 
   // ---------------- card geometry ----------------
@@ -759,7 +760,7 @@ export class Casino {
           if (w > 0 && syms.some((k) => k === this.luckyKey())) w *= C.slots.luckyMul;
           win += w;
         }
-        const winR = Math.round(win);
+        const winR = win; // M9 balance: no win rounding (fractional coins) — matches live resolveSlots
         totalBet += B; totalWin += winR;
         changeCoins(s, -B, ev);
         if (winR > 0) { changeCoins(s, winR, ev); playGame(s, true, ev); }
@@ -767,7 +768,8 @@ export class Casino {
       } else if (game === 'roulette') {
         const bets = opts.bets || ['color:0'];
         const total = B * bets.length;
-        const w = rng.int(0, 11);
+        const forced = rng.takeForce('roulette'); // M9: harness parity with live spin (forceNext({roulette: n}))
+        const w = (typeof forced === 'number' && forced >= 0 && forced < 12) ? forced : rng.int(0, 11);
         const wColor = w % 3, wForm = Math.floor(w / 3) % 4;
         let win = 0;
         for (const b of bets) {
@@ -782,7 +784,8 @@ export class Casino {
         if (win > 0) { changeCoins(s, win, ev); playGame(s, true, ev); }
         else playGame(s, false, ev);
       } else if (game === 'cards') {
-        this.cards = rng.shuffle([0, 1, 2, 3]);
+        const forcedDeal = rng.takeForce('cards'); // M9: harness parity — forceNext({cards:[r0,r1,r2,r3]}) (allows ties for push tests)
+        this.cards = Array.isArray(forcedDeal) && forcedDeal.length === 4 ? forcedDeal : rng.shuffle([0, 1, 2, 3]);
         const pick = opts.pick !== undefined ? opts.pick : rng.int(0, 3);
         const vals = this.cards.map((i) => C.cards.ranks[i].v);
         const maxV = Math.max(...vals);

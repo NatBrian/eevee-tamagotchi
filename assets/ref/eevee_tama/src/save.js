@@ -26,6 +26,7 @@ function hydrate(data) {
     if (data[k] && typeof data[k] === 'object') out[k] = { ...f[k], ...data[k] };
   }
   if (!Array.isArray(out.furballs)) out.furballs = [];
+  if (!Array.isArray(out.tips)) out.tips = [];
   if (!out.dex || typeof out.dex !== 'object') out.dex = {};
   if (!out.medals || typeof out.medals !== 'object') out.medals = {};
   out._runtime = {};

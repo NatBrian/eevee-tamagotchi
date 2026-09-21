@@ -63,6 +63,7 @@ export function freshState() {
     dex: {}, medals: {},
     shop: { owned: [], decor: [], fashion: null, theme: 'day', stones: [] },
     settings: { sound: true, haptics: true },
+    tips: [],      // M9: first-run context tips already shown (persisted)
     away: null,
     ended: null, // 'graduation' | 'death' | null
     _runtime: {},

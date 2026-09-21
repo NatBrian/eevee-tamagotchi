@@ -106,7 +106,16 @@
 - [x] GATE: S14 (savedAt −12h → reload → CONTINUE: capped catch-up, meters floored exactly 10, S_AWAY "Your pet graduated!" + "Away 18h 30m · Now Day 4 07:01", OK → farewell screen) · S20 (all 12 shop items bought+equipped, coins 9999→8609, all persist across reload) · S24 (state byte-identical across reload from main / casino / food-sheet-open) · SW offline boot (0/286 assets missing, save resumes from localStorage) · install-prompt wiring · 6-device matrix 60fps / p95 16.8ms, no overflow, fonts, 60px dock targets, 0 errors · bug found+fixed: HUD rightmost meter clipped at 360px → compact @media (max-width:374px) rule · vision pass (title/CONTINUE, S_AWAY i15+gs24, settings i15+SE, offline main, 6 devices, landscape interstitial) + commit
 
 ### M9 — Final pass
-- [ ] `test/scenarios.js` full 25-scenario suite green on all 6 devices · title/boot + first-run tips · balance pass (RTP/decay) · full-life showcase screenshots in `showcase/` · README run instructions · final commit
+- [x] First-run tips: `state.tips` (persisted, once-per-id gold TIP toasts) — hatch, first furball, first sick, first natural sleep, stage:adult, first casino open + no-save title hint (`state.js`/`save.js`/`main.js`/`style.css`)
+- [x] Dev API: `openSheet(which)` / `showAway(report)` (`dev.js`) + `window.__CFG` debug hook
+- [x] Balance pass: slots pair 1.4→1.2 (`config.js`) + removed win `Math.round` (fractional coins, rounded displays) → bet-1 RTP 88.4–94.7% across personalities, inside S15's 85–98% band
+- [x] Casino harness parity: live card re-deal + `spinInstant` honor `forceNext({cards:[…], roulette:n})` (`casino.js`)
+- [x] Chibi-form animation: espeon/umbreon/leafeon/glaceon/sylveon were static single frames (PMD 8-dir art only exists for 4 forms) → runtime walk-hop + face-direction mirror + idle/sleep breathing in `pet.js`; `chibiPx` 110→90 (`config.js`) so evolved chibi forms no longer out-scale the PMD forms
+- [x] `test/scenarios.js` — 25 scenarios × 6 devices + quality gate green (26/26 on all 6 devices; initial Q-gate fluidity fails traced to ~31 leaked headless browsers from earlier capture runs → purged, clean re-run all green)
+- [x] `test/video.js` — full-playthrough showcase video (webm→mp4 3:09; timeline + 0.5s dense + full-res frame-verified: title→egg→hatch→care→lapses, casino, 9-form animated chibi tour, dex/profile/medals/ghost/shop all clean, HUD clock monotonic — fixed ghost-beat backward warp 21:30→23:30 — away report "Away 7h 30m · Now Day 4 07:26", clean graduation → new egg → dex → title)
+- [x] Refresh `showcase/` screenshots (22 shots `m9_01`–`m9_22`: full life incl. first-run tips, casino, evolutions, away report, graduation, new egg — vision-verified)
+- [x] README "How to run" + repo layout
+- [x] Final commit
 
 ## Phase 7 — Polish / future
 - [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + extra minigames

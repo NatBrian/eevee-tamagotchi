@@ -8,7 +8,7 @@ import {
 } from './state.js';
 import { rng } from './prng.js';
 import { save } from './save.js';
-import { toast, setScreen, openMenuSheet, openFoodSheet, openPlaySheet } from './main.js';
+import { toast, setScreen, openMenuSheet, openFoodSheet, openPlaySheet, showAway } from './main.js';
 
 export function attachDev(G) {
   const S = () => G.state;
@@ -198,6 +198,8 @@ export function attachDev(G) {
     openProfile() { openMenuSheet('profile'); },
     openFood() { openFoodSheet(); },
     openPlay() { openPlaySheet(); },
+    openSheet(which) { openMenuSheet(which); },   // 'menu'|'profile'|'dex'|'evolve'|'medals'|'shop'|'settings'
+    showAway(report) { showAway(report); return this.get(); },
     emote(type, bubble) {
       const s = S();
       if (G.pet && G.fx) G.fx.emote(G.pet.x, G.pet.y - 40, type, bubble);

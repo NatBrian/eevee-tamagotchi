@@ -176,6 +176,24 @@ export function toast(msg, ms = 2000) {
   setTimeout(() => el.remove(), ms);
 }
 
+// ---------------- first-run context tips (M9) ----------------
+// Shown once per tip id; state.tips is persisted in the save.
+export function tipToast(text, ms = 3200) {
+  const el = document.createElement('div');
+  el.className = 'toast tip';
+  el.innerHTML = '<b>TIP</b><span></span>';
+  el.querySelector('span').textContent = text;
+  $('toasts').appendChild(el);
+  setTimeout(() => el.remove(), ms);
+}
+function tip(s, id, text) {
+  if (!s || s.ended) return;
+  if (!Array.isArray(s.tips)) s.tips = [];
+  if (s.tips.includes(id)) return;
+  s.tips.push(id);
+  tipToast(text);
+}
+
 // ---------------- HUD update (called each frame, cheap) ----------------
 let lastHud = 0;
 export function updateHud(now) {
@@ -222,17 +240,21 @@ export function handleEvents() {
       const f = s.furballs[s.furballs.length - 1];
       if (f) G.fx.burst(f.x, f.y, 'smoke', 6, { speed: 40, up: 20 });
       toast('A furball appeared!');
+      tip(s, 'furball', 'Tap furballs to clean them up!');
     } else if (e.startsWith('sick:')) {
       G.fx.emote(G.pet.x, G.pet.y - 40, 'worry', 'Ugh…');
       toast(s.pet.name + ' feels sick!');
+      tip(s, 'sick', 'Sick? Tap the MEDICINE bottle!');
       G.pet._worryNow = true;
     } else if (e.startsWith('stage:')) {
       toast(s.pet.name + ' grew up!');
       G.fx.burst(G.pet.x, G.pet.y - 40, 'confetti', 16);
+      if (e === 'stage:adult') tip(s, 'adult', 'Adult! Try evolving — MENU → EVOLVE');
     } else if (e.startsWith('evolve:')) {
       startEvolveCinematic(e.slice(7));
     } else if (e === 'sleep' || e === 'rest') {
       toast('zzz…');
+      if (e === 'sleep') tip(s, 'sleep', `Tap ${s.pet.name} to wake them early!`);
     } else if (e === 'woke') {
       toast('Good morning!');
     } else if (e === 'medicine') {
@@ -244,6 +266,7 @@ export function handleEvents() {
         s._runtime.hatchedToast = true;
         G.fx.burst(215, 620, 'confetti', 24);
         toast('It’s ' + s.pet.name + '!');
+        tip(s, 'hatch', `Tap FEED to keep ${s.pet.name} full!`);
       }
     } else if (e.startsWith('death')) {
       showEnd('death');
@@ -562,7 +585,7 @@ export function openShopSheet() {
     </div>`;
   };
   let html = (sale ? '<div class="sale-banner">★ SALE · 50% OFF TODAY ★</div>' : '') +
-    `<div class="coinline">${coin}<b id="shop-coins">${s.day.coins}</b><span>coins</span></div>
+    `<div class="coinline">${coin}<b id="shop-coins">${Math.round(s.day.coins)}</b><span>coins</span></div>
     <div class="sheet-sec">DECOR</div><div class="shopgrid">${CFG.SHOP.decor.map((i) => cell(i, 'decor')).join('')}</div>
     <div class="sheet-sec">FASHION</div><div class="shopgrid">${CFG.SHOP.fashion.map((i) => cell(i, 'fashion')).join('')}</div>
     <div class="sheet-sec">SKIES</div><div class="shopgrid">${CFG.SHOP.themes.map((i) => cell(i, 'themes')).join('')}</div>`;
@@ -713,7 +736,10 @@ export function openPlaySheet() {
       <div class="row" data-ball="1"><img src="../prod/items/poke-ball.png" alt=""><div class="rmain"><div class="rname">GIVE BALL</div><div class="rsub">throw a ball to play · +Happy</div></div><div class="rcta">FREE</div></div>
     </div>`);
   document.querySelectorAll('#sheet-body [data-casino]').forEach((el) => {
-    el.onclick = () => { closeSheet(); G.casino && G.casino.open(el.dataset.casino); };
+    el.onclick = () => {
+      closeSheet();
+      if (G.casino) { tip(G.state, 'casino', 'Spend coins at the POKÉ CASINO!'); G.casino.open(el.dataset.casino); }
+    };
   });
   document.querySelectorAll('#sheet-body [data-ball]').forEach((el) => {
     el.onclick = () => {
@@ -886,6 +912,7 @@ async function boot() {
   // save?
   G.hasSave = !!load();
   if (G.hasSave) $('btn-continue').classList.remove('hidden');
+  else $('title-hint').textContent = 'a new egg is waiting — tap to hatch'; // M9: first-run hint
   G.state = freshState(); // backdrop state (title screen meadow, no pet)
   G.state.screen = 'title';
   setScreen('title');
@@ -919,6 +946,7 @@ async function boot() {
     else if (e.target === G.canvas) G.audio.sfx('tapSoft', { vol: 0.22 });
   }, { capture: true, passive: true });
   window.__G = G; // debug hook
+  window.__CFG = CFG; // debug/test data hook (M9 scenario suite)
 }
 
 boot().catch((e) => {

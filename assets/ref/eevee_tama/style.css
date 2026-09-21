@@ -198,6 +198,27 @@ body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
   80% { opacity: 1; }
   100% { transform: translateY(-8px); opacity: 0; }
 }
+/* first-run context tips (M9) — gold, longer-lived, "TIP" badge */
+.toast.tip {
+  border-color: var(--gold);
+  box-shadow: 0 3px 0 var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation-duration: 3.2s;
+  padding: 8px 14px;
+}
+.toast.tip b {
+  font-family: 'PressStart2P', monospace;
+  font-size: 10px;
+  line-height: 1;
+  color: #fff;
+  background: var(--gold);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 5px 6px 4px;
+  flex: 0 0 auto;
+}
 
 /* ---------- dock ---------- */
 #dock {

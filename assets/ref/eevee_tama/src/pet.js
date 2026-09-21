@@ -1,4 +1,8 @@
 // pet.js — PMD/chibi sprite rendering, 8-dir wander AI, depth scaling
+//   · PMD forms (CFG.PMD_FORMS): true 8-direction animated sprites.
+//   · Chibi forms (all others): a single detailed sprite brought to life at
+//     runtime — a walk hop, a face-direction mirror, idle/sleep breathing —
+//     so no form ever renders as a static sliding image.
 import { CFG, A, STAGE_SCALE } from './config.js';
 
 const DIRS = ['down', 'up', 'left', 'right', 'down left', 'down right', 'up left', 'up right'];
@@ -13,6 +17,8 @@ export class Pet {
     this.timer = 1.5;
     this.dir = 'down';
     this.frame = 0; this.ft = 0;
+    this._animT = 0;      // continuous anim clock (chibi hop/breathe)
+    this.facing = 1;      // chibi horizontal facing: 1 = right, -1 = left
     this.form = 'eevee';
     this.shiny = false;
     this.stage = 'baby';
@@ -74,6 +80,8 @@ export class Pet {
 
   update(dt, state) {
     if (state.stage === 'egg' || state.ended) { this.state = 'idle'; return; }
+    this._animT += dt;
+    const isChibi = !CFG.PMD_FORMS.includes(this.form);
     if (this.sleeping) {
       // drift to rest spot
       const dx = this.restX - this.x, dy = this.restY - this.y;
@@ -88,6 +96,7 @@ export class Pet {
         this.state = 'idle';
         this.frame = 0;
       }
+      if (isChibi) this.bob = Math.sin(this._animT * 1.8) * 1.2; // gentle sleep breath
       return;
     }
     this.ft += dt;
@@ -100,6 +109,7 @@ export class Pet {
     if (this.state === 'idle') {
       this.timer -= dt;
       if (this.timer <= 0) { this.pickTarget(); this.state = 'move'; }
+      if (isChibi) this.bob = Math.sin(this._animT * 2.5) * 1.5; // gentle breathing
     } else {
       const dx = this.tx - this.x, dy = this.ty - this.y;
       const d = Math.hypot(dx, dy);
@@ -109,7 +119,12 @@ export class Pet {
       this.x += dx / d * Math.min(sp, d);
       this.y += dy / d * Math.min(sp, d);
       this.dir = this.dirFrom(dx, dy);
-      this.bob = Math.sin(this.ft * 40) * 0.6;
+      if (isChibi) {
+        this.bob = -Math.abs(Math.sin(this._animT * 12)) * 6; // walk hop
+        this.facing = this.dir.includes('left') ? -1 : this.dir.includes('right') ? 1 : this.facing;
+      } else {
+        this.bob = Math.sin(this.ft * 40) * 0.6;
+      }
     }
     // sick: occasional worry emote flag (UI polls)
     if (this.sick) {
@@ -157,16 +172,21 @@ export class Pet {
     const m = this.metrics();
     const x = Math.round(this.x), feetY = Math.round(this.y + this.bob);
     const w = Math.round(m.w), h = Math.round(m.h);
+    const isChibi = !CFG.PMD_FORMS.includes(this.form);
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,0.20)';
     ctx.beginPath();
     ctx.ellipse(x, Math.round(this.y) + 2, m.w * 0.32, m.w * 0.09, 0, 0, Math.PI * 2);
     ctx.fill();
 
+    // translate to the pet's x so chibi forms can mirror to face travel direction
+    ctx.save();
+    ctx.translate(x, 0);
+    if (isChibi && this.facing < 0) ctx.scale(-1, 1);
     const im = this.frameImage();
     if (im) {
-      const src = (this.shiny && CFG.PMD_FORMS.includes(this.form)) ? this.tinted(im) : im;
-      ctx.drawImage(src, x - w / 2, feetY - h, w, h);
+      const src = (this.shiny && !isChibi) ? this.tinted(im) : im;
+      ctx.drawImage(src, -w / 2, feetY - h, w, h);
     }
     // fashion
     if (this.fashion) {
@@ -180,8 +200,9 @@ export class Pet {
           leaflow: [0, -h * 0.95],
           star:    [w * 0.22, -h * 0.88],
         }[this.fashion] || [0, -h * 0.9];
-        ctx.drawImage(im2, x + pos[0] - fw / 2, feetY + pos[1] - fh / 2, fw, fh);
+        ctx.drawImage(im2, pos[0] - fw / 2, feetY + pos[1] - fh / 2, fw, fh);
       }
     }
+    ctx.restore();
   }
 }
