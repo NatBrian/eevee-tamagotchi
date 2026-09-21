@@ -46,12 +46,54 @@
 - [x] Kenney audio: Interface Sounds + Music Jingles (NES chiptune), Particle Pack VFX (`prod/audio/`, `prod/particles/`) — RPG Audio rejected
 - [ ] User audio audition via `preview_audio.html` → lock BGM (day/night) + jingles + SFX mapping
 
-## Phase 6 — Production rebuild (next)
-- [ ] Rebuild game UI at production quality using `assets/ref/prod/` (device shell in CSS/SVG, scene-tile meadow, item-art food, furball, fonts, audio)
-- [ ] Wire BGM/SFX from `prod/audio/` (once selection locked)
-- [ ] Evolve/hatch/death cinematics with dex GIFs + particle FX
+## Phase 6 — Production rebuild (IN PROGRESS) — `assets/ref/eevee_tama/`
+> Plan: **BUILD_PLAN.md** (numbers, layouts, milestones). Testing protocol: BUILD_PLAN §12 (time-mock dev API, 25-scenario suite, 6-device Playwright matrix, automated assertions, vision review every milestone).
+
+### M1 — Scene + pet
+- [ ] App skeleton: `index.html` (430×932 logical, dvh, safe-area, portrait, viewport-fit=cover) · `style.css` (Press Start 2P + VT323) · `manifest.webmanifest`
+- [ ] `src/scene.js` — canvas compositor: pre-rendered sky (day/sunset/night) + far meadow + grass bands, night stars + fireflies, DPR-capped 3× nearest-neighbor
+- [ ] `src/pet.js` — PMD loader (4 forms × 8 dirs × idle 6 / move 7 / attack 6 / hurt 3) + chibi loader (9×2) + wander AI (8-dir) + shadow + depth scale 0.85–1.15 + 7 emote pops
+- [ ] Dev API v2 (`src/dev.js`): freeze/warpTo/setForm/rate/fps/get (time-mock harness)
+- [ ] PIL: title logo + PWA icons 192/512 (contact-sheet verified)
+- [ ] GATE: scenario smoke + 6-device screenshots + vision review + commit
+
+### M2 — HUD + dock + food
+- [ ] HUD DOM (Day/clock/stage chip, stat pips w/ P1 icons, alert badges) · dock (5 × 58px: Oran, Poké Ball, heart, bathroom, gear) · toast system
+- [ ] S_FOOD sheet (6 berries + Rawst [HEALTH] + 4 snacks, fave ★) · feed/snack actions + eat anim + real-time decay loop
+- [ ] GATE: scenarios S21/S22 smoke + device matrix + vision + commit
+
+### M3 — Mess / sick / sleep
+- [ ] Furballs (spawn 4–8h, max 5, clean, dirty ×2 decay) · sickness (6 zero-hrs, sad emote) · PIL medicine bottle + medicine action
+- [ ] Sleep: 20:00 auto, pet bed, Zzz float, night scene, tap-skip → 07:00 · death conditions
+- [ ] GATE: scenarios S08–S13 + device matrix + vision + commit
+
+### M4 — Lifecycle + Dex + endings
+- [ ] Egg screen (crack frames @40/75%, wobble) · stage scaling 0.6/0.8/1.0 · evolution (5 stones, Espeon 07–12 + snack, Umbreon 18–20 + snack, Sylveon d3 22:00 auto)
+- [ ] Evolve cinematic (flash → sparkle → dex GIF → name card → confetti) + shiny reveal · S_DEX (18 cells, silhouettes, persistence)
+- [ ] Graduation (day 4 07:00) + death (tombstone) endings
+- [ ] GATE: scenarios S01–S07/S10–S11 + device matrix + vision + commit
+
+### M5 — Poké Casino
+- [ ] PIL slot cabinet (candy pixel) · `src/casino.js`: Eevee Slots (1/3/5 paylines, 777 ×30, lucky symbol ×1.2) · Eeveelution Roulette (12 slots ×2/×4/×12, canvas wheel, 3s eased) · Card Flip (4 cards, ×4, tie push, 3D flip)
+- [ ] Bet/coin UI, daily free 50 chips @07:00, pet reactions at machine, casino SFX
+- [ ] GATE: scenarios S15–S17 (incl. 10k-spin RTP) + device matrix + vision + commit
+
+### M6 — Meta
+- [ ] Personality roll + lucky symbol + bubbles · S_PROFILE (Café face, rename, rank S/A/B/C, stat bars)
+- [ ] S_MEDALS (36) · S_SHOP (12 items; PIL: 4 fashion, berry bush, ghost Eevee) · monthly events (5/15/25 sale, 10/20/30 shiny, ghost night)
+- [ ] GATE: scenarios S18–S21 + device matrix + vision + commit
+
+### M7 — Audio + haptics
+- [ ] `src/audio.js` Web Audio mixer: BGM day/night (pending user audition; placeholders NES00/NES16), full SFX map incl. casino · Vibration haptics tiers (silent degrade iOS) · settings toggles · unlock on first tap
+- [ ] GATE: audio + haptic pass + device matrix + vision + commit
+
+### M8 — Persistence + PWA
+- [ ] `src/save.js` v1 (schema §8) + autosave 5s/pagehide · offline catch-up (cap 72 game-hrs, floor 10) + S_AWAY report · `sw.js` + manifest polish + install prompt · settings/reset
+- [ ] GATE: scenarios S14/S20/S24 + device matrix + vision + commit
+
+### M9 — Final pass
+- [ ] `test/scenarios.js` full 25-scenario suite green on all 6 devices · title/boot + first-run tips · balance pass (RTP/decay) · full-life showcase screenshots in `showcase/` · README run instructions · final commit
 
 ## Phase 7 — Polish / future
-- [ ] localStorage persistence (Dex + stats)
-- [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + minigame (Berry Catch / Dance)
+- [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + extra minigames
 - [ ] Optional 3D tier (Pokedex 3D Pro) if a richer look is wanted
