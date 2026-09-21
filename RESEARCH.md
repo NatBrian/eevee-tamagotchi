@@ -52,6 +52,9 @@
 | S22 | 2026-09-21 | shell download + vision | Serebii Pokémon Sleep — all 9 Eeveelutions | **All 9 × normal+shiny sleep-style sprites downloaded + vision-verified** (`assets/ref/pokemonsleep/`, `preview_pokemonsleep.html`). 492×448 PNGs, native shinies |
 | S23 | 2026-09-21 | Playwright + vision | Café ReMix Fandom `Eevee Male` + Category:Sprites assets | Full-body 3D Eevee (800×1039) + 3 bust expression frames (Eevee01–03). Full in-game set = r/PokemonCafeMix **Discord "mega repository"** (split layers). Vision-verified (`preview_cafemix.html`) |
 | S24 | 2026-09-21 | hound | Pokopia datamine / GitHub / API | **Cannot be datamined yet** (Switch 2 exclusive 2026 + keycard encryption). Only `pokopiapi` (data, no art) + screenshots. All 8 evolutions collectable in-game |
+| S25 | 2026-09-21 | hound + fetch + vision | Original 1996 Tamagotchi mechanics (tamagotchi.fandom) | **Verified core loop**: egg → 5min → Baby → 65min Child → 3yr Teen → 6yr Adult; care = hungry/happy meters, games > snacks, response time (poop/sickness/lights); teen/adult form = f(f care quality); A/B/C buttons; status icons (meal, happiness, medicine, lights, ghost, poop, eating, mood) |
+| S26 | 2026-09-21 | hound + shell + vision | **agg23/fpga-tamagotchi** (FPGA P1 core) | **Authentic original-Tamagotchi assets**: full P1 spritesheet + extracted transparent status icons (food=fork&knife, bathroom=duck/toilet, lights, medicine, game, attention, discipline, status) + backgrounds → `assets/ref/tamagotchi_original/` (verified `preview_tamaresearch.html`) |
+| S27 | 2026-09-21 | shell download | PokeAPI showdown GIFs × 9 (dex 133-136,196,197,470,471,700) | **Evolution-cinematic animated GIFs** (25-frame front-facing battle anim, all 9) → `assets/ref/showdown/{id}.gif` |
 
 ---
 
@@ -190,3 +193,61 @@ User asked to mine assets from these 5 games. Per-game findings (all **viewed wi
 - [ ] Find a matching 3D Sylveon (if using Group 3)
 - [ ] Gather/author overlay FX (hearts, tears, anger, Zzz, poop, food, evolve-flash)
 - [ ] Colorize chibi set (if using Group 2)
+
+---
+
+## ★ TAMAGOTCHI RESEARCH (mechanics verified with images)
+
+**Original 1996 Tamagotchi (tamagotchi.fandom.com, vision-verified screenshots + `agg23/fpga-tamagotchi` sprites):**
+- Egg appears → hatches after ~5 min → **Baby → Child (65 min) → Teen (3 yr) → Adult (6 yr)**.
+- Which teen/adult you get = **quality of care**: hungry + happy meters (fill before empty), games > snacks (games keep weight low), response time (cleaning poo, curing sickness, lights out), discipline.
+- Screen language: pet wanders a small screen; **status icons**: meal (fork & knife), happiness (heart), medicine (sick), lights (sleep), ghost (mystery), **poop/toilet**, eating (pac-man), mood face. A/B/C buttons + hidden reset. Neglect → sickness → death.
+
+**Eevee × Tamagotchi (Bandai Nano, JP 2019) — the design we copied** (Serebii, already logged S13/S14):
+- Egg → Eevee (baby grows) → **8-way evolution at 10pm**: Vaporeon (water + poor care), Jolteon (lightning), Flareon (fire), Leafeon (grass), Glaceon (ice), **Espeon (snacks 7-12am)**, **Umbreon (snacks 6-8pm)**, **Sylveon (default at 72h)**.
+- Feed meal (4 to full) / snack (happiness); **furball = poop** (clean w/ A); invisible hearts (food −1/hr, happiness −1/50min); C = mood; wake 7am / sleep 8pm; minigames Berry Catch + Dance; special forms Ditto/Costume/Rocket/Pop Star.
+- Official sprite set on disk (`assets/ref/serebii/`): egg, Eevee, Eevee-feed pose, games, all 9 evolutions, 3 special forms.
+
+**New assets found for the sim:**
+- `assets/ref/tamagotchi_original/` — authentic **P1 spritesheet + status icons** (food, bathroom/poop, lights, medicine, game, attention) from the FPGA P1 core → used for the HUD icons.
+- `assets/ref/showdown/` — **9 PokeAPI showdown GIFs** → used as the evolution/hatch cinematics.
+- `assets/ref/serebii/egg_colored.png` — the official Eevee×Tamagotchi egg, flood-fill de-boxed + recolored cream/brown (PIL, `make_egg.py`) → egg stage.
+
+---
+
+## ✅ SIMULATION BUILT — "Eevee-Tama" (proof the found assets power a Tamagotchi)
+
+**Location:** `assets/ref/tamagotchi_sim/` (`index.html` + `style.css` + `game.js`, vanilla JS — **no framework, no build step**; engine-flexible, logic ports to Godot/Unity later).
+**Run:** `http://localhost:8734/tamagotchi_sim/index.html` (server serves `assets/ref/` on port 8734). Dev API: `window.TamaGame` (feedMeal/snack/pet/play/clean/giveStone/warp/warpTo/forceShiny/newEgg/freeze/pose helpers).
+
+**Faithful Tamagotchi loop implemented:**
+1. **Egg** (2 game-hr, official egg sprite, wobble) → hatch cinematic (Eevee showdown GIF + flash).
+2. **Growth stages**: Baby (0-1d) → Child (1-2d) → Adult (2d+) — scale/stage tracked; Adult unlocks evolution.
+3. **Stats**: Meal / Happy / Energy (decay hourly; meals +40, snacks +8/+10, pet +12, play +18/−20⚡).
+4. **Poop (furball)**: meals 45% chance → furballs appear (max 3), happiness decays faster; clean button or click.
+5. **Day/night**: 8pm-7am → screen darkens, pet auto-sleeps on the pet bed (Zzz); wake 7am.
+6. **Mood/emotes**: PMD emotes over head (cheer/worry/shock/water/confused/surprise/chat) driven by lowest stat + random.
+7. **Sickness → death**: stat at 0 for 6h → sick (medicine icon, green tint, hurt frames); 14h → death (tombstone + **New Egg** button; **Dex persists across runs**).
+8. **Evolution** (Adult Eevee): 5 stones (Water/Thunder/Fire/Leaf/Ice) + **Espeon (snack 7-12am)** + **Umbreon (snack 6-8pm)** + **Sylveon (72h @10pm)** → flash + **showdown GIF cinematic** + log.
+9. **Shiny**: 1/50 per evolution (dev `forceShiny`); PMD forms = hue-shift + ✨, chibi forms = **native Pokémon Sleep shiny art**.
+10. **Dex**: 9 forms (silhouette until collected, ✦ shiny badge, count x/9).
+
+**Asset → feature mapping (all found assets in use):**
+| Feature | Asset source |
+|---|---|
+| Eevee/Vaporeon/Jolteon/Flareon body (idle/walk×8/attack/hurt/sleep) | **PMD** (ArcherZenmi repo) — true frame animation |
+| Espeon/Umbreon/Leafeon/Glaceon/Sylveon body + shinies | **Pokémon Sleep chibis** (Serebii) + bob/hop motion |
+| Egg stage | Eevee×Tamagotchi official egg (Serebii) → `egg_colored.png` (PIL) |
+| Emotes (happy/sad/angry/sweat/...) | PMD `pmd_effects/` (7 emote sets) |
+| Café ReMix reaction portrait (pet/snack) | Fandom Café ReMix Eevee frames (`eevee01/02.webp`) |
+| Evolution + hatch cinematics | PokeAPI **showdown GIFs** × 9 |
+| HUD status icons (meal/poop/lights/medicine) | **authentic P1 Tamagotchi icons** (fpga-tamagotchi) |
+| Evolution stones | PMD stone sprites (water/thunder/fire) + leaf/ice glyphs |
+| Dex portraits | PokeAPI official-artwork (all 9 × normal/shiny) |
+| Care/evolution rules | Eevee × Tamagotchi (Bandai Nano) mechanics |
+
+**Showcase captured (Playwright, `tama_s*.png` in repo root):** egg → hatch cinematic → baby + cheer → **eating** (attack lunge + food) → **poop** (furballs + sweat emote + ×2 HUD) → **petting** (Café ReMix portrait) → **night sleep** (Zzz, dark, bed) → Vaporeon **evolution cinematic** → Vaporeon idle → Vaporeon **PMD sleep sprite** → Jolteon (walk) → Flareon (attack + surprise) → Espeon **morning-snack cinematic** → Umbreon **evening-snack** → Leafeon → **shiny Glaceon** (cinematic + native shiny chibi) → Sylveon **72h auto-evolve** → **sick** (hurt frames, medicine icon) → **death** (tombstone) → **final: egg + full 9/9 Dex with shiny badge** (`tama_s22_final_dex.png`).
+
+**Bugs found & fixed during build:** decimal clock/log timestamps; warp `Math.round` stopping short of hour boundaries (→ `ceil`); stale evolution/hatch timers leaking across `newEgg` (token guards); `beginSleep/wakeUp` orphaning in-progress food; **`renderPet` empty-class-token crash on sleeping chibi** (killed the game loop — now guarded + loop wrapped in try/catch); egg white background (PIL flood-fill).
+
+**Time scale:** 1 game-hour = 8 real seconds (1 day ≈ 3.2 min; full egg→death run ≈ 15 min). Dev warp keeps stats healthy by default (`warp(h, healthy)`).
