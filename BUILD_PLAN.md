@@ -14,7 +14,7 @@
 ## 1. Time & stats (exact)
 
 - **1 game-hour = 30 real seconds** (2 game-min/s). `total` = game-min since Day 1 07:00.
-- Stages: **Egg** 0–120 (60 s) · **Baby** 120–1440 · **Child** 1440–2880 · **Adult** ≥2880 (adult at 24 real-min) · Sylveon age gate 4320 (36 min)
+- Stages: **Egg** 0–120 (60 s) · **Baby** 120–1440 · **Child** 1440–2880 · **Adult** ≥2880 (adult at 24 real-min) · Sylveon day 3 22:00 (total 3780) · **Graduation day 4 07:00 (total 4320, life ≈ 36 real-min)** per GAME_DESIGN.md line 74/100
 - Sleep: 20:00–07:00 auto (if energy < 40 at 20:00, else forced rest at 03:00). **Tap during sleep → skip to 07:00.**
 
 | Stat | Decay/game-hr | Sources |
@@ -78,7 +78,7 @@ S_TITLE (logo + TAP TO HATCH) · S_EGG (egg 120 px @ (215,620), crack frames @40
 ```
 TITLE → EGG(120) → ALIVE {awake | asleep | sick}
 ALIVE --evolve--> EVOLVE(cinematic) → ALIVE(evolved form)
-ALIVE --age ≥ 5760 (day 4 07:00)--> GRADUATION
+ALIVE --age ≥ 4320 (day 4 07:00)--> GRADUATION
 ALIVE --neglect--> DEATH
 {GRADUATION, DEATH} → (dex/medals/coins settle) → EGG (new life, Dex+medals persist)
 

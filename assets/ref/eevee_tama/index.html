@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#8ec9f0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eevee-Tama">
+<meta name="description" content="Eevee × Tamagotchi — a cozy mobile pet-raising game with a Poké Casino.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon/icon-192.png">
+<link rel="apple-touch-icon" href="icon/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+
+  <!-- ================= HUD (M2) ================= -->
+  <header id="hud" class="hidden">
+    <div id="hud-left">
+      <div class="chip" id="chip-day">DAY 1</div>
+      <div class="chip" id="chip-clock">07:00</div>
+      <div class="chip chip-stage" id="chip-stage">EGG</div>
+    </div>
+    <div id="hud-right">
+      <div class="pip" id="pip-meal" title="Meal"><img src="../tamagotchi_original/source_food.png" alt="meal"><span id="pip-meal-v">80</span></div>
+      <div class="pip" id="pip-happy" title="Happy"><img src="../prod/fx/heart_2x.png" alt="happy"><span id="pip-happy-v">80</span></div>
+      <div class="pip" id="pip-energy" title="Energy"><img src="../tamagotchi_original/source_lights.png" alt="energy"><span id="pip-energy-v">80</span></div>
+      <div class="badge hidden" id="badge-fur">0</div>
+      <div class="badge hidden" id="badge-sick">SICK</div>
+    </div>
+  </header>
+
+  <!-- toasts -->
+  <div id="toasts"></div>
+
+  <!-- ================= DOCK (M2) ================= -->
+  <nav id="dock" class="hidden">
+    <button class="dock-btn" id="dock-feed"><img src="../prod/items/oran-berry.png" alt=""><span>FEED</span></button>
+    <button class="dock-btn" id="dock-play"><img src="../prod/items/poke-ball.png" alt=""><span>PLAY</span></button>
+    <button class="dock-btn" id="dock-pet"><img src="../prod/fx/heart_2x.png" alt=""><span>PET</span></button>
+    <button class="dock-btn" id="dock-clean"><img src="../tamagotchi_original/source_bathroom.png" alt=""><span>CLEAN</span></button>
+    <button class="dock-btn" id="dock-menu"><img src="../tamagotchi_original/source_status.png" alt=""><span>MENU</span></button>
+  </nav>
+
+  <!-- ================= TITLE ================= -->
+  <section id="screen-title" class="screen">
+    <img id="title-logo" src="prod_art/logo_title.png" alt="Eevee-Tama">
+    <div id="title-btns">
+      <button class="btn-pixel btn-big" id="btn-hatch">TAP TO HATCH</button>
+      <button class="btn-pixel btn-big hidden" id="btn-continue">CONTINUE</button>
+    </div>
+    <div id="title-hint">a cozy Eevee × Tamagotchi</div>
+    <div id="title-ver">v1.0</div>
+  </section>
+
+  <!-- ================= CASINO (M5) ================= -->
+  <section id="screen-casino" class="screen hidden">
+    <div id="casino-top">
+      <button class="btn-pixel" id="casino-back">BACK</button>
+      <div id="casino-coins" class="chip"><img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="" class="chipimg"> <span id="casino-coins-v">50</span></div>
+    </div>
+    <div id="casino-tabs">
+      <button class="ctab" data-game="slots">SLOTS</button>
+      <button class="ctab" data-game="roulette">ROULETTE</button>
+      <button class="ctab" data-game="cards">CARDS</button>
+    </div>
+    <div id="casino-bottom">
+      <div id="casino-bet" class="hidden">
+        <span class="bet-lbl">BET</span>
+        <button class="betbtn" data-bet="1">1</button>
+        <button class="betbtn" data-bet="2">2</button>
+        <button class="betbtn" data-bet="3">3</button>
+      </div>
+      <div id="casino-roulette-bet" class="hidden">
+        <button class="ctab rtab" data-rbet="color">COLOR ×2</button>
+        <button class="ctab rtab" data-rbet="form">FORM ×4</button>
+        <button class="ctab rtab" data-rbet="slot">SLOT ×12</button>
+      </div>
+      <button class="btn-pixel btn-big" id="casino-spin">SPIN</button>
+      <div id="casino-msg"></div>
+    </div>
+  </section>
+
+  <!-- ================= SHEET (food/play/dex/profile/medals/shop/settings) ================= -->
+  <div id="sheet" class="hidden">
+    <div id="sheet-head">
+      <h2 id="sheet-title">TITLE</h2>
+      <button class="btn-pixel" id="sheet-close">CLOSE</button>
+    </div>
+    <div id="sheet-body"></div>
+  </div>
+
+  <!-- ================= EVOLVE CINEMATIC ================= -->
+  <section id="overlay-evo" class="screen hidden">
+    <div id="evo-flash"></div>
+    <img id="evo-img" alt="">
+    <div id="evo-card" class="hidden">
+      <div id="evo-name">ESPEON</div>
+      <div id="evo-sub">your pet evolved!</div>
+      <button class="btn-pixel" id="evo-ok">YAY!</button>
+    </div>
+  </section>
+
+  <!-- ================= ENDING ================= -->
+  <section id="overlay-end" class="screen hidden">
+    <div id="end-card">
+      <div id="end-title">GOODBYE</div>
+      <div id="end-sub"></div>
+      <button class="btn-pixel btn-big" id="end-new">NEW EGG</button>
+    </div>
+  </section>
+
+  <!-- ================= AWAY REPORT ================= -->
+  <section id="overlay-away" class="screen hidden">
+    <div id="away-card">
+      <div id="away-title">WHILE YOU WERE AWAY</div>
+      <ul id="away-list"></ul>
+      <div id="away-now"></div>
+      <button class="btn-pixel btn-big" id="away-ok">OK</button>
+    </div>
+  </section>
+
+  <!-- ================= SETTINGS SHEET lives in #sheet ================= -->
+
+  <!-- ================= LOADING ================= -->
+  <section id="loading" class="screen">
+    <div id="loadwrap">
+      <img src="prod_art/logo_title.png" alt="" id="load-logo">
+      <div id="loadbar"><div id="loadfill"></div></div>
+      <div id="loadlabel">GATHERING THE MEADOW…</div>
+    </div>
+  </section>
+
+  <!-- rotate hint (landscape) -->
+  <div id="rotate-hint" class="hidden">
+    <div class="rotate-box">
+      <div class="rotate-ico"></div>
+      <div class="rotate-txt">ROTATE YOUR PHONE</div>
+      <div class="rotate-sub">Eevee-Tama plays best in portrait</div>
+      <button class="btn-pixel" id="rotate-tap">TAP TO CONTINUE</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

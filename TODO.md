@@ -49,13 +49,13 @@
 ## Phase 6 — Production rebuild (IN PROGRESS) — `assets/ref/eevee_tama/`
 > Plan: **BUILD_PLAN.md** (numbers, layouts, milestones). Testing protocol: BUILD_PLAN §12 (time-mock dev API, 25-scenario suite, 6-device Playwright matrix, automated assertions, vision review every milestone).
 
-### M1 — Scene + pet
-- [ ] App skeleton: `index.html` (430×932 logical, dvh, safe-area, portrait, viewport-fit=cover) · `style.css` (Press Start 2P + VT323) · `manifest.webmanifest`
-- [ ] `src/scene.js` — canvas compositor: pre-rendered sky (day/sunset/night) + far meadow + grass bands, night stars + fireflies, DPR-capped 3× nearest-neighbor
-- [ ] `src/pet.js` — PMD loader (4 forms × 8 dirs × idle 6 / move 7 / attack 6 / hurt 3) + chibi loader (9×2) + wander AI (8-dir) + shadow + depth scale 0.85–1.15 + 7 emote pops
-- [ ] Dev API v2 (`src/dev.js`): freeze/warpTo/setForm/rate/fps/get (time-mock harness)
-- [ ] PIL: title logo + PWA icons 192/512 (contact-sheet verified)
-- [ ] GATE: scenario smoke + 6-device screenshots + vision review + commit
+### M1 — Scene + pet ✅
+- [x] App skeleton: `index.html` (430×932 logical, cover-fit, safe-area, portrait, viewport-fit=cover) · `style.css` (Press Start 2P + VT323) · `manifest.webmanifest`
+- [x] `src/scene.js` — canvas compositor: pre-rendered static meadow (banded sky day/sunset/night + sun/moon + far meadow + organic tuft field), night stars + fireflies, 1 big blit/frame, DPR-capped 3× nearest-neighbor
+- [x] `src/pet.js` — PMD loader (4 forms × 8 dirs; real counts idle 2/move 3/attack 2/hurt 1) + chibi loader (9×2) + wander AI (8-dir) + shadow + depth scale 0.85–1.15 + emote pops + cached shiny tint (offscreen, no per-frame ctx.filter)
+- [x] Dev API v2 (`src/dev.js`): freeze/warpTo/setForm/rate/fps/get (time-mock harness)
+- [x] PIL: title logo + PWA icons 192/512 (contact-sheet verified)
+- [x] GATE: scenario smoke (title→egg→hatch→main, day/sunset/night, all forms, shiny, emotes) + 6-device screenshots (no overflow, rotate-hint in landscape) + vision review + 60fps/0 errors
 
 ### M2 — HUD + dock + food
 - [ ] HUD DOM (Day/clock/stage chip, stat pips w/ P1 icons, alert badges) · dock (5 × 58px: Oran, Poké Ball, heart, bathroom, gear) · toast system
