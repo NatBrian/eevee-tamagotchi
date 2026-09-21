@@ -7,7 +7,8 @@
 
 - Production app: **`assets/ref/eevee_tama/`** (served at `http://localhost:8734/eevee_tama/`)
   - `index.html` · `style.css` · `manifest.webmanifest` · `sw.js`
-  - `src/main.js` (boot, screen router) · `config.js` (ALL data tables) · `state.js` (tick machine) · `scene.js` (canvas compositor) · `pet.js` (sprites + wander AI) · `casino.js` · `ui.js` (DOM) · `audio.js` (Web Audio + haptics) · `save.js` · `dev.js` (TamaGame API)
+  - `src/main.js` (boot, screen router) · `config.js` (ALL data tables) · `state.js` (tick machine + **seeded PRNG**) · `scene.js` (canvas compositor) · `pet.js` (sprites + wander AI) · `casino.js` · `ui.js` (DOM) · `audio.js` (Web Audio + haptics) · `save.js` · `dev.js` (**TamaGame test/dev API — the time-mock harness**)
+  - `test/scenarios.js` (25-scenario suite, run in-page via Playwright)
 - MVP `tamagotchi_sim/` stays untouched (reference). Repo commits per milestone.
 
 ## 1. Time & stats (exact)
@@ -126,6 +127,75 @@ slot cabinet (candy pixel, ~300×260) · medicine bottle · 4 fashion items (bow
 - **Pixel crispness at arbitrary DPI**: DPR-capped canvas (3×) + nearest-neighbor; verify in gate
 - **User audio picks pending**: M7 uses placeholders (NES00 day / NES16 night / NES01 evolve) until audition done
 
-## 12. Standing quality gate (per user)
+## 12. Testing protocol (standing rule — every milestone)
 
-After each milestone: Playwright at 393×852 / 412×915 / 375×667 (+ landscape) → screenshot EVERY screen + 2 in-motion captures (walk cycle, slot spin) → **vision review**: layout (no overflow/cramped gaps), pixel crispness, palette harmony vs PMD, typography, motion smoothness (dev FPS readout ≥ 55), "fun/mesmerizing" pass → iterate → commit.
+### 12.1 Time mocking & determinism (dev API = test harness, `src/dev.js`)
+All randomness (shiny roll, furball timing, personality, names, casino reels, roulette ball, card draw, monthly-event rolls) flows through **one seeded PRNG (mulberry32)** → every scenario is reproducible. `window.TamaGame` exposes:
+- **Clock**: `warp(hhmm)` / `warpTo(absGameMin)` (jump to any time) · `setDay(n)` (monthly events) · `rate(x)` 1–1000× (watch fast-forward live) · `freeze()/unfreeze()` (stable state for screenshots)
+- **State**: `setStats(meal,happy,energy,health)` · `setSick(b)` · `setSleeping(b)` · `setStage/setForm` · `forceShiny(b)` · `addPoop(n)` · `evolveTo(form)` · `giveStone(k)` · `newEgg()`
+- **RNG**: `seed(n)` · `forceNext({ spin:[a,b,c], roulette:slotIdx, cards:[r1..r4], shiny:bool })`
+- **Readout**: `get()` (full state JSON for assertions) · `fps()` (avg + p95 frame ms, rolling 2 s) · `screenshots` are taken with `freeze()` on
+
+### 12.2 Scenario suite (`test/scenarios.js` — run in-page via Playwright `evaluate`)
+Each scenario = setup (dev API) → action → **assert on `get()` + DOM** → screenshot evidence → PASS/FAIL. Green board required before a milestone commits.
+
+| # | Scenario (time-gated ones use clock mock) |
+|---|---|
+| S01 | Egg → hatch at 120 (crack frames at 40/75%, wobble on tap) |
+| S02 | Baby→Child→Adult via `warpTo(1440/2880)`; stage scaling 0.6/0.8/1.0 |
+| S03 | Each stone → correct form + cinematic + dex cell (×5) |
+| S04 | **Espeon**: `warp(10:05)` + affinity 70 + snack → Espeon |
+| S05 | **Umbreon**: `warp(19:00)` + affinity 70 + snack → Umbreon |
+| S06 | **Sylveon**: `warpTo(day3 22:00)` + affinity 80 → auto Sylveon |
+| S07 | Shiny: `seed(1)` + `forceShiny(true)` → tinted Eevee + shiny dex cell |
+| S08 | Neglect: stats 0 for 6 game-hrs → sick → medicine → cured |
+| S09 | Over-snack: 4 snacks/day → tummy-ache roll (seeded) |
+| S10 | Death: sick + 14 zero-hrs → tombstone → New Egg → **dex persists** |
+| S11 | Graduation: `warpTo(day4 07:00)` healthy → farewell scene |
+| S12 | Furballs: spawn to max 5, clean each, dirty ×2 decay, grace after hatch |
+| S13 | Sleep: 20:00 auto (energy <40), Zzz + night scene, tap-skip → 07:00, energy 100 |
+| S14 | **Offline**: `savedAt −12h` → reload → catch-up ≤ cap, meters floored 10, S_AWAY report correct |
+| S15 | Slots: `seed(42)`, 10 000 simulated spins → RTP within 85–98%; `forceNext([7,7,7])` → ×30 + confetti + bonus spin; lucky-symbol ×1.2 per personality |
+| S16 | Roulette: forced color/form/slot wins → ×2/×4/×12; pet reaction on own form |
+| S17 | Card Flip: forced highest → ×4; forced tie → push/refund |
+| S18 | **Monthly events**: `setDay(5)` shop 50% off · `setDay(10)` shiny 1/25 · `setDay(16)` ghost Eevee at night |
+| S19 | Medals: trigger each of the 36 (scripted state paths) |
+| S20 | Shop: buy/equip each item; coins deduct; persists across reload |
+| S21 | Personality: fave meal +8, disliked +17, lucky symbol, bubble text |
+| S22 | Daily free 50 coins at 07:00 (not before/after) |
+| S23 | Rename + care rank S (no sickness, Happy avg ≥85) |
+| S24 | Reload mid-life (all 9 screens) → state byte-identical |
+| S25 | Dock/sheet touch flows: tap feed→meal, long-press pet→profile, tap furball→clean, casino SPIN — via Playwright `touchscreen` |
+
+### 12.3 Playwright device matrix (MCP) — "correct mobile resolutions"
+| Device | Viewport | DPR | Browser | Purpose |
+|---|---|---|---|---|
+| iPhone 15 Pro | 393×852 | 3 | mobile Safari | primary |
+| Pixel 9 | 412×915 | 2.625 | Chrome | tall/edge |
+| iPhone SE | 375×667 | 2 | mobile Safari | short/min-height |
+| Galaxy S24 | 360×780 | 3 | Chrome | min-width edge |
+| iPad Air (portrait) | 820×1180 | 2 | Safari | letterbox check |
+| iPhone 15 Pro **landscape** | 852×393 | 3 | mobile Safari | rotate interstitial |
+
+Every screen of a milestone is screenshotted on **all six**; the three phone sizes are the pixel-perfect gate.
+
+### 12.4 Automated quality assertions (per screen × per device, fail = bug)
+- No horizontal overflow: `scrollWidth ≤ clientWidth`; nothing clipped (element rects inside viewport)
+- All assets loaded: every `<img>` `naturalWidth > 0`; canvas not blank
+- Fonts: `document.fonts.check('12px PressStart2P')` && `document.fonts.check('16px VT323')`
+- Console: **zero errors / uncaught exceptions** during the scenario run
+- Touch targets: dock & sheet buttons ≥ 48 px, gaps ≥ 12 px (computed-style scan)
+- **Fluidity**: `fps()` avg ≥ 55 and p95 frame ≤ 33 ms during walk cycle AND slot spin AND roulette spin
+- Pixel crispness: pet-sprite edge spot-check — no half-alpha bleed (nearest-neighbor intact)
+- Safe areas: HUD top ≥ `safe-area-inset-top`, dock bottom ≥ `safe-area-inset-bottom`
+- No dead ends: every screen reachable has a visible back/close/continue
+
+### 12.5 UI/UX perfection checklist (vision review pass/fail, per screen)
+Alignment & spacing (no crowding, consistent 8 px rhythm) · pixel art crisp at all 6 viewports · palette harmonious with PMD/soft pastels, day/night both readable · typography: Press Start 2P labels / VT323 body, no tiny text (<14 px) · motion: 150–300 ms tweens, snappy, no jank, feedback **above the finger** · icons consistent (our art, no emojis) · sheets/toasts never cover the pet or dock · every action has visual + audio + haptic feedback · "fun/mesmerizing" gut check: would you screenshot it?
+
+### 12.6 Flow (per milestone)
+1. Build milestone code.
+2. Run `test/scenarios.js` (all applicable scenarios) in iPhone-15 context → green board.
+3. Device-matrix screenshots of every screen + 2 in-motion captures (walk, casino spin) → **vision review** against 12.4 + 12.5.
+4. Iterate until green **and** beautiful → commit with the screenshot evidence in `showcase/`.
+5. M9 = full regression of all 25 scenarios × all 6 devices.
