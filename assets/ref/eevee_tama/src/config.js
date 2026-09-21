@@ -39,6 +39,7 @@ export const CFG = {
     gameWin: 15, gameLose: 8,
     cleanGain: 4,
     chestoEnergy: 10,
+    ballHappy: 10, ballAffinity: 2,
     sickZeroHrs: 6,                     // 6 zero-hours → sick
     deathZeroHrs: 14,                   // sick + 14 zero-hours → death
     furballMinHrs: 4, furballMaxHrs: 8, furballMax: 5,
@@ -261,7 +262,8 @@ export const CFG = {
   ],
 
   // ---------- monthly events ----------
-  EVENTS: { sale: [5, 15, 25], shiny: [10, 20, 30], ghost: 15 },
+  // sale/shiny use 1-based day-of-month; ghost uses 0-based (S18: setDay(16) = ghost night)
+  EVENTS: { sale: [5, 15, 25], shiny: [10, 20, 30], ghost: 15, ghostCoins: 5, ghostSpeed: 26 },
 };
 
 // ---------- asset URL roots ----------

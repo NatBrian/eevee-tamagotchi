@@ -365,9 +365,16 @@ body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
 
 /* profile */
 .profile-card { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.profile-face { width: 190px; image-rendering: pixelated; }
+.profile-face { width: 220px; max-height: 236px; object-fit: contain; object-position: top center; }
 .profile-name { font-family: 'PressStart2P', monospace; font-size: 16px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 .profile-name .edit { font-size: 9px; color: var(--ink-soft); cursor: pointer; border-bottom: 2px dotted var(--ink-soft); }
+.rename-row { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
+.pxinput {
+  font-family: 'VT323', monospace; font-size: 20px; color: var(--ink);
+  background: #fff; border: 3px solid var(--ink); border-radius: 10px;
+  padding: 6px 10px; width: 150px; box-shadow: 0 3px 0 var(--ink);
+}
+.pxinput:focus { outline: none; border-color: var(--gold); }
 .profile-meta { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .tagchip { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); background: var(--cream); border: 2px solid var(--ink); border-radius: 8px; padding: 5px 8px; }
 .tagchip.rank-S { background: var(--gold); }
@@ -416,6 +423,13 @@ body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
 .shopcell.poor { opacity: 0.55; }
 .shopcell.owned { border-color: var(--ok); }
 .shopcell .sprice .sold.use { background: var(--gold); }
+.shopcell .sprice s { font-family: 'PressStart2P', monospace; font-size: 7px; color: var(--ink-soft); text-decoration: line-through; }
+.salebadge { font-family: 'PressStart2P', monospace; font-size: 6px; color: #fff; background: var(--pink); border: 2px solid var(--ink); border-radius: 6px; padding: 2px 4px; }
+.sale-banner {
+  font-family: 'PressStart2P', monospace; font-size: 10px; color: var(--ink);
+  background: var(--gold); border: 3px solid var(--ink); border-radius: 10px;
+  padding: 8px 12px; box-shadow: 0 3px 0 var(--ink); margin-bottom: 10px; text-align: center;
+}
 
 /* evolve */
 .affchip {

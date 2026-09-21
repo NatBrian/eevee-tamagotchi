@@ -35,10 +35,11 @@ export function isNight(total, theme) {
 export function dailyEventDay(state) {
   const day = clockOf(state.total).day;
   // month = every 30 game-days
-  const dom = ((day - 1) % 30) + 1;
-  const month = Math.floor((day - 1) / 30) + 1;
+  const dom = ((day - 1) % 30) + 1;      // 1-based day-of-month (sale/shiny)
+  const dom0 = (day - 1) % 30;           // 0-based ("15th" = day 16 of the month)
+  const month0 = Math.floor((day - 1) / 30); // 0-based month
   const ev = { sale: CFG.EVENTS.sale.includes(dom), shiny: CFG.EVENTS.shiny.includes(dom),
-              ghost: dom === CFG.EVENTS.ghost && month % 2 === 0, dom, month };
+              ghost: dom0 === CFG.EVENTS.ghost && month0 % 2 === 0, dom, month: month0 + 1 };
   return ev;
 }
 
@@ -56,7 +57,7 @@ export function freshState() {
     hatchTotal: 0,
     furballs: [], furballIn: 240,
     day: { snacks: 0, coins: 50, coinsDay: 1, petAffinityToday: 0, furAffinityToday: 0 },
-    life: { meals: 0, snacks: 0, pets: 0, cleans: 0, games: 0, wins: 0, spins: 0,
+    life: { meals: 0, snacks: 0, pets: 0, cleans: 0, games: 0, wins: 0, spins: 0, jackpots: 0, balls: 0,
             sessionNet: 0, sickCount: 0, happySum: 0, happyN: 0, maxHappy: 0, petTimes: [], lastPetAt: 0 },
     allTime: { lives: 0, meals: 0, furballs: 0, firstSeen: Date.now(), allNet: 0 },
     dex: {}, medals: {},
@@ -86,6 +87,9 @@ export function checkMedals(state, ev) {
   if (L.spins >= 10) award(state, 'spins10', ev);
   if (AT.allNet >= 100) award(state, 'lucky', ev);
   if (L.sessionNet >= 500) award(state, 'highroller', ev);
+  if (L.jackpots >= 1) award(state, 'jackpot', ev);
+  if (state.ended === 'death') award(state, 'death1', ev);
+  if (state.ended === 'graduation' && state.careRank === 'S') award(state, 'rankS', ev);
   if (state.pet.evolved) { award(state, 'evoothers', ev); award(state, 'evo-' + state.form, ev); }
   if (state.stage === 'adult') award(state, 'adult', ev);
   if (clockOf(state.total).day >= 7) award(state, 'day7', ev);
@@ -255,8 +259,9 @@ export function buyShop(state, key, ev) {
     if (it) { group = gk; item = it; break; }
   }
   if (!item || state.shop.owned.includes(key)) return false;
-  if (state.day.coins < item.price) return false;
-  state.day.coins -= item.price;
+  const price = dailyEventDay(state).sale ? Math.ceil(item.price / 2) : item.price;
+  if (state.day.coins < price) return false;
+  state.day.coins -= price;
   state.shop.owned.push(key);
   if (group === 'decor') state.shop.decor.push(key);
   else if (group === 'fashion') state.shop.fashion = key;
@@ -290,6 +295,25 @@ export function giveMedicine(state, ev) {
   state.stats.health = 100;
   if (state.sick) { state.sick = false; state.zeroH = 0; state.sickZeroH = 0; }
   ev && ev.push('medicine');
+  return true;
+}
+
+export function giveBall(state, ev) {
+  if (state.stage === 'egg' || state.ended) return false;
+  state.stats.happy = clamp(state.stats.happy + CFG.STATS.ballHappy);
+  state.pet.affinity = clampAff(state.pet.affinity + CFG.STATS.ballAffinity);
+  state.life.balls = (state.life.balls || 0) + 1;
+  ev && ev.push('ball');
+  return true;
+}
+
+export function catchGhost(state, ev) {
+  const g = state._runtime && state._runtime.ghost;
+  if (!g || g.done || state.ended) return false;
+  g.done = true;
+  state._runtime.ghostDone = true;
+  changeCoins(state, CFG.EVENTS.ghostCoins, ev);
+  ev && ev.push('ghost');
   return true;
 }
 
@@ -406,6 +430,28 @@ export function advance(state, dtMin, ev) {
   }
   if (state.sleeping && absTime(state.total) >= T.wakeHour * 60 && absTime(prevTotal) < T.wakeHour * 60) {
     wakeUp(state); ev && ev.push('woke');
+  }
+
+  // ghost Eevee (qualifying nights, once per day) — drifts across the meadow
+  if (!state.ended) {
+    if (!state._runtime) state._runtime = {};
+    const evd = dailyEventDay(state);
+    if (evd.ghost && isNight(state.total, state.shop.theme) && !state._runtime.ghostDone && !state._runtime.ghost) {
+      const fromLeft = rng.next() < 0.5;
+      state._runtime.ghost = { x: fromLeft ? -45 : 475, dir: fromLeft ? 1 : -1, t: 0 };
+      ev && ev.push('ghost:in');
+    }
+    if (state._runtime.ghost) {
+      const g = state._runtime.ghost;
+      if (!g.done) {
+        const dtS = dtMin / (CFG.TIME.minPerSec * (state.rate || 1)); // back to real seconds
+        g.t += dtS;
+        g.x += g.dir * CFG.EVENTS.ghostSpeed * dtS;
+        if (g.x < -60 || g.x > 490) { state._runtime.ghostDone = true; ev && ev.push('ghost:out'); }
+      } else if (state._runtime.ghostDone) {
+        delete state._runtime.ghost;
+      }
+    }
   }
 
   if (state.sleeping) return; // no decay/furballs while asleep

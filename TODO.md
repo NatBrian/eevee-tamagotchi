@@ -85,10 +85,13 @@
 - [x] Bet/coin UI (BACK/tabs/bet/spin/msg), NOT-ENOUGH-COINS guard, pet takes machine spot + win/lose/jackpot reactions, toasts offset for casino; `casinoSpin` dev harness
 - [x] GATE: 10k-spin RTP (slots ~1.02–1.10, rt color .69/form 1.02/slot .99, cards .99) + forced 777 & forced roulette + 6-device matrix (60fps, no overflow, 0 errors) + vision + commit
 
-### M6 — Meta
-- [ ] Personality roll + lucky symbol + bubbles · S_PROFILE (Café face, rename, rank S/A/B/C, stat bars)
-- [ ] S_MEDALS (36) · S_SHOP (12 items; PIL: 4 fashion, berry bush, ghost Eevee) · monthly events (5/15/25 sale, 10/20/30 shiny, ghost night)
-- [ ] GATE: scenarios S18–S21 + device matrix + vision + commit
+### M6 — Meta ✅
+- [x] Personality lucky symbol wired to slots (×1.2 per personality; RTP shifts 0.85–1.04 across personalities) · bubbles/fave/dislike verified (42/17/34)
+- [x] S_PROFILE: Café ReMix Eevee face (220px), inline rename (input+SAVE, persisted), personality/stage/rank chips, stat bars
+- [x] Medals now awardable: jackpot (777, +free spin per S15), death1, rankS · GIVE BALL toy (arcing Poké Ball, +10 Happy, +2 bond)
+- [x] S_SHOP art: 4 fashion (bow/scarf/leaf hat/star clip, rendered on pet), berry bush (scene decor), ghost Eevee (spectral, drifts at night on qualifying days, tap → +5 coins)
+- [x] Monthly events: 5/15/25 sale 50% off (banner + strike-through + half-price purchase verified), 10/20/30 shiny 1/25, ghost night (0-based dom0=15 & even month0 → setDay(16) per S18)
+- [x] GATE: S18/S21 via setDay + forced ghost + 10k-spin per-personality RTP + sale purchase + rename + 6-device matrix (59–60fps, p95 ~17ms, no overflow, 0 errors) + vision + commit
 
 ### M7 — Audio + haptics
 - [ ] `src/audio.js` Web Audio mixer: BGM day/night (pending user audition; placeholders NES00/NES16), full SFX map incl. casino · Vibration haptics tiers (silent degrade iOS) · settings toggles · unlock on first tap

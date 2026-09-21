@@ -4,6 +4,7 @@ import {
   clockOf, absTime, stageOf, careRank, countDex, applyOffline,
   feedMeal, feedSnack, doPet, cleanFurball, giveMedicine, giveStone,
   playGame, changeCoins, skipSleep, startEgg, evolveTo, hatch, freshState,
+  giveBall, dailyEventDay,
 } from './state.js';
 import { rng } from './prng.js';
 import { toast, setScreen, openMenuSheet, openFoodSheet, openPlaySheet } from './main.js';
@@ -39,6 +40,7 @@ export function attachDev(G) {
         medals: Object.keys(s.medals).length,
         ended: s.ended,
         coins: s.day.coins,
+        event: dailyEventDay(s),
         frozen: !!s.frozen,
         rate: s.rate || 1,
         missingAssets: G.img ? G.img.missing.length : -1,
@@ -129,6 +131,14 @@ export function attachDev(G) {
     evolveTo(form) { evolveTo(S(), form, G.events); G.pet && G.pet.sync(S()); return this.get(); },
     play(won) { playGame(S(), won, G.events); return this.get(); },
     coins(delta) { changeCoins(S(), delta, G.events); return this.get(); },
+    giveBall() { giveBall(S(), G.events); if (G.pet) G.fx.ball(G.pet.x, G.pet.y - 6); return this.get(); },
+    forceGhost(on) {
+      const s = S();
+      if (!s._runtime) s._runtime = {};
+      if (on) { if (!s._runtime.ghost) { s._runtime.ghost = { x: -45, dir: 1, t: 0 }; s._runtime.ghostDone = false; } }
+      else { delete s._runtime.ghost; s._runtime.ghostDone = true; }
+      return this.get();
+    },
     // casino harness: run n instant rounds (RTP tests) — opts: { bet, bets, pick }
     casinoSpin(game, n = 1, opts = {}) {
       if (!G.casino) return { error: 'no casino' };

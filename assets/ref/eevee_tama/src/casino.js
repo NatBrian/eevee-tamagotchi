@@ -73,6 +73,8 @@ export class Casino {
     this.cardWin = null;           // { pick, win, push }
     this.cardWinT = 0;
 
+    this.freeSpin = false;         // jackpot bonus
+
     // baked art
     this.sevenImg = null;
   }
@@ -163,10 +165,19 @@ export class Casino {
     return this.spinCards();
   }
 
+  // personality lucky symbol (M6); falls back to default 'heart'
+  luckyKey() {
+    const s = this.G.state;
+    const p = s && s.pet && s.pet.personality ? CFG.PERSONALITIES[s.pet.personality] : null;
+    return (p && p.lucky) || C.slots.lucky;
+  }
+
   spinSlots() {
     const B = this.bet;
-    if (this.coins() < B) { this.msg('NOT ENOUGH COINS'); return; }
-    changeCoins(this.G.state, -B, this.G.events);
+    const free = !!this.freeSpin;
+    if (!free && this.coins() < B) { this.msg('NOT ENOUGH COINS'); return; }
+    this.freeSpin = false;
+    if (!free) changeCoins(this.G.state, -B, this.G.events);
     this.G.events.push('cas:spin');
     this.grid = [0, 1, 2].map(() => [0, 1, 2].map(() => rng.weighted(C.slots.symbols, 'w').key));
     if (rng.takeForce('slots') === 'jackpot') this.grid = [['ball', 'seven', 'eevee'], ['heart', 'seven', 'ball'], ['oran', 'seven', 'heart']];
@@ -178,7 +189,7 @@ export class Casino {
     this.lineWins = null;
     this.spinning = true;
     const lines = C.slots.lineForBet[B];
-    this.msg(`BET ${B} · ${lines} LINE${lines > 1 ? 'S' : ''}`);
+    this.msg((free ? 'FREE SPIN · ' : `BET ${B} · `) + `${lines} LINE${lines > 1 ? 'S' : ''}`);
   }
 
   spinRoulette() {
@@ -274,7 +285,7 @@ export class Casino {
         w = C.slots.pairPay * stake;
       }
       if (w > 0) {
-        const lucky = syms.some((k) => k === C.slots.lucky);
+        const lucky = syms.some((k) => k === this.luckyKey());
         if (lucky) w *= C.slots.luckyMul;
         wins.push({ rows, key: triple ? syms[0] : pairKey, win: w, lucky, triple });
         total += w;
@@ -288,7 +299,11 @@ export class Casino {
       changeCoins(s, win, this.G.events);
       playGame(s, true, this.G.events);
       this.msg(`WIN +${win}${this.lineWins.some((w) => w.lucky) ? ' · LUCKY ×1.2' : ''}!`);
-      if (this.lineWins.some((w) => w.triple && w.key === 'seven')) this.G.events.push('cas:jackpot');
+      if (this.lineWins.some((w) => w.triple && w.key === 'seven')) {
+        this.G.events.push('cas:jackpot');
+        s.life.jackpots = (s.life.jackpots || 0) + 1;
+        this.freeSpin = true; // jackpot bonus (S15)
+      }
     } else {
       playGame(s, false, this.G.events);
       this.msg('SO CLOSE…');
@@ -730,7 +745,7 @@ export class Casino {
           let w = 0;
           if (triple) w = C.slots.symbols.find((d) => d.key === syms[0]).pay * stake;
           else if (pairKey) w = C.slots.pairPay * stake;
-          if (w > 0 && syms.some((k) => k === C.slots.lucky)) w *= C.slots.luckyMul;
+          if (w > 0 && syms.some((k) => k === this.luckyKey())) w *= C.slots.luckyMul;
           win += w;
         }
         const winR = Math.round(win);

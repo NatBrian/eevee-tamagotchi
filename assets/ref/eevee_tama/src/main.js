@@ -3,7 +3,7 @@ import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
   giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop, giveMedicine,
-  buyStone, useStone,
+  buyStone, useStone, giveBall, catchGhost, dailyEventDay,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
@@ -257,10 +257,14 @@ export function handleEvents() {
     } else if (e === 'cas:jackpot') {
       if (G.screen === 'casino' && G.pet) {
         G.fx.burst(G.pet.x, G.pet.y - 40, 'confetti', 20, { speed: 140 });
-        toast('JACKPOT!');
+        toast('JACKPOT! +FREE SPIN');
       }
     } else if (e === 'cas:push') {
       if (G.screen === 'casino' && G.pet) G.fx.emote(G.pet.x, G.pet.y - 46, 'chat', null);
+    } else if (e === 'ghost:in') {
+      toast('A ghost Eevee drifts by… TAP IT!');
+    } else if (e === 'ghost:out') {
+      toast('The ghost Eevee slipped away…');
     }
   }
 }
@@ -372,6 +376,18 @@ function onUp(ev) {
   if (G.screen !== 'main') return;
 
   if (s.sleeping) { skipSleep(s); G.events.push('woke'); return; }
+  // ghost Eevee (M6): tap to catch
+  const gh = s._runtime && s._runtime.ghost;
+  if (gh && !gh.done && !s.ended) {
+    const gy = 545;
+    if (Math.abs(p.x - gh.x) < 52 && Math.abs(p.y - (gy - 30)) < 58) {
+      if (catchGhost(s, G.events)) {
+        G.fx.burst(gh.x, gy - 34, 'magic', 16, { speed: 80 });
+        toast('GHOST EEVEE! +5 COINS');
+      }
+      return;
+    }
+  }
   const fi = hitFurball(p);
   if (fi >= 0) {
     const f = s.furballs[fi];
@@ -416,10 +432,11 @@ export function openMenuSheet(which) {
       </div>`);
     bindSheetNav();
   } else if (which === 'profile') {
+    const esc = (str) => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     openSheet('PROFILE', `
       <div class="profile-card">
-        <img class="profile-face" src="${A.chibi(s.form, s.shiny)}" alt="">
-        <div class="profile-name">${s.pet.name || '???'} <span class="edit" id="rename-btn">edit</span></div>
+        <img class="profile-face" src="${A.cafe('eevee_full.webp')}" alt="">
+        <div class="profile-name">${esc(s.pet.name || '???')} <span class="edit" id="rename-btn">edit</span></div>
         <div class="profile-meta">
           <span class="tagchip">${s.pet.personality ? CFG.PERSONALITIES[s.pet.personality].label : '…'}</span>
           <span class="tagchip">${STAGE_LABEL[s.stage]}</span>
@@ -430,6 +447,21 @@ export function openMenuSheet(which) {
         <div class="statbar-row"><label>ENERGY</label><div class="statbar"><div class="sb-energy" style="width:${s.stats.energy}%"></div></div></div>
         <div class="statbar-row"><label>BOND</label><div class="statbar"><div class="sb-aff" style="width:${s.pet.affinity}%"></div></div></div>
       </div>`);
+    const rb = $('rename-btn');
+    rb.onclick = () => {
+      rb.parentElement.innerHTML =
+        '<div class="rename-row"><input id="rename-input" class="pxinput" maxlength="12" value="' + esc(s.pet.name || '') + '">' +
+        '<button class="btn-pixel" id="rename-save">SAVE</button></div>';
+      const inp = $('rename-input');
+      const doSave = () => {
+        const v = inp.value.trim();
+        if (v) { s.pet.name = v; save(s); }
+        openMenuSheet('profile');
+      };
+      $('rename-save').onclick = doSave;
+      inp.onkeydown = (e) => { if (e.key === 'Enter') doSave(); };
+      setTimeout(() => inp.focus(), 60);
+    };
   } else if (which === 'dex') {
     openDexSheet();
   } else if (which === 'evolve') {
@@ -513,17 +545,20 @@ export function openMedalsSheet() {
 
 export function openShopSheet() {
   const s = G.state;
+  const sale = dailyEventDay(s).sale;
   const coin = '<img class="scoin" src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="">';
   const cell = (it, group) => {
     const owned = s.shop.owned.includes(it.key);
-    const afford = s.day.coins >= it.price;
+    const price = sale ? Math.ceil(it.price / 2) : it.price;
+    const afford = s.day.coins >= price;
     return `<div class="shopcell ${owned ? 'owned' : ''} ${afford || owned ? '' : 'poor'}" data-shop="${it.key}">
       <img src="${shopArt(it)}" data-fallback="prod_art/item_crate.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="">
       <div class="sname">${it.name}</div>
-      <div class="sprice">${owned ? '<span class="sold">OWNED</span>' : coin + '<b>' + it.price + '</b>'}</div>
+      <div class="sprice">${owned ? '<span class="sold">OWNED</span>' : coin + (sale ? '<s>' + it.price + '</s> ' : '') + '<b>' + price + '</b>' + (sale ? ' <span class="salebadge">SALE</span>' : '')}</div>
     </div>`;
   };
-  let html = `<div class="coinline">${coin}<b id="shop-coins">${s.day.coins}</b><span>coins</span></div>
+  let html = (sale ? '<div class="sale-banner">★ SALE · 50% OFF TODAY ★</div>' : '') +
+    `<div class="coinline">${coin}<b id="shop-coins">${s.day.coins}</b><span>coins</span></div>
     <div class="sheet-sec">DECOR</div><div class="shopgrid">${CFG.SHOP.decor.map((i) => cell(i, 'decor')).join('')}</div>
     <div class="sheet-sec">FASHION</div><div class="shopgrid">${CFG.SHOP.fashion.map((i) => cell(i, 'fashion')).join('')}</div>
     <div class="sheet-sec">SKIES</div><div class="shopgrid">${CFG.SHOP.themes.map((i) => cell(i, 'themes')).join('')}</div>`;
@@ -659,9 +694,19 @@ export function openPlaySheet() {
       <div class="row" data-casino="slots"><img src="../prod/items/poke-ball.png" alt=""><div class="rmain"><div class="rname">EEVEE SLOTS</div><div class="rsub">hit 777 for the jackpot</div></div><div class="rcta">1 COIN</div></div>
       <div class="row" data-casino="roulette"><img src="../prod/items/great-ball.png" alt=""><div class="rmain"><div class="rname">ROULETTE</div><div class="rsub">guess the Eeveelution</div></div><div class="rcta">1 COIN</div></div>
       <div class="row" data-casino="cards"><img src="../prod/items/ultra-ball.png" alt=""><div class="rmain"><div class="rname">CARD FLIP</div><div class="rsub">highest card wins ×4</div></div><div class="rcta">1 COIN</div></div>
+      <div class="row" data-ball="1"><img src="../prod/items/poke-ball.png" alt=""><div class="rmain"><div class="rname">GIVE BALL</div><div class="rsub">throw a ball to play · +Happy</div></div><div class="rcta">FREE</div></div>
     </div>`);
   document.querySelectorAll('#sheet-body [data-casino]').forEach((el) => {
     el.onclick = () => { closeSheet(); G.casino && G.casino.open(el.dataset.casino); };
+  });
+  document.querySelectorAll('#sheet-body [data-ball]').forEach((el) => {
+    el.onclick = () => {
+      closeSheet();
+      if (G.pet && giveBall(G.state, G.events)) {
+        G.fx.ball(G.pet.x, G.pet.y - 6);
+        G.fx.emote(G.pet.x, G.pet.y - 46, 'cheer', null);
+      }
+    };
   });
 }
 
@@ -744,6 +789,19 @@ function loop(t) {
   if (G.ctx && G.scene) {
     G.scene.begin(G.ctx);
     G.scene.render(G.ctx, s || freshState(), G.pet, G.fx, dt);
+    // ghost Eevee (M6): spectral visitor drifting across the meadow
+    if (s && !s.ended && G.screen !== 'casino') {
+      const g = s._runtime && s._runtime.ghost;
+      if (g && !g.done) {
+        const gIm = G.img.get('ghost_eevee');
+        if (gIm) {
+          const gy = 545 + Math.sin(g.t * 2.2) * 9;
+          G.ctx.globalAlpha = 0.95;
+          G.ctx.drawImage(gIm, Math.round(g.x - 36), Math.round(gy - 78), 72, 66);
+          G.ctx.globalAlpha = 1;
+        }
+      }
+    }
     if (G.casino && G.screen === 'casino' && G.casino.visible) G.casino.draw(G.ctx, dt);
   }
   requestAnimationFrame(loop);

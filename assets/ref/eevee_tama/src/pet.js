@@ -156,6 +156,7 @@ export class Pet {
   draw(ctx) {
     const m = this.metrics();
     const x = Math.round(this.x), feetY = Math.round(this.y + this.bob);
+    const w = Math.round(m.w), h = Math.round(m.h);
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,0.20)';
     ctx.beginPath();
@@ -164,7 +165,6 @@ export class Pet {
 
     const im = this.frameImage();
     if (im) {
-      const w = Math.round(m.w), h = Math.round(m.h);
       const src = (this.shiny && CFG.PMD_FORMS.includes(this.form)) ? this.tinted(im) : im;
       ctx.drawImage(src, x - w / 2, feetY - h, w, h);
     }

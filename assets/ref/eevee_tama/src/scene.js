@@ -343,6 +343,12 @@ export class Fx {
     this.hearts = [];
     this.texts = [];
     this.eat = null;
+    this.balls = [];
+  }
+
+  // Give Ball: arcing Poké Ball thrown to the pet (M6)
+  ball(tx, ty) {
+    this.balls.push({ x0: 215, y0: 950, tx, ty, t: 0, dur: 0.55 });
   }
 
   burst(x, y, kind, n, opts = {}) {
@@ -393,6 +399,15 @@ export class Fx {
     for (const t of this.texts) t.t += dt;
     this.texts = this.texts.filter((t) => t.t < t.dur);
     if (this.eat) { this.eat.t += dt; if (this.eat.t > this.eat.dur) this.eat = null; }
+    for (const b of this.balls) {
+      b.t += dt;
+      if (b.t >= b.dur && !b.hit) {
+        b.hit = true;
+        this.burst(b.tx, b.ty - 8, 'sparkle', 8, { size: 11, speed: 70 });
+        this.text(b.tx, b.ty - 40, '+10', '#ffe9a8');
+      }
+    }
+    this.balls = this.balls.filter((b) => b.t < b.dur + 0.1);
     if (state && state._runtime) {
       const rt = state._runtime;
       if (rt.eggWob > 0) rt.eggWob = Math.max(0, rt.eggWob - dt);
@@ -409,6 +424,18 @@ export class Fx {
       const bob = Math.sin(e.t * 18) * 4 * (e.t < 0.9 ? 1 : 0);
       ctx.drawImage(e.im, e.x - 16, e.y - 24 + bob, 32, 32);
       ctx.globalAlpha = 1;
+    }
+    for (const b of this.balls) {
+      const im = g.get('item_poke-ball');
+      if (!im) continue;
+      const k = Math.min(1, b.t / b.dur);
+      const x = b.x0 + (b.tx - b.x0) * k;
+      const y = b.y0 + (b.ty - b.y0) * k - Math.sin(k * Math.PI) * 170;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(b.t * 14);
+      ctx.drawImage(im, -15, -15, 30, 30);
+      ctx.restore();
     }
     for (const h of this.hearts) {
       const k = h.t / h.dur;
