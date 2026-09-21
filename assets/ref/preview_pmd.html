@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PMD Eeveelutions — Various Animations & Emotions (verified)</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; background:#0f1115; color:#e6e6e6;
+         font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  h1 { font-size:20px; margin:0 0 6px; }
+  p.sub { color:#9aa4b2; margin:0 0 6px; font-size:13px; line-height:1.5; }
+  h2 { font-size:15px; margin:26px 0 10px; color:#cdd5e0; }
+  .cols { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:14px; }
+  .card { background:#171a21; border:1px solid #262b36; border-radius:12px; padding:12px; }
+  .card h3 { font-size:13px; margin:0 0 8px; text-align:center; color:#9fd0ff; }
+  .stage { position:relative; height:170px; background:
+      radial-gradient(circle at 50% 70%, #1b2b22 0%, #0e140f 65%);
+      border:1px solid #222834; border-radius:10px; overflow:hidden;
+      display:flex; align-items:flex-end; justify-content:center; }
+  .stage.emote { background:radial-gradient(circle at 50% 40%, #241a2b 0%, #120d16 65%); align-items:center; }
+  .px { image-rendering:pixelated; }
+  .pet { width:120px; }
+  .emoteimg { width:90px; }
+  .label { text-align:center; font-size:11px; color:#8b93a1; margin-top:8px; line-height:1.4; }
+  .note { margin-top:22px; font-size:12px; color:#8b93a1; line-height:1.6; }
+  .note b { color:#cdd5e0; }
+  .tag { display:inline-block; font-size:10px; padding:1px 7px; border-radius:20px; background:#1f3a2a; color:#7fd6a0; margin-left:6px; }
+</style>
+</head>
+<body>
+  <h1>PMD Eeveelutions — real various animations + emotions</h1>
+  <p class="sub">
+    Source: <b>github.com/ArcherZenmi/Eeveelution-Assets</b> (Pokémon Mystery Dungeon art, Godot-ready).
+    Each form = <b>8 directions × (idle / walk / attack / hurt)</b> + <b>sleep</b>, plus a shared <b>emote</b> library and <b>evolution items</b>.
+    This is what the pet actually looks like in motion — verified below.
+  </p>
+
+  <h2>Body animations (Eevee, facing down)</h2>
+  <div class="cols">
+    <div class="card"><h3>Idle <span class="tag">6f</span></h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/eevee/down/idle/" data-max="6" data-fps="6"></div><div class="label">standing / breathing</div></div>
+    <div class="card"><h3>Walk <span class="tag">7f</span></h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/eevee/down/move/" data-max="7" data-fps="9"></div><div class="label">walking (×8 directions)</div></div>
+    <div class="card"><h3>Attack <span class="tag">6f</span></h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/eevee/down/attack/" data-max="6" data-fps="12"></div><div class="label">lunge / move</div></div>
+    <div class="card"><h3>Hurt <span class="tag">3f</span></h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/eevee/down/hurt/" data-max="3" data-fps="8"></div><div class="label">hit / flinch</div></div>
+    <div class="card"><h3>Sleep <span class="tag">2f</span></h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/flareon/sleep/" data-max="2" data-fps="4"></div><div class="label">sleeping (Flareon)</div></div>
+  </div>
+
+  <h2>Emotions / emotes (overlay on any form)</h2>
+  <div class="cols">
+    <div class="card"><h3>Cheer → Happy <span class="tag">2f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/cheer/" data-max="2" data-fps="6"></div><div class="label">excited / happy</div></div>
+    <div class="card"><h3>Worry → Sad <span class="tag">2f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/worry/" data-max="2" data-fps="6"></div><div class="label">sad / worried</div></div>
+    <div class="card"><h3>Shock → Angry/Surprised <span class="tag">2f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/shock/" data-max="2" data-fps="6"></div><div class="label">shocked / upset</div></div>
+    <div class="card"><h3>Confused <span class="tag">10f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/confused/" data-max="10" data-fps="8"></div><div class="label">? mark</div></div>
+    <div class="card"><h3>Surprise <span class="tag">5f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/surprise/" data-max="5" data-fps="8"></div><div class="label">! surprised</div></div>
+    <div class="card"><h3>Water → Sweat <span class="tag">3f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/water/" data-max="3" data-fps="8"></div><div class="label">sweat drop</div></div>
+    <div class="card"><h3>Chat <span class="tag">3f</span></h3><div class="stage emote"><img class="px emoteimg" data-base="eeveelution-assets/pmd_effects/chat/" data-max="3" data-fps="6"></div><div class="label">speech bubble</div></div>
+  </div>
+
+  <h2>All 4 forms in this repo (idle, facing down)</h2>
+  <div class="cols">
+    <div class="card"><h3>Eevee</h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/eevee/down/idle/" data-max="6" data-fps="6"></div></div>
+    <div class="card"><h3>Vaporeon</h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/vaporeon/down/idle/" data-max="4" data-fps="6"></div></div>
+    <div class="card"><h3>Jolteon</h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/jolteon/down/idle/" data-max="4" data-fps="6"></div></div>
+    <div class="card"><h3>Flareon</h3><div class="stage"><img class="px pet" data-base="eeveelution-assets/eeveelution_sprites/flareon/down/idle/" data-max="4" data-fps="6"></div></div>
+  </div>
+
+  <div class="note">
+    <b>Verified coverage:</b> idle, walk (8-dir), attack, hurt, sleep (body) + happy, sad, angry/shock, confused, surprise, sweat (emotes) + evolution items
+    (water/thunder/fire stone). <b>Repo has 4 forms</b> (Eevee, Vaporeon, Jolteon, Flareon) —
+    still need to source <b>Espeon, Umbreon, Leafeon, Glaceon, Sylveon</b> in the same PMD style (Rescue Team DX / Explorers).
+    <b>Still to compose:</b> eating (food + emote), petting (hand + cheer), poop (poop sprite + clean), and shiny (recolor).
+  </div>
+
+<script>
+  function cycler(img) {
+    const base = img.dataset.base, max = parseInt(img.dataset.max||'12',10), fps = parseInt(img.dataset.fps||'8',10);
+    const frames = [];
+    (function preload(n){
+      if (n > max) { start(); return; }
+      const t = new Image();
+      t.onload = () => { frames.push(base + n + '.png'); preload(n+1); };
+      t.onerror = () => { start(); };
+      t.src = base + n + '.png';
+    })(1);
+    function start(){
+      if (!frames.length) { img.src = base + '1.png'; return; }
+      let i = 0; img.src = frames[0];
+      setInterval(() => { i = i % frames.length; img.src = frames[i++]; }, 1000/fps);
+    }
+  }
+  document.querySelectorAll('img[data-base]').forEach(cycler);
+</script>
+</body>
+</html>

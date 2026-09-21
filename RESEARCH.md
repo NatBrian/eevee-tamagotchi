@@ -49,6 +49,35 @@
 
 ---
 
+## ★ TOP PICK (VISION-VERIFIED) — PMD Eeveelutions (ArcherZenmi/Eeveelution-Assets)
+
+> Cloned to `assets/ref/eeveelution-assets/`. **Viewed every animation + emote with vision** (`assets/ref/preview_pmd.html`).
+> This is the strongest 2D source for **"various animations + emotions"**.
+
+- **Source:** `github.com/ArcherZenmi/Eeveelution-Assets` (PMD art, Godot-ready, .tscn + .gd scripts).
+- **Per form: 8 directions × (idle 6f / walk 7f / attack 6f / hurt 3f) + sleep 2f** — genuine varied body animation.
+- **Emotes (shared, overlay on any form):** cheer(happy), worry(sad), shock(angry/upset), confused(?), surprise(!), water(sweat), chat(bubble).
+- **Evolution items:** water_stone.png, thunder_stone.png, fire_stone.png (fits the evolve mechanic).
+- **Forms in repo (4):** Eevee, Vaporeon, Jolteon, Flareon.
+- **Vision-verified mapping to our states:**
+  | Our state | PMD asset | Verified |
+  |-----------|-----------|----------|
+  | idle | idle (6f) | ✅ |
+  | walking | move/walk (7f ×8 dir) | ✅ |
+  | happy | cheer emote | ✅ |
+  | sad | worry emote | ✅ |
+  | angry | shock emote | ✅ |
+  | sleep | sleep (2f) | ✅ |
+  | (bonus) attack / hurt / confused / surprise / sweat / chat | — | ✅ |
+  | eating | **compose** (food sprite + chomp) | ⬜ |
+  | petting | **compose** (hand + cheer) | ⬜ |
+  | poop/shit | **compose** (poop sprite + clean) | ⬜ |
+  | shiny | **recolor** (or find PMD shiny palette) | ⬜ |
+- **Gaps:** only 4 forms — need **Espeon, Umbreon, Leafeon, Glaceon, Sylveon** in same PMD style (Rescue Team DX / Explorers of Sky).
+- **Why it wins for "various animations":** real pre-made body animation (not composed) + real emotes + evolution items, all Godot-ready.
+
+---
+
 ## TOP 3 USABLE ASSET GROUPS (each = complete Eevee + various-action animation)
 
 ### ✅ GROUP 1 — "Classic Pokémon" (PokeAPI official 2D) — **RECOMMENDED**
@@ -110,11 +139,12 @@
 
 ---
 
-## Recommendation
-- **Default / best overall: GROUP 1 (PokeAPI 2D).** It's the only group that natively covers **all 9 forms AND all 9 shinies** at high quality, is trivially rip-able in bulk, and is proven by `pokegotchi`. Compose the emotion/behavior states (hearts, tears, anger, food, poop, Zzz, evolve-flash) on top.
-- **If you want the authentic Tamagotchi feel: GROUP 2** (use its real care/evolution mechanics as the game design; colorize the chibi sprites).
-- **If you want max animation flexibility / modern look: GROUP 3** (3D).
-- **Hybrid idea:** GROUP 1 base + GROUP 2's evolution/care rules + PMD emotes (GROUP 4) for expressions.
+## Recommendation (updated — user prioritized "various animations")
+- **Best for "various animations + emotions" (2D): PMD (ArcherZenmi repo, VISION-VERIFIED above).** Real pre-made body animation (idle/walk×8/attack/hurt/sleep) + emotes (happy/sad/angry/confused/surprise/sweat/chat) + evolution items, Godot-ready. **Action:** source the 5 missing forms (Espeon, Umbreon, Leafeon, Glaceon, Sylveon) in the same PMD style; compose eating/petting/poop; recolor for shinies.
+- **Best for base art + native shinies: GROUP 1 (PokeAPI 2D).** Only source with native shinies for all 9 at high res — use for shiny palettes / "collection" sprites / a polished alternate look.
+- **Best for max flexibility / modern: GROUP 3 (3D Pokedex 3D Pro).** Fully animatable; 8 forms (need Sylveon).
+- **Best for authentic Tamagotchi design: GROUP 2 (Eevee × Tamagotchi).** Real care/evolution mechanics to copy (hunger/happiness hearts, furball=poop, Berry Catch, 8-way evolve).
+- **Likely winning combo:** **PMD sprites (animations+emotions) + Eevee×Tamagotchi care/evolution rules + PokeAPI shiny palettes** → Tamagotchi with genuine varied animation, authentic mechanics, and collectible shinies.
 
 ## Verified assets on disk (`assets/ref/`)
 - `pokeapi/` — Eevee official-artwork, home, showdown GIF, front, Vaporeon, Sylveon
