@@ -46,6 +46,12 @@
 | S16 | 2026-09-21 | hound + vision | PokeAPI shiny coverage (all 9) | **All 9 × normal+shiny official-artwork verified** (caught Espeon/Umbreon ID bug) |
 | S17 | 2026-09-21 | hound + Playwright | sketchfab pokedex 3d pro eeveelutions | **8 consistent CC-BY animated 3D models** (no Sylveon). CC Attribution, low-poly |
 | S18 | 2026-09-21 | hound | pokegotchi; complete 2D pet pack; PMD eeveelutions | **pokegotchi** (PokeAPI-based tamagotchi = proof of concept); **PMD Eeveelutions HD (DeviantArt)** + PMD emotes |
+| S19 | 2026-09-21 | hound | "Eevee Tamagotchi ROM / PMD eevee / MUGEN sprite sheet" | Spriters Resource PMD Eevee (CF-walled); **TamaPoke**; **itch.io ArcherZenmi → GitHub `ArcherZenmi/Eeveelution-Assets`** |
+| S20 | 2026-09-21 | shell clone + vision | `ArcherZenmi/Eeveelution-Assets` (918 files) | Cloned to `assets/ref/eeveelution-assets/`. **4 forms × 8 dirs × (idle 6f / move 7f / attack 6f / hurt 3f) + sleep + 7 emotes + evolution items.** Vision-verified (`preview_pmd.html`) |
+| S21 | 2026-09-21 | hound + Playwright | 5-game asset sweep: Amie / Refresh / Sleep / Café ReMix / Pokopia | **Serebii Pokémon Sleep section**; Bulbagarden Sleep sprites (1,860 files); Café ReMix Fandom (Eevee star); Pokopia NOT dataminable (Switch 2/2026) |
+| S22 | 2026-09-21 | shell download + vision | Serebii Pokémon Sleep — all 9 Eeveelutions | **All 9 × normal+shiny sleep-style sprites downloaded + vision-verified** (`assets/ref/pokemonsleep/`, `preview_pokemonsleep.html`). 492×448 PNGs, native shinies |
+| S23 | 2026-09-21 | Playwright + vision | Café ReMix Fandom `Eevee Male` + Category:Sprites assets | Full-body 3D Eevee (800×1039) + 3 bust expression frames (Eevee01–03). Full in-game set = r/PokemonCafeMix **Discord "mega repository"** (split layers). Vision-verified (`preview_cafemix.html`) |
+| S24 | 2026-09-21 | hound | Pokopia datamine / GitHub / API | **Cannot be datamined yet** (Switch 2 exclusive 2026 + keycard encryption). Only `pokopiapi` (data, no art) + screenshots. All 8 evolutions collectable in-game |
 
 ---
 
@@ -75,6 +81,26 @@
   | shiny | **recolor** (or find PMD shiny palette) | ⬜ |
 - **Gaps:** only 4 forms — need **Espeon, Umbreon, Leafeon, Glaceon, Sylveon** in same PMD style (Rescue Team DX / Explorers of Sky).
 - **Why it wins for "various animations":** real pre-made body animation (not composed) + real emotes + evolution items, all Godot-ready.
+
+---
+
+## GAME ASSET RESEARCH — Amie / Refresh / Sleep / Café ReMix / Pokopia
+
+User asked to mine assets from these 5 games. Per-game findings (all **viewed with vision** where files were obtainable):
+
+| Game | Eevee + 9 evos? | Animation variety | Where the assets live | Accessible now? |
+|------|-----------------|-------------------|-----------------------|-----------------|
+| **Pokémon Sleep** (2023, mobile) | ✅ all 9 | Sleep pose (4-frame loop in-game) | **Serebii** `serebii.net/pokemonsleep/pokemon/{id}.png` + `/shiny/{id}.png` (492×448); Bulbagarden (1,860 files); in-game 3D | ✅ **YES — all 9 × normal+shiny downloaded + verified** |
+| **Pokémon Café ReMix** (2021, mobile/Switch) | Eevee is the STAR (staff); other evos appear | High (walk, cook, serve, clean, many expressions) | Fandom wiki (full-body + a few frames); **r/PokemonCafeMix Discord "mega repository"** (split layers); Unity APK AssetBundles | ⚠️ Partial (Fandom) / full set needs Discord or APK extract |
+| **Pokémon Amie** (feature, XY→SV) | ✅ Eevee in every gen | High (pet, feed, play, idle/walk/run/sleep/affection) — 3D chibi | Main-series **ROMs** (3D chibi models); Serebii screenshots; Spriters Resource (CF-walled) | ⚠️ Extract from ROM (3D) |
+| **Pokémon Refresh** (2023, mobile) | Likely (Eevee playable) | Medium (café activities: eat/nap/play/train) | Unity APK/IPA | ⚠️ No clean dump found yet; needs APK extract |
+| **Pokémon Pokopia** (2026, **Switch 2**) | ✅ all 8 evos collectable | High (raise/sleep/eat/work/play) — very Tamagotchi-like | Switch 2 NSP/ROM | ❌ **NOT dataminable yet** (Switch 2 exclusive + keycard encryption); screenshots only |
+
+**Key takeaways:**
+- **Pokémon Sleep is the clean win** for *base art + native shinies of all 9* — 492×448 PNGs, consistent 3D-chibi style, correct shiny palettes. Already on disk: `assets/ref/pokemonsleep/` + `preview_pokemonsleep.html`.
+- **Café ReMix** is the best *Eevee expression/animation* source (Eevee is the star) but the complete set needs the Discord mega-repo or an APK extract, and it centers on Eevee rather than all 9.
+- **Pokopia** is the most on-theme (a literal Pokémon Tamagotchi with all 9 evos) but its assets can't be extracted yet — use it as **design inspiration**, not an asset source, for now.
+- **Amie** offers real 3D-chibi "petting/feeding" animation from the main series ROMs (extractable, but 3D and per-generation).
 
 ---
 
@@ -142,6 +168,7 @@
 ## Recommendation (updated — user prioritized "various animations")
 - **Best for "various animations + emotions" (2D): PMD (ArcherZenmi repo, VISION-VERIFIED above).** Real pre-made body animation (idle/walk×8/attack/hurt/sleep) + emotes (happy/sad/angry/confused/surprise/sweat/chat) + evolution items, Godot-ready. **Action:** source the 5 missing forms (Espeon, Umbreon, Leafeon, Glaceon, Sylveon) in the same PMD style; compose eating/petting/poop; recolor for shinies.
 - **Best for base art + native shinies: GROUP 1 (PokeAPI 2D).** Only source with native shinies for all 9 at high res — use for shiny palettes / "collection" sprites / a polished alternate look.
+- **NEW — cleanest all-9 + shiny chibi set: Pokémon Sleep (Serebii).** 492×448 PNGs, one consistent 3D-chibi style, **correct native shinies for all 9** (already on disk). Great as a "collection"/idle base or to feed a recolor pipeline; only a sleep/stand pose though.
 - **Best for max flexibility / modern: GROUP 3 (3D Pokedex 3D Pro).** Fully animatable; 8 forms (need Sylveon).
 - **Best for authentic Tamagotchi design: GROUP 2 (Eevee × Tamagotchi).** Real care/evolution mechanics to copy (hunger/happiness hearts, furball=poop, Berry Catch, 8-way evolve).
 - **Likely winning combo:** **PMD sprites (animations+emotions) + Eevee×Tamagotchi care/evolution rules + PokeAPI shiny palettes** → Tamagotchi with genuine varied animation, authentic mechanics, and collectible shinies.
@@ -149,6 +176,9 @@
 ## Verified assets on disk (`assets/ref/`)
 - `pokeapi/` — Eevee official-artwork, home, showdown GIF, front, Vaporeon, Sylveon
 - `pokeapi_shiny/` — all 9 × {normal, shiny} official-artwork
+- **`pokemonsleep/` — all 9 × {normal, shiny} Sleep-Style sprites (492×448, Serebii) + `preview_pokemonsleep.html`**
+- **`cafemix/` — Café ReMix Eevee full-body + 3 expression frames + `preview_cafemix.html`**
+- **`eeveelution-assets/` — PMD sprites (4 forms × 8 dirs × 4 states + sleep) + 7 emotes + evolution items + `preview_pmd.html`**
 - `serebii/` — 15 official Eevee × Tamagotchi monochrome sprites (9 forms + egg + 3 special + feed/games)
 - `deviantart/` — colored Eevee Tamagotchi sheet + device GIFs
 - `tumblr/`, `sketchfab/`, `facebook_colorized_eeveelutions.jpg` — refs
