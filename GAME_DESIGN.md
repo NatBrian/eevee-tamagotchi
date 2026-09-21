@@ -171,14 +171,54 @@ All three: full-bleed, single-thumb, big hitboxes, no text mid-play, result card
 - **Furball** (PIL) for poop · **pixel heart** (PIL) for petting · Kenney transparent particles for sparkle/clean/evolve · **tombstone** for death · **egg cracks** for hatch
 - **Casino furniture**: Kenney Boardgame Pack chips/dice/cards (flat vector — UI layer, fine next to pixel world) · **slot cabinet** = PIL pixel art in candy style (3-reel window, marquee, lever) · **roulette wheel** = canvas (12 colored segments + 4 chibi faces) · slot symbols = official item art (4 balls, Oran, Sweet Heart, Eevee face)
 
-## 11. Technical plan (vanilla JS, mobile-first)
+## 11. Tech stack & technical plan
 
-- **Structure**: `src/game.js` (state machine + loop), `src/scene.js` (layer composer), `src/ui.js` (dock/menus/toasts), `src/audio.js` (Web Audio + Kenney ogg), `src/save.js` (localStorage, versioned), `style.css` (mobile-first, 100dvh, safe-area insets)
-- **Input**: Pointer Events (tap/long-press), no mouse dependency, `touch-action: manipulation`, no 300ms delay
-- **Loop**: requestAnimationFrame; time = `performance.now()` delta (works when tab throttled — on `visibilitychange` + `focus`, compute offline catch-up)
-- **Offline**: on load, advance `total` by real elapsed seconds × (2 game-min/sec), apply decay with floor, generate "While You Were Away" report; cap catch-up at 72 game-hrs
-- **PWA**: manifest + icons (installable), offline shell (all local, no CDN)
-- **Tests**: keep `window.TamaGame` dev API (freeze/warp/cheats) for showcase captures
+**Stack: vanilla JS (ES modules, zero deps, no build step) + HTML5 Canvas 2D + CSS, packaged as a PWA.**
+
+### Rendering split (the core decision)
+- **Canvas 2D = the world**: meadow layers, pet sprite, particles, slot reels, roulette wheel, card tables, cinematics. One canvas, one rAF loop. Render load is modest (1 pet + ~15 decor sprites + ≤100 particles) → 60 fps with huge headroom.
+- **DOM/CSS = the UI chrome**: HUD, bottom dock, bottom sheets, toasts, Pokédex grid, menus. DOM wins for text (Press Start 2P / VT323 stays crisp), accessible targets, and safe-area handling. Canvas wins for sprites/particles/rotation. Hybrid = best of both.
+
+### Why not a framework/engine
+| Option | Verdict |
+|---|---|
+| **Phaser 3** | Capable (tweens, particles, scale manager) but ~1 MB + its own scene architecture for a scene this small; would fight the DOM-UI layer. Rejected |
+| **Godot 4 / Unity WebGL** | Multi-MB browser builds, slow cold start, weak PWA/touch integration. Wrong tool for a web-first game (kept as future port target) |
+| **React/Vue + canvas** | Framework churn for a single-screen game, zero benefit over plain ES modules. Rejected |
+| **Vanilla + Canvas** | ✅ Tiny, fast, offline by default, hosts anywhere, full control, logic stays portable |
+
+### Fits ANY mobile resolution
+- **Fixed logical design space**: design at **430×932 CSS px** (modern 19.5:9 phone). World canvas scales **uniformly (cover)** to fill any screen; UI laid out with `100dvh` + `env(safe-area-inset-*)`. Extreme ratios (foldables, tablets, 21:9) get letterbox bands, never distortion.
+- **Crisp pixel art at any DPI**: canvas backed at `devicePixelRatio` (cap 3×), sprites drawn with `imageSmoothingEnabled = false`, CSS `image-rendering: pixelated`.
+- **Portrait-locked** (`@media (orientation: landscape)` → "please rotate" interstitial), `viewport-fit=cover` for notches, home-indicator safe area on the dock.
+
+### Touch controls
+- **Pointer Events** everywhere (unifies touch/mouse/pen), `touch-action: none` on canvas, `user-select: none`, no 300 ms delay, no double-tap zoom.
+- One tiny input layer classifies **tap / long-press (350 ms) / drag** — no library.
+- Targets ≥ 48 px, ≥ 12 px spacing; **feedback appears above the finger**, never under it.
+- **Haptics**: Vibration API (Android/Chrome); degrades silently on iOS (no API).
+
+### Other mobile features (PWA)
+- **Installable to home screen**: manifest + 192/512 icons + maskable icon + splash color → feels like a native app
+- **Offline-first**: everything local (already true — zero CDN), add a service worker to cache the app shell
+- **Instant resume + offline time catch-up** (the Tamagotchi essence) via `visibilitychange`/`pagehide` timestamps
+- **Fullscreen** API on demand, **Screen Wake Lock** while playing (Android), pull-to-refresh disabled (`overscroll-behavior: none`)
+- **Audio unlock on first tap** (iOS autoplay policy); optional Web Push "Eevee is hungry!" later (needs a hosted origin)
+
+### Module layout (no build step — plain ES modules over HTTP)
+```
+index.html · style.css
+src/main.js     boot, asset preload (per-form lazy: PMD has ~900 files, load active form ≈60)
+src/game.js     state machine, rAF loop, delta-time, offline catch-up, dev API
+src/scene.js    layer composer (static layers pre-rendered to offscreen canvases; pet + FX animate)
+src/casino.js   slots / roulette / card flip (canvas boards + tweens)
+src/ui.js       DOM: dock, sheets, toasts, dex, profile, shop
+src/audio.js    Web Audio mixer (Kenney oggs), BGM day/night, haptics bridge
+src/save.js     versioned localStorage
+```
+- **Perf**: pre-rendered static scene layers (re-render only on day/night/decor change), sprite cache, single rAF, delta-time; no GC spikes (object pools for particles)
+- **Tests/showcase**: Playwright mobile viewports (iPhone 15 Pro, Pixel 9, iPad) + `window.TamaGame` dev API (freeze/warp/cheats)
+- **Future**: wrap in Capacitor for App Store/Play if ever wanted (same code)
 
 ## 12. Build order (production rebuild)
 
