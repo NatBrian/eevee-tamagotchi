@@ -7,6 +7,7 @@ import {
   giveBall, dailyEventDay,
 } from './state.js';
 import { rng } from './prng.js';
+import { save } from './save.js';
 import { toast, setScreen, openMenuSheet, openFoodSheet, openPlaySheet } from './main.js';
 
 export function attachDev(G) {
@@ -175,6 +176,20 @@ export function attachDev(G) {
       s.savedAt = Date.now() - realSeconds * 1000;
       const report = applyOffline(s, realSeconds, G.events);
       return { report, state: this.get() };
+    },
+    // ---- persistence (M8) ----
+    saveNow() { save(S()); return this.get(); },
+    ageSave(msAgo) { // rewrite the saved file's savedAt into the past (for reload tests)
+      try {
+        const KEY = 'eevee_tama_v1';
+        const raw = localStorage.getItem(KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          data.savedAt = Date.now() - msAgo;
+          localStorage.setItem(KEY, JSON.stringify(data));
+        }
+      } catch (e) {}
+      return this.get();
     },
 
     // ---- navigation / fx (for screenshots) ----

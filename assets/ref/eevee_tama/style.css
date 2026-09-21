@@ -133,6 +133,14 @@ html, body {
 .pip span { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); min-width: 16px; text-align: right; }
 .pip.low { animation: lowflash 0.8s infinite; }
 @keyframes lowflash { 0%,100% { background: rgba(255,248,239,0.94); } 50% { background: #ffd9d2; } }
+/* compact HUD on narrow screens (e.g. 360px) — never clip the rightmost meter */
+@media (max-width: 374px) {
+  #hud-left, #hud-right { gap: 4px; }
+  .chip { font-size: 7px; padding: 5px 6px; border-radius: 7px; }
+  .pip { gap: 2px; padding: 3px 4px; }
+  .pip img { width: 16px; height: 16px; }
+  .pip span { font-size: 7px; min-width: 14px; }
+}
 .badge {
   font-family: 'PressStart2P', monospace;
   font-size: 7px;
@@ -512,6 +520,7 @@ body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
 
 /* ---------- overlays (evolve / end / away) ---------- */
 #overlay-evo { background: rgba(20, 24, 50, 0.55); z-index: 60; }
+#overlay-away { background: rgba(24, 30, 58, 0.55); z-index: 60; }
 #evo-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
 #evo-flash.go { animation: evoflash 900ms; }
 @keyframes evoflash { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }

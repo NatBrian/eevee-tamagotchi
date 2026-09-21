@@ -101,9 +101,9 @@
 - [x] `preview_audio.html` audition page repaired (real subdir paths, bong_002 removed, +RPG foley section)
 - [x] GATE: unlock/day→night crossfade/sleep ducking/42-SFX decode/32-event fire + card-flip ×4 + settings gains + 6-device matrix w/ BGM (59–60fps, p95 ~17ms, no overflow, 0 errors) + commit
 
-### M8 — Persistence + PWA
-- [ ] `src/save.js` v1 (schema §8) + autosave 5s/pagehide · offline catch-up (cap 72 game-hrs, floor 10) + S_AWAY report · `sw.js` + manifest polish + install prompt · settings/reset
-- [ ] GATE: scenarios S14/S20/S24 + device matrix + vision + commit
+### M8 — Persistence + PWA ✅
+- [x] `src/save.js` v1 (schema §8, hydrate w/ fresh-state defaults, strips session-only fields) + autosave 5s/pagehide/hidden (title-backdrop clobber fixed) · offline catch-up on CONTINUE (real s × 2 game-min, cap 72 game-hrs, meters floored 10 every step → no death away, actual-consumed-time report) + S_AWAY overlay (items / away-time / now line / OK → main or end screen) · `sw.js` (shell+code network-first, assets cache-first, precached cold-boot) + manifest polish (id/lang/prefer_related_applications) + install prompt (beforeinstallprompt → INSTALL row in settings, iOS hint) + settings ABOUT row
+- [x] GATE: S14 (savedAt −12h → reload → CONTINUE: capped catch-up, meters floored exactly 10, S_AWAY "Your pet graduated!" + "Away 18h 30m · Now Day 4 07:01", OK → farewell screen) · S20 (all 12 shop items bought+equipped, coins 9999→8609, all persist across reload) · S24 (state byte-identical across reload from main / casino / food-sheet-open) · SW offline boot (0/286 assets missing, save resumes from localStorage) · install-prompt wiring · 6-device matrix 60fps / p95 16.8ms, no overflow, fonts, 60px dock targets, 0 errors · bug found+fixed: HUD rightmost meter clipped at 360px → compact @media (max-width:374px) rule · vision pass (title/CONTINUE, S_AWAY i15+gs24, settings i15+SE, offline main, 6 devices, landscape interstitial) + commit
 
 ### M9 — Final pass
 - [ ] `test/scenarios.js` full 25-scenario suite green on all 6 devices · title/boot + first-run tips · balance pass (RTP/decay) · full-life showcase screenshots in `showcase/` · README run instructions · final commit

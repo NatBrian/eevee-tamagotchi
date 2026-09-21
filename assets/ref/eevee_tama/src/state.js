@@ -369,15 +369,19 @@ export function consumeEvolve(state) {
 export function applyOffline(state, elapsedSec, ev) {
   const cap = CFG.TIME.offlineCapMin;
   let mins = Math.min(elapsedSec * CFG.TIME.minPerSec, cap);
-  const before = { day: clockOf(state.total).day, stage: state.stage, coins: state.day.coins };
-  const report = { items: [], before, after: null, mins: Math.round(mins) };
-  const step = 30; // 30 game-min steps for coarse simulation
-  while (mins > 0) {
-    const d = Math.min(step, mins); mins -= d;
-    advance(state, d, ev, true);
-  }
-  // floor meters (no death while away)
+  const before = { day: clockOf(state.total).day, stage: state.stage, form: state.form, coins: state.day.coins };
+  const report = { items: [], before, after: null, mins: 0 };
   const F = CFG.TIME.offlineFloor;
+  const step = 30; // 30 game-min steps for coarse simulation
+  while (mins > 0 && !state.ended) {
+    const d = Math.min(step, mins); mins -= d;
+    report.mins += d; // actual game-time consumed (stops early if the life ends)
+    advance(state, d, ev, true);
+    // floor meters each step — a neglected pet can't hit 0 (or die) while away
+    for (const k of ['meal', 'happy', 'energy']) state.stats[k] = Math.max(F, state.stats[k]);
+  }
+  report.mins = Math.round(report.mins);
+  // settle: no lingering sickness after the report
   for (const k of ['meal', 'happy', 'energy']) state.stats[k] = Math.max(F, state.stats[k]);
   state.sick = false; state.zeroH = 0; state.sickZeroH = 0;
   if (state.ended) { // ended away → settle at the ending screen
@@ -388,7 +392,7 @@ export function applyOffline(state, elapsedSec, ev) {
     if (state.furballs.length) report.items.push({ type: 'furball', text: state.furballs.length + ' furballs appeared' });
     if (state.day.snacks >= 4) report.items.push({ type: 'snack', text: 'Tummy got full of snacks' });
   }
-  report.after = { day: clockOf(state.total).day, stage: state.stage, coins: state.day.coins };
+  report.after = { day: clockOf(state.total).day, stage: state.stage, form: state.form, coins: state.day.coins };
   return report;
 }
 

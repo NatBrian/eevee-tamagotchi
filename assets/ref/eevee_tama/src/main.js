@@ -3,7 +3,7 @@ import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
   giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop, giveMedicine,
-  buyStone, useStone, giveBall, catchGhost, dailyEventDay, isNight,
+  buyStone, useStone, giveBall, catchGhost, dailyEventDay, isNight, applyOffline,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
@@ -595,9 +595,14 @@ export function openSettingsSheet() {
   const s = G.state;
   const on = (b) => `<div class="stoggle ${b ? 'on' : ''}" data-sett="sound">${b ? 'ON' : 'OFF'}</div>`;
   const onh = (b) => `<div class="stoggle ${b ? 'on' : ''}" data-sett="haptics">${b ? 'ON' : 'OFF'}</div>`;
+  const installRow = G.deferredInstall
+    ? `<div class="setrow"><div class="rmain"><div class="rname">INSTALL APP</div><div class="rsub">add to your home screen</div></div><button class="btn-pixel" id="install-btn">INSTALL</button></div>`
+    : `<div class="setrow"><div class="rmain"><div class="rname">INSTALL APP</div><div class="rsub">iOS: Share → “Add to Home Screen”</div></div></div>`;
   let html = `
     <div class="setrow"><div class="rmain"><div class="rname">SOUND</div><div class="rsub">music &amp; sfx</div></div>${on(s.settings.sound)}</div>
     <div class="setrow"><div class="rmain"><div class="rname">HAPTICS</div><div class="rsub">vibration on touch</div></div>${onh(s.settings.haptics)}</div>
+    ${installRow}
+    <div class="setrow"><div class="rmain"><div class="rname">ABOUT</div><div class="rsub">Eevee-Tama v1.0 · CC0 audio &amp; fonts (Kenney)</div></div></div>
     <div class="setrow danger"><div class="rmain"><div class="rname">RESET SAVE</div><div class="rsub">start a new egg (unlocks nothing)</div></div><button class="btn-danger" id="reset-btn">RESET</button></div>`;
   openSheet('SETTINGS', html);
   document.querySelectorAll('#sheet-body [data-sett]').forEach((el) => {
@@ -612,6 +617,10 @@ export function openSettingsSheet() {
       else if (s.settings.haptics) G.audio.thump(20); // test buzz
     };
   });
+  const ib = document.getElementById('install-btn');
+  if (ib) ib.onclick = () => {
+    if (G.deferredInstall) { G.deferredInstall.prompt(); G.deferredInstall = null; }
+  };
   const rb = document.getElementById('reset-btn');
   if (rb) rb.onclick = () => {
     if (confirm('Reset your save and start a new egg?')) { clearSave(); location.reload(); }
@@ -730,12 +739,40 @@ function resumeGame() {
   const saved = load();
   if (!saved) { newGame(); return; }
   G.state = saved;
-  G.state.screen = 'main';
+  if (G.state._runtime === undefined) G.state._runtime = {};
+  // M8: offline catch-up — elapsed real s × 2 game-min, cap 72 game-hrs, meters floor 10.
+  // Scratch event array: the S_AWAY report tells the story (no toast/FX spam on resume).
+  let report = null;
+  const elapsed = Math.max(0, (Date.now() - (saved.savedAt || Date.now())) / 1000);
+  if (elapsed >= 60) report = applyOffline(G.state, elapsed, []);
   G.pet.sync(G.state);
   G.fx = new Fx(G.scene);
-  setScreen(G.state.ended ? 'main' : 'main');
-  if (G.state._runtime === undefined) G.state._runtime = {};
+  G.state.screen = G.state.stage === 'egg' && !G.state.ended ? 'egg' : 'main';
+  setScreen(G.state.screen);
   save(G.state);
+  if (report) showAway(report);
+}
+
+// S_AWAY — "While You Were Away" report
+export function showAway(report) {
+  const list = $('away-list');
+  list.innerHTML = '';
+  const items = (report.items && report.items.length)
+    ? report.items
+    : [{ text: 'Nothing much happened — ' + (G.state.pet.name || 'your pet') + ' is glad you’re back!' }];
+  for (const it of items) {
+    const li = document.createElement('li');
+    li.textContent = it.text;
+    list.appendChild(li);
+  }
+  const c = clockOf(G.state.total);
+  const hrs = Math.floor(report.mins / 60), mns = Math.round(report.mins % 60);
+  const away = hrs ? `${hrs}h ${mns}m` : `${mns}m`;
+  $('away-now').textContent =
+    `Away ${away} game-time · Now Day ${c.day} ${String(c.hour).padStart(2, '0')}:${String(c.minute).padStart(2, '0')}`;
+  $('away-ok').onclick = () => setScreen(G.state.stage === 'egg' ? 'egg' : 'main');
+  setScreen('away');
+  if (G.audio) G.audio.event('sheet:open');
 }
 
 // ---------------- main loop ----------------
@@ -793,9 +830,9 @@ function loop(t) {
     if (s.ended && G.screen === 'main') showEnd(s.ended);
     // egg hatched → main screen
     if (s.stage !== 'egg' && G.screen === 'egg') setScreen('main');
-    // autosave
+    // autosave — never save the title backdrop (would clobber a real save)
     G.autosaveT += dt;
-    if (G.autosaveT > 5) { G.autosaveT = 0; save(s); }
+    if (G.autosaveT > 5) { G.autosaveT = 0; if (G.screen !== 'title' && G.screen !== 'loading') save(s); }
     if (G.screen === 'main' || G.screen === 'casino' || G.screen === 'egg') updateHud(t);
     handleEvents();
   }
@@ -859,9 +896,18 @@ async function boot() {
   requestAnimationFrame(loop);
   console.log(`Eevee-Tama ready in ${((performance.now() - t0) / 1000).toFixed(1)}s, ${G.img.map.size} images, missing: ${G.img.missing.length}`);
 
-  // pagehide save
-  window.addEventListener('pagehide', () => { if (G.state && G.state.screen !== 'title') save(G.state); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden && G.state && G.state.screen !== 'title') save(G.state); });
+  // pagehide / hidden save (skip the title backdrop)
+  window.addEventListener('pagehide', () => { if (G.state && G.screen !== 'title' && G.screen !== 'loading') save(G.state); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && G.state && G.screen !== 'title' && G.screen !== 'loading') save(G.state); });
+
+  // M8: PWA — service worker (offline shell) + install prompt
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('../sw.js').catch(() => {});
+    });
+  }
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); G.deferredInstall = e; });
+  window.addEventListener('appinstalled', () => { G.deferredInstall = null; });
   G.canvas.addEventListener('pointerdown', onDown);
   G.canvas.addEventListener('pointerup', onUp);
   // M7: audio unlock (iOS autoplay) + universal tap feedback (sfx + light haptic)
