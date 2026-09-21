@@ -161,6 +161,9 @@ export const CFG = {
   // ---------- casino ----------
   CASINO: {
     dailyFree: 50,
+    cabinet: { x: 85, y: 300, w: 260, h: 322 },   // slot_cabinet.png placement (scene units)
+    screen: { x: 117, y: 372, w: 196, h: 160 },   // dark recess = drawable board area
+    petSpot: { x: 362, y: 722 },
     slots: {
       symbols: [
         { key: 'seven', w: 8,  pay: 30, art: null },
@@ -171,13 +174,23 @@ export const CFG = {
       ],
       pairPay: 1.4,                 // ×1.4 (RTP ≈ 96.6%)
       luckyMul: 1.2,
+      lucky: 'heart',               // M6: per-personality lucky symbol
       reelStopMs: [500, 900, 1300],
       lines: 5,                     // bet 1→1 line, 2→3 lines, 3→5 lines
       lineForBet: { 1: 1, 2: 3, 3: 5 },
     },
     roulette: { slots: 12, spinMs: 3000, payColor: 2, payForm: 4, paySlot: 12,
       forms: ['vaporeon', 'jolteon', 'flareon', 'espeon'], colors: ['red', 'blue', 'green'] },
-    cards: { count: 4, pay: 4 },
+    cards: {
+      count: 4, pay: 4,
+      // 4 unique cards — one rank per suit (♥Fire ♦Water ♣Grass ♠Thunder)
+      ranks: [
+        { k: 'A', v: 4, suit: 'fire' },
+        { k: 'K', v: 3, suit: 'water' },
+        { k: 'Q', v: 2, suit: 'grass' },
+        { k: 'J', v: 1, suit: 'thunder' },
+      ],
+    },
   },
 
   // ---------- shop ----------

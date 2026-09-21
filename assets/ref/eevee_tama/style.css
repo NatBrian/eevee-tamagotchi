@@ -170,6 +170,7 @@ html, body {
   pointer-events: none;
   z-index: 40;
 }
+body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
 .toast {
   font-family: 'VT323', monospace;
   font-size: 19px;
@@ -444,6 +445,7 @@ html, body {
 
 /* ---------- casino ---------- */
 #screen-casino { justify-content: space-between; pointer-events: none; }
+#casino-header { display: flex; flex-direction: column; align-items: center; width: 100%; }
 #casino-top {
   display: flex; justify-content: space-between; align-items: center;
   padding: calc(10px + env(safe-area-inset-top)) 12px 0;
@@ -482,9 +484,16 @@ html, body {
   box-shadow: 0 3px 0 var(--ink); cursor: pointer;
 }
 .betbtn.active { background: var(--gold); }
-#casino-roulette-bet { display: flex; gap: 8px; }
-.rtab { padding: 8px 10px; font-size: 8px; }
+#casino-roulette-bet { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 94vw; }
+.rrow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.rtab {
+  font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink);
+  background: var(--cream); border: 2px solid var(--ink); border-radius: 8px;
+  padding: 7px 8px; box-shadow: 0 2px 0 var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
 .rtab.active { background: var(--gold); }
+.rtab img { width: 20px; height: 20px; image-rendering: pixelated; }
 #casino-msg { font-family: 'PressStart2P', monospace; font-size: 10px; color: #fff; min-height: 16px; text-shadow: 0 2px 0 rgba(0,0,0,0.5); }
 
 /* ---------- overlays (evolve / end / away) ---------- */

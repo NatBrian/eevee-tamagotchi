@@ -9,6 +9,7 @@ import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
 import { load, save, clearSave } from './save.js';
 import { attachDev } from './dev.js';
+import { Casino } from './casino.js';
 
 // ---------------- game container ----------------
 export const G = {
@@ -90,6 +91,7 @@ function buildManifest() {
   bg('Chips', 'chipRedWhite.png'); bg('Chips', 'chipBlueWhite.png'); bg('Chips', 'chipGreenWhite.png'); bg('Chips', 'chipWhiteBlue.png');
   bg('Dice', 'dieRed1.png');
   // tinted cards (M5)
+  m.push({ key: 'card_back', src: A.cardsTint('cardBack.png') });
   for (const suit of ['hearts', 'diamonds', 'clubs', 'spades']) {
     for (const r of ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']) {
       m.push({ key: 'card_' + suit + '_' + r, src: A.cardsTint(`card${suit[0].toUpperCase()}${suit.slice(1)}${r}.png`) });
@@ -155,6 +157,7 @@ function showScreen(id) {
   }
   if (id === 'title' || id === 'casino') { $('hud').classList.add('hidden'); $('dock').classList.add('hidden'); }
   else { $('hud').classList.remove('hidden'); $('dock').classList.remove('hidden'); }
+  document.body.classList.toggle('in-casino', id === 'casino');
 }
 export function setScreen(id) {
   showScreen(id);
@@ -244,6 +247,20 @@ export function handleEvents() {
       showEnd('death');
     } else if (e === 'rankS' || e.startsWith('graduation')) {
       // graduation handled by state.ended check in loop
+    } else if (e === 'game:win') {
+      if (G.screen === 'casino' && G.pet) {
+        G.fx.emote(G.pet.x, G.pet.y - 46, 'cheer', null);
+        G.fx.burst(G.pet.x, G.pet.y - 20, 'sparkle', 10);
+      }
+    } else if (e === 'game:lose') {
+      if (G.screen === 'casino' && G.pet) G.fx.emote(G.pet.x, G.pet.y - 46, 'worry', null);
+    } else if (e === 'cas:jackpot') {
+      if (G.screen === 'casino' && G.pet) {
+        G.fx.burst(G.pet.x, G.pet.y - 40, 'confetti', 20, { speed: 140 });
+        toast('JACKPOT!');
+      }
+    } else if (e === 'cas:push') {
+      if (G.screen === 'casino' && G.pet) G.fx.emote(G.pet.x, G.pet.y - 46, 'chat', null);
     }
   }
 }
@@ -346,6 +363,10 @@ function onUp(ev) {
 
   if (G.screen === 'egg') {
     if (Math.hypot(p.x - 215, p.y - 620) < 90) s._runtime.eggWob = 0.35;
+    return;
+  }
+  if (G.screen === 'casino') {
+    if (G.casino) G.casino.onTap(p.x, p.y);
     return;
   }
   if (G.screen !== 'main') return;
@@ -595,6 +616,15 @@ function wireDock() {
   $('btn-hatch').onclick = newGame;
   $('btn-continue').onclick = () => resumeGame();
   $('rotate-tap').onclick = () => { $('rotate-hint').dataset.dismissed = '1'; $('rotate-hint').classList.add('hidden'); };
+  // casino
+  const cas = G.casino;
+  if (cas) {
+    $('casino-back').onclick = () => cas.close();
+    document.querySelectorAll('#casino-tabs .ctab').forEach((el) => { el.onclick = () => cas.switchGame(el.dataset.game); });
+    document.querySelectorAll('#casino-bet .betbtn').forEach((el) => { el.onclick = () => cas.setBet(Number(el.dataset.bet)); });
+    document.querySelectorAll('#casino-roulette-bet .rtab').forEach((el) => { el.onclick = () => cas.toggleRtBet(el.dataset.rt); });
+    $('casino-spin').onclick = () => cas.spin();
+  }
 }
 
 export function openFoodSheet() {
@@ -681,6 +711,20 @@ function loop(t) {
     G.pet.sync(s);
     G.pet.update(dt, s);
     G.fx.update(dt, G.pet, s);
+    // casino: advance board + pet takes a spot at the machine
+    if (G.casino) G.casino.update(dt);
+    if (G.casino && G.casino.visible && s.stage !== 'egg' && !s.ended) {
+      const px = CFG.CASINO.petSpot.x, py = CFG.CASINO.petSpot.y;
+      const dx = px - G.pet.x, dy = py - G.pet.y;
+      const d = Math.hypot(dx, dy);
+      if (d > 4) {
+        const sp = 130 * dt;
+        G.pet.x += dx / d * Math.min(sp, d);
+        G.pet.y += dy / d * Math.min(sp, d);
+        G.pet.dir = G.pet.dirFrom(dx, dy);
+        G.pet.state = 'move';
+      } else { G.pet.state = 'idle'; G.pet.frame = 0; }
+    }
 
     // sick worry emote
     if (G.pet._worryNow) { G.pet._worryNow = false; G.fx.emote(G.pet.x, G.pet.y - 40, 'worry', null); }
@@ -713,6 +757,7 @@ async function boot() {
   G.scene = new Scene(G.img);
   G.fx = new Fx(G.scene);
   G.pet = new Pet(G.img);
+  G.casino = new Casino(G);
   resize();
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', () => setTimeout(resize, 200));

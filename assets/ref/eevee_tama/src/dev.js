@@ -129,6 +129,11 @@ export function attachDev(G) {
     evolveTo(form) { evolveTo(S(), form, G.events); G.pet && G.pet.sync(S()); return this.get(); },
     play(won) { playGame(S(), won, G.events); return this.get(); },
     coins(delta) { changeCoins(S(), delta, G.events); return this.get(); },
+    // casino harness: run n instant rounds (RTP tests) — opts: { bet, bets, pick }
+    casinoSpin(game, n = 1, opts = {}) {
+      if (!G.casino) return { error: 'no casino' };
+      return G.casino.spinInstant(game, n, opts);
+    },
     skipSleep() { skipSleep(S()); return this.get(); },
     newEgg(opts) {
       const s = S();

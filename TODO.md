@@ -79,10 +79,11 @@
 - [x] Regenerated all 5 evolution stones (PIL `make_stones.py`): consistent 44×44 pixel gems from the water-gem template (leaf/ice had black bgs, fire was a sliver) — vision-verified
 - [x] GATE: S01–S07/S10–S11 flows (stone→Vaporeon, shiny, Espeon 09:01, Umbreon 19:01, Sylveon auto d3 22:00, graduation rank S) + 6-device matrix on evolved Vaporeon (60fps / p95 ~17ms, 0 errors, no overflow, sheet fits 360px) + vision + commit
 
-### M5 — Poké Casino
-- [ ] PIL slot cabinet (candy pixel) · `src/casino.js`: Eevee Slots (1/3/5 paylines, 777 ×30, lucky symbol ×1.2) · Eeveelution Roulette (12 slots ×2/×4/×12, canvas wheel, 3s eased) · Card Flip (4 cards, ×4, tie push, 3D flip)
-- [ ] Bet/coin UI, daily free 50 chips @07:00, pet reactions at machine, casino SFX
-- [ ] GATE: scenarios S15–S17 (incl. 10k-spin RTP) + device matrix + vision + commit
+### M5 — Poké Casino ✅
+- [x] PIL slot cabinet (candy pixel, `prod_art/slot_cabinet.png`) · 53 pixel playing cards (`cards/`, 4 unique: A♥fire K♦water Q♣grass J♠thunder + back)
+- [x] `src/casino.js`: Eevee Slots (bet 1–3 → 1/3/5 paylines, 777 ×30, pair ×1.4, lucky ×1.2, staggered reel stops) · Eeveelution Roulette (12 slots, color×2/form×4/slot×12 bets, canvas wheel + pre-rolled ball, 3s eased) · Card Flip (4 unique, tap-pick, 3D flip, highest ×4, tie=push)
+- [x] Bet/coin UI (BACK/tabs/bet/spin/msg), NOT-ENOUGH-COINS guard, pet takes machine spot + win/lose/jackpot reactions, toasts offset for casino; `casinoSpin` dev harness
+- [x] GATE: 10k-spin RTP (slots ~1.02–1.10, rt color .69/form 1.02/slot .99, cards .99) + forced 777 & forced roulette + 6-device matrix (60fps, no overflow, 0 errors) + vision + commit
 
 ### M6 — Meta
 - [ ] Personality roll + lucky symbol + bubbles · S_PROFILE (Café face, rename, rank S/A/B/C, stat bars)

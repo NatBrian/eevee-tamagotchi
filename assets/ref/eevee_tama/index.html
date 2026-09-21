@@ -60,26 +60,50 @@
 
   <!-- ================= CASINO (M5) ================= -->
   <section id="screen-casino" class="screen hidden">
-    <div id="casino-top">
-      <button class="btn-pixel" id="casino-back">BACK</button>
-      <div id="casino-coins" class="chip"><img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="" class="chipimg"> <span id="casino-coins-v">50</span></div>
-    </div>
-    <div id="casino-tabs">
-      <button class="ctab" data-game="slots">SLOTS</button>
-      <button class="ctab" data-game="roulette">ROULETTE</button>
-      <button class="ctab" data-game="cards">CARDS</button>
+    <div id="casino-header">
+      <div id="casino-top">
+        <button class="btn-pixel" id="casino-back">BACK</button>
+        <div id="casino-coins" class="chip"><img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="" class="chipimg"> <span id="casino-coins-v">50</span></div>
+      </div>
+      <div id="casino-tabs">
+        <button class="ctab active" data-game="slots">SLOTS</button>
+        <button class="ctab" data-game="roulette">ROULETTE</button>
+        <button class="ctab" data-game="cards">CARDS</button>
+      </div>
     </div>
     <div id="casino-bottom">
-      <div id="casino-bet" class="hidden">
+      <div id="casino-roulette-bet" class="hidden">
+        <div class="rrow"><span class="bet-lbl">×2</span>
+          <button class="rtab" data-rt="color:0">RED</button>
+          <button class="rtab" data-rt="color:1">BLUE</button>
+          <button class="rtab" data-rt="color:2">GREEN</button>
+        </div>
+        <div class="rrow"><span class="bet-lbl">×4</span>
+          <button class="rtab" data-rt="form:0"><img src="../pokemonsleep/vaporeon_normal.png" alt=""></button>
+          <button class="rtab" data-rt="form:1"><img src="../pokemonsleep/jolteon_normal.png" alt=""></button>
+          <button class="rtab" data-rt="form:2"><img src="../pokemonsleep/flareon_normal.png" alt=""></button>
+          <button class="rtab" data-rt="form:3"><img src="../pokemonsleep/espeon_normal.png" alt=""></button>
+        </div>
+        <div class="rrow"><span class="bet-lbl">×12</span>
+          <button class="rtab" data-rt="slot:0">1</button>
+          <button class="rtab" data-rt="slot:1">2</button>
+          <button class="rtab" data-rt="slot:2">3</button>
+          <button class="rtab" data-rt="slot:3">4</button>
+          <button class="rtab" data-rt="slot:4">5</button>
+          <button class="rtab" data-rt="slot:5">6</button>
+          <button class="rtab" data-rt="slot:6">7</button>
+          <button class="rtab" data-rt="slot:7">8</button>
+          <button class="rtab" data-rt="slot:8">9</button>
+          <button class="rtab" data-rt="slot:9">10</button>
+          <button class="rtab" data-rt="slot:10">11</button>
+          <button class="rtab" data-rt="slot:11">12</button>
+        </div>
+      </div>
+      <div id="casino-bet">
         <span class="bet-lbl">BET</span>
         <button class="betbtn" data-bet="1">1</button>
-        <button class="betbtn" data-bet="2">2</button>
+        <button class="betbtn active" data-bet="2">2</button>
         <button class="betbtn" data-bet="3">3</button>
-      </div>
-      <div id="casino-roulette-bet" class="hidden">
-        <button class="ctab rtab" data-rbet="color">COLOR ×2</button>
-        <button class="ctab rtab" data-rbet="form">FORM ×4</button>
-        <button class="ctab rtab" data-rbet="slot">SLOT ×12</button>
       </div>
       <button class="btn-pixel btn-big" id="casino-spin">SPIN</button>
       <div id="casino-msg"></div>
