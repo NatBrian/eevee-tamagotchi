@@ -176,6 +176,7 @@ export class Scene {
     const decor = [];
     for (const d of CFG.DECOR_DEFAULT) decor.push({ ...d });
     for (const k of (state.shop.decor || [])) {
+      if (k === 'bed') continue; // bed has its own aspect-correct renderer below
       const pos = CFG.SHOP_DECOR_POS[k];
       const item = CFG.SHOP.decor.find((i) => i.key === k);
       if (pos && item) decor.push({ art: item.art, x: pos.x, y: pos.y, s: pos.s });
@@ -352,7 +353,7 @@ export class Fx {
   }
   heart(x, y) { this.hearts.push({ x: x + (Math.random() - 0.5) * 30, y, t: 0, dur: 1.1, s: Math.random() < 0.3 ? 2 : 1 }); }
   text(x, y, str, color) { this.texts.push({ x, y, str, color: color || '#fff', t: 0, dur: 1.2 }); }
-  eat(x, y, key) {
+  startEat(x, y, key) {
     const im = this.scene.img.get('item_' + key);
     if (im) this.eat = { im, t: 0, dur: 1.4, x, y };
   }
@@ -370,7 +371,7 @@ export class Fx {
     if (state && state._runtime) {
       const rt = state._runtime;
       if (rt.eggWob > 0) rt.eggWob = Math.max(0, rt.eggWob - dt);
-      if (rt.eatKey && pet && !this.eat) { this.eat(pet.x, pet.y - 10, rt.eatKey); rt.eatKey = null; }
+      if (rt.eatKey && pet && !this.eat) { this.startEat(pet.x, pet.y - 10, rt.eatKey); rt.eatKey = null; }
     }
   }
 

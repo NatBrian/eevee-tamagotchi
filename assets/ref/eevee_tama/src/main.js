@@ -2,7 +2,7 @@
 import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
-  giveStone, skipSleep, careRank, clockOf, checkMedals,
+  giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
@@ -192,12 +192,12 @@ export function handleEvents() {
   const s = G.state;
   for (const e of evs) {
     if (e.startsWith('fed:')) {
-      G.fx.eat(G.pet.x, G.pet.y - 10, e.slice(4));
+      G.fx.startEat(G.pet.x, G.pet.y - 10, e.slice(4));
       G.fx.burst(G.pet.x, G.pet.y - 30, 'sparkle', 6);
       const p = s.pet.personality && CFG.PERSONALITIES[s.pet.personality];
       G.fx.emote(G.pet.x, G.pet.y - 40, p ? p.emote : 'cheer', e.slice(4) === 'rawst' ? null : (p ? p.bubble : null));
     } else if (e.startsWith('snack:')) {
-      G.fx.eat(G.pet.x, G.pet.y - 10, e.slice(6));
+      G.fx.startEat(G.pet.x, G.pet.y - 10, e.slice(6));
       G.fx.burst(G.pet.x, G.pet.y - 30, 'sparkle', 6);
     } else if (e === 'pet') {
       G.fx.heart(G.pet.x, G.pet.y - 40);
@@ -379,7 +379,7 @@ export function openMenuSheet(which) {
       <div class="rowgrid">
         <div class="row" data-go="profile"><img src="../prod/fx/heart_2x.png" alt=""><div class="rmain"><div class="rname">PROFILE</div><div class="rsub">name, personality, care rank</div></div></div>
         <div class="row" data-go="dex"><img src="../prod/items/poke-ball.png" alt=""><div class="rmain"><div class="rname">POKÉDEX</div><div class="rsub">18 Eeveelutions to find</div></div></div>
-        <div class="row" data-go="medals"><img src="../prod/particles/star_03.png" alt=""><div class="rmain"><div class="rname">MEDALS</div><div class="rsub">your achievements</div></div></div>
+        <div class="row" data-go="medals"><img src="prod_art/medal_star.png" alt=""><div class="rmain"><div class="rname">MEDALS</div><div class="rsub">your achievements</div></div></div>
         <div class="row" data-go="shop"><img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt=""><div class="rmain"><div class="rname">SHOP</div><div class="rsub">decor, fashion, skies</div></div></div>
         <div class="row" data-go="settings"><img src="../tamagotchi_original/source_lights.png" alt=""><div class="rmain"><div class="rname">SETTINGS</div><div class="rsub">sound, haptics, reset</div></div></div>
       </div>`);
@@ -401,7 +401,94 @@ export function openMenuSheet(which) {
       </div>`);
   } else if (which === 'dex') {
     openDexSheet();
+  } else if (which === 'medals') {
+    openMedalsSheet();
+  } else if (which === 'shop') {
+    openShopSheet();
+  } else if (which === 'settings') {
+    openSettingsSheet();
   }
+}
+
+export function openMedalsSheet() {
+  const s = G.state;
+  const n = Object.keys(s.medals).length;
+  const coin = '<img class="mcoin" src="prod_art/medal_star.png" alt="">';
+  let html = '<div class="medalgrid">';
+  for (const m of CFG.MEDALS) {
+    const got = !!s.medals[m.key];
+    html += `<div class="medal ${got ? 'got' : 'lock'}">
+      <img src="prod_art/medal_star.png" alt="" class="${got ? '' : 'lockimg'}">
+      <div class="mmain"><div class="mname">${m.name}</div><div class="mdesc">${m.desc}</div></div>
+    </div>`;
+  }
+  html += '</div>';
+  openSheet(`MEDALS ${n}/${CFG.MEDALS.length}`, html);
+}
+
+export function openShopSheet() {
+  const s = G.state;
+  const coin = '<img class="scoin" src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="">';
+  const cell = (it, group) => {
+    const owned = s.shop.owned.includes(it.key);
+    const afford = s.day.coins >= it.price;
+    return `<div class="shopcell ${owned ? 'owned' : ''} ${afford || owned ? '' : 'poor'}" data-shop="${it.key}">
+      <img src="${shopArt(it)}" data-fallback="prod_art/item_crate.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="">
+      <div class="sname">${it.name}</div>
+      <div class="sprice">${owned ? '<span class="sold">OWNED</span>' : coin + '<b>' + it.price + '</b>'}</div>
+    </div>`;
+  };
+  let html = `<div class="coinline">${coin}<b id="shop-coins">${s.day.coins}</b><span>coins</span></div>
+    <div class="sheet-sec">DECOR</div><div class="shopgrid">${CFG.SHOP.decor.map((i) => cell(i, 'decor')).join('')}</div>
+    <div class="sheet-sec">FASHION</div><div class="shopgrid">${CFG.SHOP.fashion.map((i) => cell(i, 'fashion')).join('')}</div>
+    <div class="sheet-sec">SKIES</div><div class="shopgrid">${CFG.SHOP.themes.map((i) => cell(i, 'themes')).join('')}</div>`;
+  openSheet('SHOP', html);
+  document.querySelectorAll('#sheet-body [data-shop]').forEach((el) => {
+    el.onclick = () => {
+      if (buyShop(G.state, el.dataset.shop, G.events)) {
+        G.fx.burst(215, 700, 'sparkle', 14);
+        toast('Purchased ' + shopItemName(el.dataset.shop) + '!');
+        openShopSheet(); // refresh
+      } else {
+        toast('Not enough coins');
+      }
+    };
+  });
+}
+function shopArt(it) {
+  switch (it.key) {
+    case 'bed': return A.fx(it.art); // petbed.png lives under fx/
+    case 'bow': case 'scarf': case 'leaflow': case 'star': case 'bush': return A.fashion(it.art);
+    default: return A.scene(it.art); // snowman, mushroom, flowers, tree2, night, sunset
+  }
+}
+function shopItemName(key) {
+  for (const g of Object.keys(CFG.SHOP)) { const it = CFG.SHOP[g].find((i) => i.key === key); if (it) return it.name; }
+  return key;
+}
+
+export function openSettingsSheet() {
+  const s = G.state;
+  const on = (b) => `<div class="stoggle ${b ? 'on' : ''}" data-sett="sound">${b ? 'ON' : 'OFF'}</div>`;
+  const onh = (b) => `<div class="stoggle ${b ? 'on' : ''}" data-sett="haptics">${b ? 'ON' : 'OFF'}</div>`;
+  let html = `
+    <div class="setrow"><div class="rmain"><div class="rname">SOUND</div><div class="rsub">music &amp; sfx</div></div>${on(s.settings.sound)}</div>
+    <div class="setrow"><div class="rmain"><div class="rname">HAPTICS</div><div class="rsub">vibration on touch</div></div>${onh(s.settings.haptics)}</div>
+    <div class="setrow danger"><div class="rmain"><div class="rname">RESET SAVE</div><div class="rsub">start a new egg (unlocks nothing)</div></div><button class="btn-danger" id="reset-btn">RESET</button></div>`;
+  openSheet('SETTINGS', html);
+  document.querySelectorAll('#sheet-body [data-sett]').forEach((el) => {
+    el.onclick = () => {
+      const k = el.dataset.sett;
+      s.settings[k] = !s.settings[k];
+      el.classList.toggle('on', s.settings[k]);
+      el.textContent = s.settings[k] ? 'ON' : 'OFF';
+      save(G.state);
+    };
+  });
+  const rb = document.getElementById('reset-btn');
+  if (rb) rb.onclick = () => {
+    if (confirm('Reset your save and start a new egg?')) { clearSave(); location.reload(); }
+  };
 }
 
 export function openDexSheet() {

@@ -246,6 +246,25 @@ export function cleanFurball(state, idx, ev) {
   return true;
 }
 
+export function buyShop(state, key, ev) {
+  if (state.ended) return false;
+  const groups = { decor: CFG.SHOP.decor, fashion: CFG.SHOP.fashion, themes: CFG.SHOP.themes };
+  let group = null, item = null;
+  for (const gk of Object.keys(groups)) {
+    const it = groups[gk].find((i) => i.key === key);
+    if (it) { group = gk; item = it; break; }
+  }
+  if (!item || state.shop.owned.includes(key)) return false;
+  if (state.day.coins < item.price) return false;
+  state.day.coins -= item.price;
+  state.shop.owned.push(key);
+  if (group === 'decor') state.shop.decor.push(key);
+  else if (group === 'fashion') state.shop.fashion = key;
+  else if (group === 'themes') state.shop.theme = key;
+  ev && ev.push('buy:' + key);
+  return true;
+}
+
 export function giveMedicine(state, ev) {
   if (state.ended) return false;
   state.stats.health = 100;

@@ -57,10 +57,11 @@
 - [x] PIL: title logo + PWA icons 192/512 (contact-sheet verified)
 - [x] GATE: scenario smoke (title→egg→hatch→main, day/sunset/night, all forms, shiny, emotes) + 6-device screenshots (no overflow, rotate-hint in landscape) + vision review + 60fps/0 errors
 
-### M2 — HUD + dock + food
-- [ ] HUD DOM (Day/clock/stage chip, stat pips w/ P1 icons, alert badges) · dock (5 × 58px: Oran, Poké Ball, heart, bathroom, gear) · toast system
-- [ ] S_FOOD sheet (6 berries + Rawst [HEALTH] + 4 snacks, fave ★) · feed/snack actions + eat anim + real-time decay loop
-- [ ] GATE: scenarios S21/S22 smoke + device matrix + vision + commit
+### M2 — HUD + dock + food ✅
+- [x] HUD DOM (Day/clock/stage chip, stat pips w/ P1 icons, low-stat flash) · dock (5 btn: FEED/PLAY/PET/CLEAN/MENU) · toast system · furball count badge on CLEAN btn + compact SICK badge
+- [x] S_FOOD sheet (6 berries + Rawst [HEALTH] + 4 snacks, fave ★) · feed/snack actions + eat anim (startEat, no method/prop collision) + real-time decay loop
+- [x] MENU sheet (PROFILE/POKÉDEX/MEDALS/SHOP/SETTINGS — no dead ends) · MEDALS (36, gold-star icon) · SHOP (buyShop, coin deduct, crate fallback for M5/M6 art) · SETTINGS (sound/haptics/reset) · pet bed decor renders (aspect-correct, no double-draw)
+- [x] GATE: food/badge/menu/shop/settings/dex smoke + 6-device matrix (no overflow, 58–59fps, 0 errors) + vision + commit
 
 ### M3 — Mess / sick / sleep
 - [ ] Furballs (spawn 4–8h, max 5, clean, dirty ×2 decay) · sickness (6 zero-hrs, sad emote) · PIL medicine bottle + medicine action

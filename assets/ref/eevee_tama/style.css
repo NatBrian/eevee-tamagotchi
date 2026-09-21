@@ -133,13 +133,20 @@ html, body {
 @keyframes lowflash { 0%,100% { background: rgba(255,248,239,0.94); } 50% { background: #ffd9d2; } }
 .badge {
   font-family: 'PressStart2P', monospace;
-  font-size: 8px;
+  font-size: 7px;
   color: #fff;
   background: var(--danger);
   border: 2px solid var(--ink);
   border-radius: 8px;
-  padding: 6px 7px;
+  padding: 5px 6px;
   animation: lowflash 0.8s infinite;
+}
+.badge-fur {
+  position: absolute;
+  top: -10px; right: -10px;
+  padding: 3px 6px;
+  font-size: 8px;
+  border-radius: 10px;
 }
 
 /* ---------- toasts ---------- */
@@ -185,6 +192,7 @@ html, body {
   z-index: 20;
 }
 .dock-btn {
+  position: relative;
   width: 60px;
   height: 62px;
   display: flex;
@@ -342,6 +350,53 @@ html, body {
 .statbar div { height: 100%; transition: width 300ms; }
 .sb-meal { background: var(--pink); } .sb-happy { background: var(--gold); }
 .sb-energy { background: var(--sky); } .sb-aff { background: var(--leaf); }
+
+/* medals */
+.medalgrid { display: flex; flex-direction: column; gap: 8px; }
+.medal {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--cream); border: 3px solid var(--ink); border-radius: 10px;
+  padding: 8px 10px; box-shadow: 0 2px 0 var(--ink);
+}
+.medal img { width: 34px; height: 34px; image-rendering: pixelated; flex: none; }
+.medal .mmain { flex: 1; min-width: 0; }
+.medal .mname { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); }
+.medal .mdesc { font-family: 'VT323', monospace; font-size: 15px; color: var(--ink-soft); margin-top: 2px; }
+.medal.got { background: #fff4cf; border-color: #c99a2e; }
+.medal.lock { opacity: 0.62; }
+.medal.lock img { filter: grayscale(1) brightness(0.5) opacity(0.75); }
+.medal.lock .mname { color: var(--ink-soft); }
+
+/* shop */
+.cointline { display: flex; align-items: center; gap: 6px; background: var(--cream); border: 3px solid var(--ink); border-radius: 10px; padding: 8px 10px; }
+.cointline img { width: 22px; height: 22px; image-rendering: pixelated; }
+.cointline b { font-family: 'PressStart2P', monospace; font-size: 12px; color: var(--ink); }
+.cointline span { font-family: 'VT323', monospace; font-size: 15px; color: var(--ink-soft); }
+.shopgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.shopcell {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: var(--cream); border: 3px solid var(--ink); border-radius: 12px;
+  padding: 10px 4px 8px; cursor: pointer; box-shadow: 0 3px 0 var(--ink);
+  transition: transform 60ms, box-shadow 60ms;
+}
+.shopcell:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.shopcell img { width: 44px; height: 44px; image-rendering: pixelated; }
+.shopcell .sname { font-family: 'VT323', monospace; font-size: 14px; color: var(--ink); text-align: center; line-height: 1.05; }
+.shopcell .sprice { display: flex; align-items: center; gap: 4px; }
+.shopcell .sprice img { width: 16px; height: 16px; }
+.shopcell .sprice b { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); }
+.shopcell .sprice .sold { font-family: 'PressStart2P', monospace; font-size: 8px; color: #fff; background: var(--ok); border-radius: 6px; padding: 3px 6px; }
+.shopcell.poor { opacity: 0.55; }
+.shopcell.owned { border-color: var(--ok); }
+
+/* settings */
+.setrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--cream); border: 3px solid var(--ink); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 3px 0 var(--ink); }
+.setrow .rmain .rname { font-family: 'PressStart2P', monospace; font-size: 9px; color: var(--ink); }
+.setrow .rmain .rsub { font-family: 'VT323', monospace; font-size: 15px; color: var(--ink-soft); margin-top: 3px; }
+.stoggle { font-family: 'PressStart2P', monospace; font-size: 9px; color: #fff; background: var(--ink-soft); border: 2px solid var(--ink); border-radius: 8px; padding: 7px 10px; cursor: pointer; flex: none; }
+.stoggle.on { background: var(--ok); }
+.btn-danger { font-family: 'PressStart2P', monospace; font-size: 9px; color: #fff; background: var(--danger); border: 2px solid var(--ink); border-radius: 8px; padding: 8px 10px; cursor: pointer; box-shadow: 0 2px 0 var(--ink); flex: none; }
+.setrow.danger { border-color: var(--danger); }
 
 /* ---------- casino ---------- */
 #screen-casino { justify-content: space-between; pointer-events: none; }
