@@ -63,10 +63,12 @@
 - [x] MENU sheet (PROFILE/POKÉDEX/MEDALS/SHOP/SETTINGS — no dead ends) · MEDALS (36, gold-star icon) · SHOP (buyShop, coin deduct, crate fallback for M5/M6 art) · SETTINGS (sound/haptics/reset) · pet bed decor renders (aspect-correct, no double-draw)
 - [x] GATE: food/badge/menu/shop/settings/dex smoke + 6-device matrix (no overflow, 58–59fps, 0 errors) + vision + commit
 
-### M3 — Mess / sick / sleep
-- [ ] Furballs (spawn 4–8h, max 5, clean, dirty ×2 decay) · sickness (6 zero-hrs, sad emote) · PIL medicine bottle + medicine action
-- [ ] Sleep: 20:00 auto, pet bed, Zzz float, night scene, tap-skip → 07:00 · death conditions
-- [ ] GATE: scenarios S08–S13 + device matrix + vision + commit
+### M3 — Mess / sick / sleep ✅
+- [x] Furballs (spawn 4–8h, max 5, individual tap-clean + dock clean-all, dirty ×2 decay at max, count badge on CLEAN btn)
+- [x] Sickness: 6 zero-hrs → sick (worry-drop emote, health decay) · PIL medicine bottle + floating MEDICINE button w/ SICK badge (moved out of HUD to prevent chip wrap) → cures, health 100
+- [x] Sleep: 20:00 auto (energy<40), pet-bed rest spot, Zzz float, night scene, tap-skip → next 07:00 (fixed wake-at-00:00 bug; dailyRoll is level-based so midnight crossing safe)
+- [x] Death: 14h sick or health 0 → tombstone + R.I.P. dialog + NEW EGG → egg screen
+- [x] GATE: S08–S13 flows (sick/med/sleep/skip/death/fur-clean/neglect-sick) + 6-device matrix (59–60fps, 0 errors, no overflow) + vision + commit
 
 ### M4 — Lifecycle + Dex + endings
 - [ ] Egg screen (crack frames @40/75%, wobble) · stage scaling 0.6/0.8/1.0 · evolution (5 stones, Espeon 07–12 + snack, Umbreon 18–20 + snack, Sylveon d3 22:00 auto)

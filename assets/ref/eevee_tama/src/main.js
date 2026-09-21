@@ -2,7 +2,7 @@
 import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
-  giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop,
+  giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop, giveMedicine,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
@@ -184,6 +184,8 @@ export function updateHud(now) {
   $('badge-fur').classList.toggle('hidden', s.furballs.length === 0);
   $('badge-fur').textContent = s.furballs.length;
   $('badge-sick').classList.toggle('hidden', !s.sick);
+  const med = document.getElementById('med-btn');
+  if (med) med.classList.toggle('hidden', !(s.sick && G.screen === 'main' && !s.ended));
 }
 
 // ---------------- event reactions (visual/audio hooks) ----------------
@@ -526,6 +528,7 @@ function wireDock() {
     if (n) G.fx.burst(G.pet.x, G.pet.y, 'sparkle', 12);
   };
   $('dock-menu').onclick = () => openMenuSheet('menu');
+  $('med-btn').onclick = () => { if (G.state && G.state.sick) giveMedicine(G.state, G.events); };
   $('sheet-close').onclick = closeSheet;
   $('btn-hatch').onclick = newGame;
   $('btn-continue').onclick = () => resumeGame();

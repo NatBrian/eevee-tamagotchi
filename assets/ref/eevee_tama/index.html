@@ -29,7 +29,6 @@
       <div class="pip" id="pip-meal" title="Meal"><img src="../tamagotchi_original/source_food.png" alt="meal"><span id="pip-meal-v">80</span></div>
       <div class="pip" id="pip-happy" title="Happy"><img src="../prod/fx/heart_2x.png" alt="happy"><span id="pip-happy-v">80</span></div>
       <div class="pip" id="pip-energy" title="Energy"><img src="../tamagotchi_original/source_lights.png" alt="energy"><span id="pip-energy-v">80</span></div>
-      <div class="badge badge-sick hidden" id="badge-sick">SICK</div>
     </div>
   </header>
 
@@ -44,6 +43,9 @@
     <button class="dock-btn" id="dock-clean"><img src="../tamagotchi_original/source_bathroom.png" alt=""><span>CLEAN</span><span class="badge badge-fur hidden" id="badge-fur">0</span></button>
     <button class="dock-btn" id="dock-menu"><img src="../tamagotchi_original/source_status.png" alt=""><span>MENU</span></button>
   </nav>
+
+  <!-- medicine (contextual, shown only while sick) -->
+  <button id="med-btn" class="hidden"><span class="badge badge-sick hidden" id="badge-sick">SICK</span><img src="prod_art/medicine.png" alt=""><span>MEDICINE</span></button>
 
   <!-- ================= TITLE ================= -->
   <section id="screen-title" class="screen">

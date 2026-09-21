@@ -116,11 +116,13 @@ html, body {
   border: 2px solid var(--ink);
   border-radius: 8px;
   padding: 6px 8px;
+  white-space: nowrap;
   box-shadow: 0 2px 0 rgba(0,0,0,0.25);
 }
 .chip-stage { background: var(--gold); }
 .pip {
   display: flex; align-items: center; gap: 3px;
+  white-space: nowrap;
   background: rgba(255,248,239,0.94);
   border: 2px solid var(--ink);
   border-radius: 8px;
@@ -144,6 +146,13 @@ html, body {
 .badge-fur {
   position: absolute;
   top: -10px; right: -10px;
+  padding: 3px 6px;
+  font-size: 8px;
+  border-radius: 10px;
+}
+.badge-sick {
+  position: absolute;
+  top: -12px; right: -10px;
   padding: 3px 6px;
   font-size: 8px;
   border-radius: 10px;
@@ -210,6 +219,23 @@ html, body {
 .dock-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .dock-btn img { width: 26px; height: 26px; image-rendering: pixelated; }
 .dock-btn span { font-family: 'PressStart2P', monospace; font-size: 7px; color: var(--ink); }
+
+/* medicine (contextual, sick only) */
+#med-btn {
+  position: absolute;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  right: 12px;
+  z-index: 26;
+  display: flex; align-items: center; gap: 7px;
+  background: var(--cream); border: 3px solid var(--ink); border-radius: 14px;
+  padding: 8px 11px; cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink);
+  animation: medpulse 1s infinite;
+}
+#med-btn img { width: 24px; height: 29px; image-rendering: pixelated; }
+#med-btn span { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); }
+#med-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+@keyframes medpulse { 0%, 100% { background: var(--cream); } 50% { background: #ffd9d0; } }
 
 /* ---------- bottom sheet ---------- */
 #sheet {

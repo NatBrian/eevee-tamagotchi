@@ -275,9 +275,34 @@ export class Scene {
       }
     } else if (pet) {
       pet.draw(ctx);
+      if (state.sleeping) this.drawZzz(ctx, pet);
     }
 
     if (fx) fx.draw(ctx);
+  }
+
+  drawZzz(ctx, pet) {
+    const m = pet.metrics();
+    const bx = pet.x, by = pet.y - m.h + 4;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(46,36,26,0.55)';
+    ctx.fillStyle = '#fff8e6';
+    const N = 3, speed = 0.45;
+    for (let i = 0; i < N; i++) {
+      const phase = ((this.t * speed) + i / N) % 1;
+      const size = 11 + phase * 13;
+      const a = phase < 0.18 ? phase / 0.18 : Math.max(0, 1 - (phase - 0.18) / 0.82);
+      const zx = bx + 12 + phase * 24 + Math.sin(phase * 6) * 3;
+      const zy = by - 6 - phase * 42;
+      ctx.globalAlpha = a;
+      ctx.font = Math.round(size) + 'px "PressStart2P"';
+      ctx.strokeText('z', zx, zy);
+      ctx.fillText('z', zx, zy);
+    }
+    ctx.restore();
   }
 
   drawEgg(ctx, state) {

@@ -301,7 +301,7 @@ export function skipSleep(state) {
   if (!state.sleeping) return;
   // jump to next 07:00
   const m = absTime(state.total);
-  const target = m < 420 ? 0 : 1440; // minutes-of-day until 07:00
+  const target = m < 420 ? 420 : 1860; // 07:00 today, else 07:00 tomorrow (420 + 1440)
   state.total += (target - m);
   wakeUp(state);
 }
