@@ -75,3 +75,14 @@
 | Egg crack frames (2) | PIL over official egg | GOT (`prod/fx/egg_crack1.png`, `egg_crack2.png`) |
 | Death/tombstone sprite | PIL (Press Start 2P "R.I.P." engraving) | GOT (`prod/fx/tombstone.png`) |
 | Title/boot splash (optional) | in-engine | TODO |
+
+## J. Poké Casino (minigames)
+| Item | Source | Status |
+|---|---|---|
+| Poker chips (bet UI, 5 colors + side + stack) | Kenney Boardgame Pack (CC0) | GOT (`prod/kenney/boardgame-pack/PNG/Chips/`) |
+| Dice 1–6 (red + white) — future Lucky Dice | Kenney Boardgame Pack | GOT (`prod/kenney/boardgame-pack/PNG/Dice/`) |
+| Playing cards full 52 + backs (Card Flip) | Kenney Boardgame Pack | GOT (`prod/kenney/boardgame-pack/PNG/Cards/`) |
+| Slot symbols: 4 official Poké Balls + Oran + Sweet Heart + Eevee face | PokeAPI item art + Café ReMix | GOT (`prod/items/*-ball.png` + existing) |
+| Casino SFX (chips/dice/cards, 58+14 files) | Kenney Casino Audio + Boardgame Pack (CC0) | GOT (`prod/audio/casino-audio/`, boardgame oggs) |
+| Slot cabinet sprite (3-reel, candy pixel style) | PIL hand-asset | TODO |
+| Roulette wheel (12 segments + chibi faces) | canvas + existing chibis | TODO (in-engine) |
