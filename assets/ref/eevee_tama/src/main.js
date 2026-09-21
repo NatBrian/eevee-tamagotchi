@@ -3,6 +3,7 @@ import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
   giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop, giveMedicine,
+  buyStone, useStone,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
@@ -155,7 +156,12 @@ function showScreen(id) {
   if (id === 'title' || id === 'casino') { $('hud').classList.add('hidden'); $('dock').classList.add('hidden'); }
   else { $('hud').classList.remove('hidden'); $('dock').classList.remove('hidden'); }
 }
-export function setScreen(id) { showScreen(id); }
+export function setScreen(id) {
+  showScreen(id);
+  // force HUD refresh on screen transitions (updateHud is throttled 4Hz)
+  lastHud = 0;
+  if (G.state) updateHud(performance.now());
+}
 
 // ---------------- toast ----------------
 export function toast(msg, ms = 2000) {
@@ -219,7 +225,7 @@ export function handleEvents() {
       toast(s.pet.name + ' grew up!');
       G.fx.burst(G.pet.x, G.pet.y - 40, 'confetti', 16);
     } else if (e.startsWith('evolve:')) {
-      startEvolveCinematic(e.slice(8));
+      startEvolveCinematic(e.slice(7));
     } else if (e === 'sleep' || e === 'rest') {
       toast('zzz…');
     } else if (e === 'woke') {
@@ -253,6 +259,7 @@ export function startEvolveCinematic(form) {
   const dex = CFG.DEX.find((d) => d.key === form);
   img.src = A.dex(dex[(s.shiny ? 1 : 0) ? 'shiny' : 'normal']);
   $('evo-name').textContent = dex.name.toUpperCase();
+  $('evo-shiny').classList.toggle('hidden', !s.shiny);
   $('evo-card').classList.add('hidden');
   const flash = $('evo-flash');
   flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
@@ -381,6 +388,7 @@ export function openMenuSheet(which) {
       <div class="rowgrid">
         <div class="row" data-go="profile"><img src="../prod/fx/heart_2x.png" alt=""><div class="rmain"><div class="rname">PROFILE</div><div class="rsub">name, personality, care rank</div></div></div>
         <div class="row" data-go="dex"><img src="../prod/items/poke-ball.png" alt=""><div class="rmain"><div class="rname">POKÉDEX</div><div class="rsub">18 Eeveelutions to find</div></div></div>
+        <div class="row" data-go="evolve"><img src="../prod/stones/water_stone.png" alt=""><div class="rmain"><div class="rname">EVOLVE</div><div class="rsub">stones · day/night windows</div></div></div>
         <div class="row" data-go="medals"><img src="prod_art/medal_star.png" alt=""><div class="rmain"><div class="rname">MEDALS</div><div class="rsub">your achievements</div></div></div>
         <div class="row" data-go="shop"><img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt=""><div class="rmain"><div class="rname">SHOP</div><div class="rsub">decor, fashion, skies</div></div></div>
         <div class="row" data-go="settings"><img src="../tamagotchi_original/source_lights.png" alt=""><div class="rmain"><div class="rname">SETTINGS</div><div class="rsub">sound, haptics, reset</div></div></div>
@@ -403,6 +411,8 @@ export function openMenuSheet(which) {
       </div>`);
   } else if (which === 'dex') {
     openDexSheet();
+  } else if (which === 'evolve') {
+    openEvolveSheet();
   } else if (which === 'medals') {
     openMedalsSheet();
   } else if (which === 'shop') {
@@ -410,6 +420,58 @@ export function openMenuSheet(which) {
   } else if (which === 'settings') {
     openSettingsSheet();
   }
+}
+
+export function openEvolveSheet() {
+  const s = G.state;
+  const aff = Math.round(s.pet.affinity);
+  const evolved = s.pet.evolved;
+  const coin = '<img src="../prod/kenney/boardgame-pack/PNG/Chips/chipRedWhite.png" alt="">';
+  let html = `<div class="affchip"><img src="../prod/fx/heart_2x.png" alt="">AFFINITY<b>${aff}/100</b></div>`;
+  if (evolved) {
+    const dex = CFG.DEX.find((d) => d.key === s.form);
+    html += `<div class="evolved-note">${dex ? dex.name : s.form} — fully evolved this life</div>`;
+  }
+  html += '<div class="sheet-sec">EVOLUTION STONES</div><div class="shopgrid">';
+  for (const st of CFG.SHOP_STONES) {
+    const owned = s.shop.stones.includes(st.key);
+    const afford = s.day.coins >= st.price;
+    html += `<div class="shopcell ${owned ? 'owned' : ''} ${!owned && !afford ? 'poor' : ''}" data-stone="${st.key}">
+      <img src="${A.stones(CFG.STONE_ART[st.key])}" alt="">
+      <div class="sname">${st.name}</div>
+      <div class="sprice">${owned ? '<span class="sold use">USE</span>' : coin + '<b>' + st.price + '</b>'}</div>
+    </div>`;
+  }
+  html += '</div>';
+  if (!evolved) {
+    html += `
+      <div class="sheet-sec">TIME WINDOWS</div>
+      <div class="winrow"><div class="rmain"><div class="rname">ESPEON</div><div class="rsub">snack 07:00–12:00 · affinity ≥ 70</div></div></div>
+      <div class="winrow"><div class="rmain"><div class="rname">UMBREON</div><div class="rsub">snack 18:00–20:00 · affinity ≥ 70</div></div></div>
+      <div class="winrow"><div class="rmain"><div class="rname">SYLVEON</div><div class="rsub">day 3 · 22:00 · affinity ≥ 80 (auto)</div></div></div>`;
+  }
+  openSheet('EVOLVE', html);
+  document.querySelectorAll('#sheet-body [data-stone]').forEach((el) => {
+    el.onclick = () => {
+      const k = el.dataset.stone;
+      const s = G.state;
+      if (s.shop.stones.includes(k)) {
+        if (useStone(s, k, G.events)) { closeSheet(); toast('Evolution begins!'); }
+        else if (s.stage !== 'adult') toast('Eevee must reach ADULT stage!');
+        else toast('Already evolved this life!');
+      } else if (buyStone(s, k, G.events)) {
+        toast('Bought ' + stoneName(k) + '!');
+        G.fx.burst(215, 700, 'sparkle', 10);
+        openEvolveSheet();
+      } else {
+        toast('Not enough coins');
+      }
+    };
+  });
+}
+function stoneName(key) {
+  const it = CFG.SHOP_STONES.find((i) => i.key === key);
+  return it ? it.name : key;
 }
 
 export function openMedalsSheet() {
@@ -627,10 +689,6 @@ function loop(t) {
     if (s.ended && G.screen === 'main') showEnd(s.ended);
     // egg hatched → main screen
     if (s.stage !== 'egg' && G.screen === 'egg') setScreen('main');
-    if (s._pendingEvolve && !s._evolving) {
-      s._evolving = true;
-      G.events.push('evolve:' + s._pendingEvolve);
-    }
     // autosave
     G.autosaveT += dt;
     if (G.autosaveT > 5) { G.autosaveT = 0; save(s); }

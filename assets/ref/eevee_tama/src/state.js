@@ -60,7 +60,7 @@ export function freshState() {
             sessionNet: 0, sickCount: 0, happySum: 0, happyN: 0, maxHappy: 0, petTimes: [], lastPetAt: 0 },
     allTime: { lives: 0, meals: 0, furballs: 0, firstSeen: Date.now(), allNet: 0 },
     dex: {}, medals: {},
-    shop: { owned: [], decor: [], fashion: null, theme: 'day' },
+    shop: { owned: [], decor: [], fashion: null, theme: 'day', stones: [] },
     settings: { sound: true, haptics: true },
     away: null,
     ended: null, // 'graduation' | 'death' | null
@@ -86,7 +86,7 @@ export function checkMedals(state, ev) {
   if (L.spins >= 10) award(state, 'spins10', ev);
   if (AT.allNet >= 100) award(state, 'lucky', ev);
   if (L.sessionNet >= 500) award(state, 'highroller', ev);
-  if (state.pet.evolved) award(state, 'evoothers', ev);
+  if (state.pet.evolved) { award(state, 'evoothers', ev); award(state, 'evo-' + state.form, ev); }
   if (state.stage === 'adult') award(state, 'adult', ev);
   if (clockOf(state.total).day >= 7) award(state, 'day7', ev);
   if (clockOf(state.total).day >= 30) award(state, 'day30', ev);
@@ -263,6 +263,26 @@ export function buyShop(state, key, ev) {
   else if (group === 'themes') state.shop.theme = key;
   ev && ev.push('buy:' + key);
   return true;
+}
+
+export function buyStone(state, key, ev) {
+  if (state.ended) return false;
+  const it = CFG.SHOP_STONES.find((i) => i.key === key);
+  if (!it || state.shop.stones.includes(key)) return false;
+  if (state.day.coins < it.price) return false;
+  state.day.coins -= it.price;
+  state.shop.stones.push(key);
+  ev && ev.push('stone:' + key);
+  return true;
+}
+
+export function useStone(state, key, ev) {
+  if (state.ended) return false;
+  const i = state.shop.stones.indexOf(key);
+  if (i < 0) return false;
+  if (state.stage !== 'adult' || state.form !== 'eevee' || state.pet.evolved) return false;
+  state.shop.stones.splice(i, 1);
+  return giveStone(state, key, ev);
 }
 
 export function giveMedicine(state, ev) {
@@ -494,7 +514,10 @@ export function tick(state, dtSec, events) {
   const dtMin = dtSec * CFG.TIME.minPerSec * (state.rate || 1);
   advance(state, dtMin, events);
   if (state._pendingEvolve && !state._evolving) {
+    const f = state._pendingEvolve;
+    state._pendingEvolve = null;
     state._evolving = true;
-    events.push('evolve:' + state._pendingEvolve);
+    evolveTo(state, f, events); // apply form + dex entry
+    events.push('evolve:' + f); // UI: cinematic
   }
 }

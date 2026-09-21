@@ -414,6 +414,24 @@ html, body {
 .shopcell .sprice .sold { font-family: 'PressStart2P', monospace; font-size: 8px; color: #fff; background: var(--ok); border-radius: 6px; padding: 3px 6px; }
 .shopcell.poor { opacity: 0.55; }
 .shopcell.owned { border-color: var(--ok); }
+.shopcell .sprice .sold.use { background: var(--gold); }
+
+/* evolve */
+.affchip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream); border: 3px solid var(--ink); border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'PressStart2P', monospace; font-size: 9px; color: var(--ink);
+}
+.affchip img { width: 18px; height: 18px; image-rendering: pixelated; }
+.affchip b { margin-left: auto; font-size: 11px; }
+.evolved-note { text-align: center; font-family: 'VT323', monospace; font-size: 17px; color: var(--ink-soft); padding: 6px 0 2px; }
+.winrow {
+  background: var(--cream); border: 3px solid var(--ink); border-radius: 10px;
+  padding: 8px 12px; margin-bottom: 8px;
+}
+.winrow .rname { font-family: 'PressStart2P', monospace; font-size: 9px; color: var(--ink); }
+.winrow .rsub { font-family: 'VT323', monospace; font-size: 15px; color: var(--ink-soft); margin-top: 3px; }
 
 /* settings */
 .setrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--cream); border: 3px solid var(--ink); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 3px 0 var(--ink); }
@@ -490,6 +508,15 @@ html, body {
 }
 #evo-name, #end-title { font-family: 'PressStart2P', monospace; font-size: 15px; color: var(--ink); }
 #evo-sub, #end-sub, #away-title { font-family: 'VT323', monospace; font-size: 20px; color: var(--ink-soft); }
+#evo-shiny {
+  font-family: 'PressStart2P', monospace;
+  font-size: 11px; color: #fff;
+  background: var(--gold); border: 3px solid var(--ink);
+  padding: 6px 12px; border-radius: 10px;
+  margin-top: 4px;
+  animation: shinypulse 0.8s infinite;
+}
+@keyframes shinypulse { 0%, 100% { background: var(--gold); } 50% { background: #ffe08a; } }
 #away-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 300px; }
 #away-list li { font-family: 'VT323', monospace; font-size: 19px; color: var(--ink); background: var(--cream); border: 2px solid var(--ink); border-radius: 10px; padding: 6px 10px; }
 #away-now { font-family: 'VT323', monospace; font-size: 18px; color: var(--ink-soft); }

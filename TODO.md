@@ -70,11 +70,14 @@
 - [x] Death: 14h sick or health 0 → tombstone + R.I.P. dialog + NEW EGG → egg screen
 - [x] GATE: S08–S13 flows (sick/med/sleep/skip/death/fur-clean/neglect-sick) + 6-device matrix (59–60fps, 0 errors, no overflow) + vision + commit
 
-### M4 — Lifecycle + Dex + endings
-- [ ] Egg screen (crack frames @40/75%, wobble) · stage scaling 0.6/0.8/1.0 · evolution (5 stones, Espeon 07–12 + snack, Umbreon 18–20 + snack, Sylveon d3 22:00 auto)
-- [ ] Evolve cinematic (flash → sparkle → dex GIF → name card → confetti) + shiny reveal · S_DEX (18 cells, silhouettes, persistence)
-- [ ] Graduation (day 4 07:00) + death (tombstone) endings
-- [ ] GATE: scenarios S01–S07/S10–S11 + device matrix + vision + commit
+### M4 — Lifecycle + Dex + endings ✅
+- [x] Egg screen (crack frames @40/75%, wobble) · stage scaling 0.6/0.8/1.0 · evolution (5 stones, Espeon 07–12 + snack, Umbreon 18–20 + snack, Sylveon d3 22:00 auto)
+- [x] Player stone economy: EVOLVE sheet (MENU row) — buy 5 stones @100 coins, USE (guard toasts: not-adult / already-evolved), affinity chip, time-window info; `buyStone`/`useStone` in state.js
+- [x] Evolve cinematic (flash → sparkle → dex GIF → name card → YAY → confetti) + SHINY reveal (gold banner + shiny GIF + sh-<form> medal) · per-form evo-<form> medals · dex entries on evolve (fixed: evolveTo was never called in-game — `evolve:` event slice off-by-one `'evolve:'.length`=7; unified consume+evolveTo into state.js `tick()`)
+- [x] S_DEX (18 cells, silhouettes, persistence) · chip-stage shows form name after evolve · setScreen forces HUD refresh (stale prev-life chip on instant end fixed)
+- [x] Graduation (day 4 07:00, care-rank card) + death (tombstone, R.I.P.) endings · NEW EGG restart
+- [x] Regenerated all 5 evolution stones (PIL `make_stones.py`): consistent 44×44 pixel gems from the water-gem template (leaf/ice had black bgs, fire was a sliver) — vision-verified
+- [x] GATE: S01–S07/S10–S11 flows (stone→Vaporeon, shiny, Espeon 09:01, Umbreon 19:01, Sylveon auto d3 22:00, graduation rank S) + 6-device matrix on evolved Vaporeon (60fps / p95 ~17ms, 0 errors, no overflow, sheet fits 360px) + vision + commit
 
 ### M5 — Poké Casino
 - [ ] PIL slot cabinet (candy pixel) · `src/casino.js`: Eevee Slots (1/3/5 paylines, 777 ×30, lucky symbol ×1.2) · Eeveelution Roulette (12 slots ×2/×4/×12, canvas wheel, 3s eased) · Card Flip (4 cards, ×4, tie push, 3D flip)

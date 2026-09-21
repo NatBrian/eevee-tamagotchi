@@ -65,6 +65,13 @@ export const CFG = {
     sylveon: { clock: 2880 + 15 * 60, how: 'auto', req: 80, age: 2880 },
   },
   STONES: { water: 'vaporeon', thunder: 'jolteon', fire: 'flareon', leaf: 'leafeon', ice: 'glaceon' },
+  SHOP_STONES: [
+    { key: 'water',   name: 'Water Stone',   price: 100 },
+    { key: 'thunder', name: 'Thunder Stone', price: 100 },
+    { key: 'fire',    name: 'Fire Stone',    price: 100 },
+    { key: 'leaf',    name: 'Leaf Stone',    price: 100 },
+    { key: 'ice',     name: 'Ice Stone',     price: 100 },
+  ],
 
   // ---------- shiny ----------
   SHINY: { odds: 50, shinyDayOdds: 25, filter: 'hue-rotate(150deg) saturate(1.35)' },
