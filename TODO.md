@@ -93,9 +93,13 @@
 - [x] Monthly events: 5/15/25 sale 50% off (banner + strike-through + half-price purchase verified), 10/20/30 shiny 1/25, ghost night (0-based dom0=15 & even month0 → setDay(16) per S18)
 - [x] GATE: S18/S21 via setDay + forced ghost + 10k-spin per-personality RTP + sale purchase + rename + 6-device matrix (59–60fps, p95 ~17ms, no overflow, 0 errors) + vision + commit
 
-### M7 — Audio + haptics
-- [ ] `src/audio.js` Web Audio mixer: BGM day/night (pending user audition; placeholders NES00/NES16), full SFX map incl. casino · Vibration haptics tiers (silent degrade iOS) · settings toggles · unlock on first tap
-- [ ] GATE: audio + haptic pass + device matrix + vision + commit
+### M7 — Audio + haptics ✅
+- [x] `src/audio.js` Web Audio mixer: unlock on first tap (iOS gesture), master→compressor, lazy-decoded SFX buffers (42 Kenney files, all decode-verified), dynamics-compressor limiter
+- [x] BGM day/night: **procedural chiptune loops** (all 55 jingles are <2 s stingers, so ogg looping was unsuitable — day = 92bpm C-major square+triangle, night = 64bpm A-minor music-box w/ echo; `CFG.AUDIO.tracks[key].file` accepts an ogg pick later via echo-tail seamless loop). Crossfade on day/night change; mood ducking (title 0.55 / casino 0.6 / sleep 0.35)
+- [x] Full SFX map incl. casino: every game event → sfx + haptic tier (fed/pet/clean/furball/sick/medicine/sleep/woke/hatch/stage/evolve/death/graduation/medal/buy/stone/coins/ball/ghost·in/out/cas spin·pick·jackpot·push; chip-lay on bet changes; 4 card flips with dedupe; bong+fanfare on 777) · universal tap feedback (any button → click + 6 ms buzz)
+- [x] Vibration haptics tiers (silent degrade on iOS — `navigator.vibrate` feature-detected) · settings SOUND/HAPTICS toggles live (master gain ramp, test buzz)
+- [x] `preview_audio.html` audition page repaired (real subdir paths, bong_002 removed, +RPG foley section)
+- [x] GATE: unlock/day→night crossfade/sleep ducking/42-SFX decode/32-event fire + card-flip ×4 + settings gains + 6-device matrix w/ BGM (59–60fps, p95 ~17ms, no overflow, 0 errors) + commit
 
 ### M8 — Persistence + PWA
 - [ ] `src/save.js` v1 (schema §8) + autosave 5s/pagehide · offline catch-up (cap 72 game-hrs, floor 10) + S_AWAY report · `sw.js` + manifest polish + install prompt · settings/reset

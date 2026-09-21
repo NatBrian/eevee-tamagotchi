@@ -3,13 +3,14 @@ import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
   giveStone, skipSleep, careRank, clockOf, checkMedals, buyShop, giveMedicine,
-  buyStone, useStone, giveBall, catchGhost, dailyEventDay,
+  buyStone, useStone, giveBall, catchGhost, dailyEventDay, isNight,
 } from './state.js';
 import { Scene, Fx } from './scene.js';
 import { Pet } from './pet.js';
 import { load, save, clearSave } from './save.js';
 import { attachDev } from './dev.js';
 import { Casino } from './casino.js';
+import { AudioSys } from './audio.js';
 
 // ---------------- game container ----------------
 export const G = {
@@ -202,6 +203,7 @@ export function handleEvents() {
   const evs = G.events; G.events = [];
   const s = G.state;
   for (const e of evs) {
+    if (G.audio) G.audio.event(e); // M7: every game event has audio + haptic feedback
     if (e.startsWith('fed:')) {
       G.fx.startEat(G.pet.x, G.pet.y - 10, e.slice(4));
       G.fx.burst(G.pet.x, G.pet.y - 30, 'sparkle', 6);
@@ -410,11 +412,13 @@ export function openSheet(title, bodyHtml) {
   const sh = $('sheet');
   sh.classList.remove('hidden');
   requestAnimationFrame(() => sh.classList.add('open'));
+  if (G.audio) G.audio.event('sheet:open');
 }
 export function closeSheet() {
   const sh = $('sheet');
   sh.classList.remove('open');
   setTimeout(() => sh.classList.add('hidden'), 240);
+  if (G.audio) G.audio.event('sheet:close');
 }
 
 // placeholder menu/profile sheets (fleshed out in M2/M6)
@@ -603,6 +607,9 @@ export function openSettingsSheet() {
       el.classList.toggle('on', s.settings[k]);
       el.textContent = s.settings[k] ? 'ON' : 'OFF';
       save(G.state);
+      G.audio.event('toggle');
+      if (k === 'sound') G.audio.setSound(s.settings.sound);
+      else if (s.settings.haptics) G.audio.thump(20); // test buzz
     };
   });
   const rb = document.getElementById('reset-btn');
@@ -750,8 +757,16 @@ function loop(t) {
           const m = CFG.MEDALS.find((mm) => mm.key === k);
           toast('MEDAL · ' + (m ? m.name : k));
           if (G.pet) G.fx.burst(G.pet.x, G.pet.y - 60, 'sparkle', 14);
+          if (G.audio) G.audio.event('medal');
         }
       }
+    }
+    // audio: BGM mood (title/sleep/casino ducking) + day/night track (M7)
+    if (G.audio && s.shop) {
+      const mood = G.screen === 'title' ? 0.55 : s.sleeping ? 0.35 : G.screen === 'casino' ? 0.6 : 1;
+      if (Math.abs(mood - (G._bgmMood || 0)) > 0.01) { G._bgmMood = mood; G.audio.setMood(mood); }
+      const tk = isNight(s.total, s.shop.theme) ? 'night' : 'day';
+      if (tk !== G._bgmTrack) { G._bgmTrack = tk; G.audio.setTrack(tk); }
     }
     G.pet.sync(s);
     G.pet.update(dt, s);
@@ -816,6 +831,7 @@ async function boot() {
   G.fx = new Fx(G.scene);
   G.pet = new Pet(G.img);
   G.casino = new Casino(G);
+  G.audio = new AudioSys(G);
   resize();
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', () => setTimeout(resize, 200));
@@ -848,6 +864,14 @@ async function boot() {
   document.addEventListener('visibilitychange', () => { if (document.hidden && G.state && G.state.screen !== 'title') save(G.state); });
   G.canvas.addEventListener('pointerdown', onDown);
   G.canvas.addEventListener('pointerup', onUp);
+  // M7: audio unlock (iOS autoplay) + universal tap feedback (sfx + light haptic)
+  window.addEventListener('pointerdown', () => { G.audio.unlock(); }, { capture: true, passive: true });
+  window.addEventListener('pointerdown', (e) => {
+    if (!G.audio.ctx) return;
+    const t = e.target && e.target.closest ? e.target.closest('button, .cell, .row, .shopcell, .rtab, .dexcell, .stoggle, .ctab, .betbtn') : null;
+    if (t) G.audio.event('tap');
+    else if (e.target === G.canvas) G.audio.sfx('tapSoft', { vol: 0.22 });
+  }, { capture: true, passive: true });
   window.__G = G; // debug hook
 }
 

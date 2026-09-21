@@ -46,6 +46,13 @@ export function attachDev(G) {
         missingAssets: G.img ? G.img.missing.length : -1,
         missingList: G.img ? G.img.missing : [],
         imagesLoaded: G.img ? G.img.map.size : -1,
+        audio: G.audio ? {
+          unlocked: !!G.audio.unlocked,
+          ctxState: G.audio.ctx ? G.audio.ctx.state : null,
+          bgm: G.audio.bgmTrack, mood: G.audio.mood,
+          playing: G.audio.playing,
+          settings: { ...s.settings },
+        } : null,
       };
     },
     state() { return S(); },          // raw access for advanced tests
@@ -65,6 +72,13 @@ export function attachDev(G) {
         frames: recent.length,
       };
     },
+
+    // ---- audio (M7) ----
+    audioUnlock() { G.audio.unlock(); return this.get(); },
+    setBgm(track) { G.audio.setTrack(track); return this.get(); },
+    setBgmMood(m) { G.audio.setMood(m); G._bgmMood = m; return this.get(); },
+    fireEvent(name) { G.audio.event(name); return this.get(); },
+    fireSfx(name, opts) { G.audio.sfx(name, opts); return this.get(); },
 
     // ---- clock (time mocking) ----
     warp(hhmm) {

@@ -10,7 +10,9 @@
   .note{color:#9aa4b2;font-size:12px;margin:4px 0;}
 </style></head><body>
 <h1 style="font-size:18px">Audio audition (Kenney, all CC0)</h1>
-<p class="note">Pick your favorites — tell me which jingle = day BGM, night BGM, evolution, and which SFX = eat/pet/poop/sick/death. I'll wire them in the rebuild.</p>
+<p class="note">Pick your favorites — tell me which jingle = day BGM, night BGM, evolution, and which SFX = eat/pet/poop/sick/death.
+Until then the game ships with a <b>procedural chiptune</b> day/night BGM placeholder and the Kenney SFX wired to the full event map.
+Note: the jingles here are short stingers (&lt;2 s) — a pick for BGM gets an echo-tail seamless loop.</p>
 
 <h2>NES jingles (chiptune)</h2><div class="row" id="nes"></div>
 <h2>Hit jingles (pop/synth)</h2><div class="row" id="hit"></div>
@@ -18,6 +20,7 @@
 <h2>Sax jingles</h2><div class="row" id="sax"></div>
 <h2>Steel jingles</h2><div class="row" id="steel"></div>
 <h2>Interface SFX (UI)</h2><div class="row" id="ui"></div>
+<h2>RPG SFX (foley)</h2><div class="row" id="rpg"></div>
 
 <script>
 const base = "prod/audio/";
@@ -30,13 +33,15 @@ function add(id, file, label) {
 }
 for (let i = 0; i <= 16; i++) {
   const n = String(i).padStart(2, '0');
-  add('nes',  `music-jingles/jingles_NES${n}.ogg`,  `NES${n}`);
-  add('hit',  `music-jingles/jingles_HIT${n}.ogg`,  `HIT${n}`);
-  add('pizzi',`music-jingles/jingles_PIZZI${n}.ogg`,`PIZZI${n}`);
-  add('sax',  `music-jingles/jingles_SAX${n}.ogg`,  `SAX${n}`);
-  add('steel',`music-jingles/jingles_STEEL${n}.ogg`,`STEEL${n}`);
+  add('nes',   `music-jingles/Audio/8-Bit jingles/jingles_NES${n}.ogg`,   `NES${n}`);
+  add('hit',   `music-jingles/Audio/Hit jingles/jingles_HIT${n}.ogg`,     `HIT${n}`);
+  add('pizzi', `music-jingles/Audio/Pizzicato jingles/jingles_PIZZI${n}.ogg`, `PIZZI${n}`);
+  add('sax',   `music-jingles/Audio/Sax jingles/jingles_SAX${n}.ogg`,     `SAX${n}`);
+  add('steel', `music-jingles/Audio/Steel jingles/jingles_STEEL${n}.ogg`, `STEEL${n}`);
 }
-const ui = ["click_001","click_002","click_003","confirmation_001","confirmation_003","error_001","error_003","glass_001","glass_003","drop_001","drop_003","bong_001","bong_002","open_001","close_001","back_001","maximize_001","minimize_001"];
+const ui = ["click_001","click_002","click_003","confirmation_001","confirmation_002","confirmation_003","confirmation_004","error_001","error_003","error_004","glass_001","glass_002","glass_003","drop_001","drop_003","bong_001","open_001","close_001","back_001","maximize_002","maximize_003","maximize_005","minimize_001","minimize_002","minimize_006","pluck_001","question_001","question_002","scratch_001","scratch_003","select_001","select_006","toggle_001"];
 ui.forEach(f => add('ui', `interface-sounds/Audio/${f}.ogg`, f));
+const rpg = ["handleCoins","handleCoins2","metalClick","metalLatch","bookFlip1","bookFlip2","footstep02","doorOpen_1","knifeSlice","metalPot1","creak1","chop","cloth1"];
+rpg.forEach(f => add('rpg', `rpg-audio/Audio/${f}.ogg`, f));
 </script>
 </body></html>

@@ -72,6 +72,7 @@ export class Casino {
     this.cardSpinT = 0;
     this.cardWin = null;           // { pick, win, push }
     this.cardWinT = 0;
+    this._flipped = {};            // card flip sfx dedupe (M7)
 
     this.freeSpin = false;         // jackpot bonus
 
@@ -128,6 +129,7 @@ export class Casino {
   setBet(b) {
     this.bet = rr(b, 1, 3);
     this.syncDom();
+    this.G.events.push('cas:pick'); // M7: chip-lay sfx
   }
 
   toggleRtBet(id) {
@@ -136,6 +138,7 @@ export class Casino {
     else this.rtBets.add(id);
     this.syncDom();
     this.msg(this.rtBets.size ? '' : 'PICK A BET ON THE WHEEL');
+    this.G.events.push('cas:pick'); // M7: chip-lay sfx
   }
 
   msg(m) {
@@ -232,6 +235,7 @@ export class Casino {
     this.cardSpinT = 0;
     this.cardWin = null;
     this.cardWinT = 0;
+    this._flipped = {};
     this.spinning = true;
     this.msg('FLIPPING…');
   }
@@ -425,6 +429,13 @@ export class Casino {
         this.cardSpinT += dt;
         const start = (i) => 0.12 * i;
         const dur = 0.35;
+        for (let i = 0; i < 4; i++) { // M7: flip sfx as each card turns
+          const key = 'f' + i;
+          if (!this._flipped[key] && this.cardSpinT >= start(i) + dur * 0.5) {
+            this._flipped[key] = true;
+            if (this.G.audio) this.G.audio.sfx('card', { vol: 0.5, rate: 1 + i * 0.07 });
+          }
+        }
         if (this.cardSpinT >= start(3) + dur + 0.15) this.resolveCards();
       }
       this.cardWinT += dt;

@@ -264,6 +264,17 @@ export const CFG = {
   // ---------- monthly events ----------
   // sale/shiny use 1-based day-of-month; ghost uses 0-based (S18: setDay(16) = ghost night)
   EVENTS: { sale: [5, 15, 25], shiny: [10, 20, 30], ghost: 15, ghostCoins: 5, ghostSpeed: 26 },
+
+  // ---------- audio (M7) ----------
+  // tracks: file null -> procedural chiptune loop (placeholder until the user's
+  // ogg pick from preview_audio.html; set file to the ogg path to swap it in)
+  AUDIO: {
+    bgmVol: 0.55,
+    tracks: {
+      day: { file: null, synth: 'day' },
+      night: { file: null, synth: 'night' },
+    },
+  },
 };
 
 // ---------- asset URL roots ----------
