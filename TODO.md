@@ -36,8 +36,22 @@
 - [x] Showcase driven via Playwright: full lifecycle captured (`tama_s01`–`tama_s22`, final = egg + 9/9 Dex + shiny badge)
 - [ ] Save/progress persistence (Dex is in-memory per session — could add localStorage next)
 
-## Phase 5 — Polish / future
+## Phase 5 — Production asset gather — DONE
+> Driven by **ASSET_PLAN.md** (categories A–I); every batch vision-verified against PMD/Sleep style (contact sheets: `preview_prod*.html`, `preview_fx.html`, `preview_scene6x.html`, `preview_tilezoom.html`). Research: RESEARCH.md S28–S33.
+- [x] Write asset TODO list (ASSET_PLAN.md, categories A–I)
+- [x] PokeAPI official item art: 6 berries + 4 snacks (`prod/items/`) — vision-verified
+- [x] PokeAPI gen-V animated Dex sprites 9+9 shiny (`prod/dex_anim/`) — vision-verified
+- [x] Kenney CC0: Pixel Platformer scene tiles (grass/sky/meadow/tree/tufts/mushroom/…), Food Expansion, UI Pack, fonts Press Start 2P + VT323 (`prod/kenney/`, `prod/scene/`, `prod/font/`) — vision-verified at 6x
+- [x] Hand-crafted PMD-palette art: furball, petbed, tombstone, egg cracks, leaf/ice stones, pixel heart (`prod/fx/`, `prod/stones/`) — vision-verified
+- [x] Kenney audio: Interface Sounds + Music Jingles (NES chiptune), Particle Pack VFX (`prod/audio/`, `prod/particles/`) — RPG Audio rejected
+- [ ] User audio audition via `preview_audio.html` → lock BGM (day/night) + jingles + SFX mapping
+
+## Phase 6 — Production rebuild (next)
+- [ ] Rebuild game UI at production quality using `assets/ref/prod/` (device shell in CSS/SVG, scene-tile meadow, item-art food, furball, fonts, audio)
+- [ ] Wire BGM/SFX from `prod/audio/` (once selection locked)
+- [ ] Evolve/hatch/death cinematics with dex GIFs + particle FX
+
+## Phase 7 — Polish / future
 - [ ] localStorage persistence (Dex + stats)
 - [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + minigame (Berry Catch / Dance)
 - [ ] Optional 3D tier (Pokedex 3D Pro) if a richer look is wanted
-- [ ] Sound: evolution jingle / hatch crack

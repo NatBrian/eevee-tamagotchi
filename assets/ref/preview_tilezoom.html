@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>TILE ZOOM</title>
+<style>
+  body{margin:0;padding:16px;background:#111418;color:#e8e8e8;font-family:system-ui,sans-serif;}
+  h2{color:#7fd0ff;font-size:15px;margin:14px 0 6px;}
+  .row{display:grid;grid-template-columns:repeat(20, 58px);gap:3px;}
+  .row8{display:grid;grid-template-columns:repeat(8, 74px);gap:3px;}
+  .cell{background:repeating-conic-gradient(#222 0 25%,#2a2a2a 0 50%) 0 0/10px 10px;border:1px solid #2c333f;border-radius:4px;padding:3px;text-align:center;}
+  .cell img{display:block;width:54px;height:54px;image-rendering:pixelated;}
+  .cell.big img{width:70px;height:70px;}
+  .cell span{display:block;font-size:9px;color:#8fa3b8;margin-top:2px;}
+</style></head><body>
+<h2>Platformer tiles (18px shown 3x)</h2>
+<div class="row" id="pp"></div>
+<h2>Background tiles (24px shown 3x)</h2>
+<div class="row8" id="ppbg"></div>
+<script>
+function fill(id, dir, prefix, cls) {
+  fetch(`${dir}/manifest.txt`).then(r => r.text()).then(t => {
+    const el = document.getElementById(id);
+    t.trim().split("\n").forEach(f => {
+      const d = document.createElement('div'); d.className = 'cell' + (cls ? ' ' + cls : '');
+      const img = document.createElement('img'); img.src = `${dir}/${f}`;
+      const s = document.createElement('span'); s.textContent = f.replace(prefix + '_', '').replace('.png', '');
+      d.appendChild(img); d.appendChild(s); el.appendChild(d);
+    });
+  });
+}
+fill('pp', 'prod/kenney_tiles/pp', 'pp');
+fill('ppbg', 'prod/kenney_tiles/ppbg', 'ppbg', 'big');
+</script>
+</body></html>

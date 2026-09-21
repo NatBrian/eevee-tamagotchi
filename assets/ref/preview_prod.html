@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>PROD ASSET CHECK</title>
+<style>
+  @font-face { font-family: 'PressStart2P'; src: url('prod/font/PressStart2P-Regular.ttf'); }
+  @font-face { font-family: 'VT323'; src: url('prod/font/VT323-Regular.ttf'); }
+  body{margin:0;padding:16px;background:#111418;color:#e8e8e8;font-family:system-ui,sans-serif;}
+  h2{color:#7fd0ff;font-size:15px;margin:14px 0 6px;border-bottom:1px solid #333;padding-bottom:4px;}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
+  .cell{background:#1a1f26;border:1px solid #2c333f;border-radius:8px;padding:6px;text-align:center;width:96px;}
+  .cell img{max-width:88px;max-height:88px;image-rendering:pixelated;background:repeating-conic-gradient(#222 0 25%,#2a2a2a 0 50%) 0 0/16px 16px;}
+  .cell.wide img{max-width:340px;max-height:170px;}
+  .cell.xwide img{max-width:560px;max-height:200px;}
+  .cell span{display:block;font-size:10px;color:#9fb3c8;margin-top:4px;}
+  .f1{font-family:'PressStart2P';font-size:14px;color:#ffe28a;}
+  .f2{font-family:'VT323';font-size:26px;color:#b9ffd0;}
+</style></head><body>
+
+<h2>1) PokeAPI item art (meals + snacks)</h2>
+<div class="row">
+  <div class="cell"><img src="prod/items/oran-berry.png"><span>oran</span></div>
+  <div class="cell"><img src="prod/items/sitrus-berry.png"><span>sitrus</span></div>
+  <div class="cell"><img src="prod/items/cheri-berry.png"><span>cheri</span></div>
+  <div class="cell"><img src="prod/items/chesto-berry.png"><span>chesto</span></div>
+  <div class="cell"><img src="prod/items/pecha-berry.png"><span>pecha</span></div>
+  <div class="cell"><img src="prod/items/rawst-berry.png"><span>rawst</span></div>
+  <div class="cell"><img src="prod/items/rare-candy.png"><span>rare candy</span></div>
+  <div class="cell"><img src="prod/items/sweet-heart.png"><span>sweet heart</span></div>
+  <div class="cell"><img src="prod/items/honey.png"><span>honey</span></div>
+  <div class="cell"><img src="prod/items/rage-candy-bar.png"><span>rage candy</span></div>
+</div>
+
+<h2>2) Dex animated sprites (gen-V, 9 + 9 shiny)</h2>
+<div class="row">
+  <div class="cell"><img src="prod/dex_anim/133.gif"><span>eevee</span></div>
+  <div class="cell"><img src="prod/dex_anim/134.gif"><span>vaporeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/135.gif"><span>jolteon</span></div>
+  <div class="cell"><img src="prod/dex_anim/136.gif"><span>flareon</span></div>
+  <div class="cell"><img src="prod/dex_anim/196.gif"><span>espeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/197.gif"><span>umbreon</span></div>
+  <div class="cell"><img src="prod/dex_anim/470.gif"><span>leafeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/471.gif"><span>glaceon</span></div>
+  <div class="cell"><img src="prod/dex_anim/700.gif"><span>sylveon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_133.gif"><span>shiny eevee</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_134.gif"><span>shiny vaporeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_135.gif"><span>shiny jolteon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_136.gif"><span>shiny flareon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_196.gif"><span>shiny espeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_197.gif"><span>shiny umbreon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_470.gif"><span>shiny leafeon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_471.gif"><span>shiny glaceon</span></div>
+  <div class="cell"><img src="prod/dex_anim/shiny_700.gif"><span>shiny sylveon</span></div>
+</div>
+
+<h2>3) Kenney Pixel Platformer (backgrounds + tiles + food)</h2>
+<div class="row">
+  <div class="cell wide"><img src="prod/kenney/pixel-platformer/SampleA.png"><span>sample A</span></div>
+  <div class="cell wide"><img src="prod/kenney/pixel-platformer/SampleB.png"><span>sample B</span></div>
+</div>
+<div class="row">
+  <div class="cell xwide"><img src="prod/kenney/pixel-platformer/Tilemap/tilemap-backgrounds.png"><span>background tilemap</span></div>
+</div>
+<div class="row">
+  <div class="cell xwide"><img src="prod/kenney/pixel-platformer/Tilemap/tilemap.png"><span>tilemap</span></div>
+  <div class="cell xwide"><img src="prod/kenney/pixel-platformer-food-expansion/Tilemap/tilemap.png"><span>food expansion tilemap</span></div>
+</div>
+
+<h2>4) Kenney Pixel UI Pack</h2>
+<div class="row">
+  <div class="cell xwide"><img src="prod/kenney/pixel-ui-pack/Spritesheet/UIpackSheet_transparent.png"><span>UI spritesheet (magenta = unused)</span></div>
+</div>
+
+<h2>5) Fonts</h2>
+<div class="row">
+  <div class="cell wide"><div class="f1">MEAL HAPPY ENERGY<br>DAY 1 07:00</div><span>Press Start 2P</span></div>
+  <div class="cell wide"><div class="f2">Eevee is feeling happy!<br>It's time to eat! (A)</div><span>VT323</span></div>
+</div>
+
+<h2>6) STYLE REFERENCE (existing game assets — match these)</h2>
+<div class="row">
+  <div class="cell"><img src="eeveelution-assets/eeveelution_sprites/eevee/down/idle/1.png"><span>PMD eevee idle</span></div>
+  <div class="cell"><img src="eeveelution-assets/eeveelution_sprites/vaporeon/down/idle/1.png"><span>PMD vaporeon</span></div>
+  <div class="cell"><img src="eeveelution-assets/pmd_effects/cheer/1.png"><span>PMD cheer emote</span></div>
+  <div class="cell"><img src="eeveelution-assets/eeveelution_sprites/vaporeon/water_stone.png"><span>PMD water stone</span></div>
+  <div class="cell"><img src="pokemonsleep/espeon_normal.png"><span>sleep espeon</span></div>
+  <div class="cell"><img src="pokemonsleep/umbreon_normal.png"><span>sleep umbreon</span></div>
+  <div class="cell"><img src="pokemonsleep/sylveon_normal.png"><span>sleep sylveon</span></div>
+  <div class="cell"><img src="tamagotchi_original/source_food.png"><span>P1 food icon</span></div>
+  <div class="cell"><img src="tamagotchi_original/source_bathroom.png"><span>P1 bathroom</span></div>
+  <div class="cell"><img src="serebii/egg_colored.png"><span>egg (current)</span></div>
+</div>
+</body></html>

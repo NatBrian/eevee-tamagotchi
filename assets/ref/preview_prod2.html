@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>PROD ART CHECK 2</title>
+<style>
+  body{margin:0;padding:16px;background:#111418;color:#e8e8e8;font-family:system-ui,sans-serif;}
+  h2{color:#7fd0ff;font-size:15px;margin:14px 0 6px;border-bottom:1px solid #333;padding-bottom:4px;}
+  .row{display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end;}
+  .cell{background:repeating-conic-gradient(#222 0 25%,#2a2a2a 0 50%) 0 0/12px 12px;border:1px solid #2c333f;border-radius:4px;padding:2px;text-align:center;}
+  .cell img{display:block;width:36px;height:36px;image-rendering:pixelated;}
+  .cell.big img{width:120px;height:auto;max-height:120px;}
+  .cell.xbig img{width:200px;height:auto;max-height:150px;}
+  .cell span{display:block;font-size:9px;color:#8fa3b8;margin-top:2px;}
+</style></head><body>
+
+<h2>A) Handcrafted — stones (leaf/ice recolors vs originals)</h2>
+<div class="row">
+  <div class="cell big"><img src="prod/stones/water_stone.png"><span>water (orig)</span></div>
+  <div class="cell big"><img src="prod/stones/thunder_stone.png"><span>thunder (orig)</span></div>
+  <div class="cell big"><img src="prod/stones/fire_stone.png"><span>fire (orig)</span></div>
+  <div class="cell big"><img src="prod/stones/leaf_stone.png"><span>LEAF (recolor)</span></div>
+  <div class="cell big"><img src="prod/stones/ice_stone.png"><span>ICE (recolor)</span></div>
+</div>
+
+<h2>B) Handcrafted — furball / petbed / tombstone / egg cracks</h2>
+<div class="row">
+  <div class="cell big"><img src="prod/fx/furball.png"><span>furball</span></div>
+  <div class="cell big"><img src="prod/fx/furball_small.png"><span>furball small</span></div>
+  <div class="cell xbig"><img src="prod/fx/petbed.png"><span>petbed</span></div>
+  <div class="cell xbig"><img src="prod/fx/tombstone.png"><span>tombstone</span></div>
+  <div class="cell big"><img src="prod/fx/egg_crack1.png"><span>egg crack 1</span></div>
+  <div class="cell big"><img src="prod/fx/egg_crack2.png"><span>egg crack 2</span></div>
+</div>
+
+<h2>C) Kenney platformer tiles (18px, shown 2x) — find: grass, flowers, trees, clouds, hearts, sparkles</h2>
+<div class="row" id="pptiles"></div>
+
+<h2>D) Kenney background tiles (24px, shown 2x)</h2>
+<div class="row" id="ppbg"></div>
+
+<h2>E) Kenney food tiles (18px, shown 2x)</h2>
+<div class="row" id="foodtiles"></div>
+
+<script>
+function fill(id, dir, prefix) {
+  fetch(`${dir}/manifest.txt`).then(r => r.text()).then(t => {
+    const el = document.getElementById(id);
+    t.trim().split("\n").forEach(f => {
+      const d = document.createElement('div'); d.className = 'cell';
+      const img = document.createElement('img'); img.src = `${dir}/${f}`;
+      const s = document.createElement('span'); s.textContent = f.replace(prefix + '_', '').replace('.png', '');
+      d.appendChild(img); d.appendChild(s); el.appendChild(d);
+    });
+  });
+}
+fill('pptiles', 'prod/kenney_tiles/pp', 'pp');
+fill('ppbg', 'prod/kenney_tiles/ppbg', 'ppbg');
+fill('foodtiles', 'prod/kenney_tiles/food', 'food');
+</script>
+</body></html>

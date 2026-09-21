@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>SCENE 6X</title>
+<style>
+  body{margin:0;padding:16px;background:#111418;color:#e8e8e8;font-family:system-ui,sans-serif;}
+  .row{display:flex;gap:8px;flex-wrap:wrap;}
+  .cell{background:repeating-conic-gradient(#222 0 25%,#2a2a2a 0 50%) 0 0/12px 12px;border:1px solid #2c333f;border-radius:6px;padding:6px;text-align:center;}
+  .cell img{display:block;width:108px;height:108px;image-rendering:pixelated;object-fit:contain;}
+  .cell span{display:block;font-size:10px;color:#8fa3b8;margin-top:4px;}
+</style></head><body>
+<div class="row" id="r"></div>
+<script>
+const files = ["sky_day.png","sky_sunset.png","sky_night.png","meadow_far_0.png","meadow_far_1.png","grass_top_0.png","grass_top_1.png","grass_top_2.png","grass_top_3.png","dirt.png","tree.png","tuft_0.png","tuft_1.png","tuft_2.png","tuft_3.png","bush_0.png","bush_1.png","mushroom.png","heart_0.png","heart_1.png","snowman.png"];
+const el = document.getElementById('r');
+files.forEach(f => {
+  const d = document.createElement('div'); d.className = 'cell';
+  d.innerHTML = `<img src="prod/scene/${f}"><span>${f}</span>`;
+  el.appendChild(d);
+});
+</script>
+</body></html>
