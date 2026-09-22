@@ -450,12 +450,7 @@ scenario asserts.
 eevee-tamagotchi/
   README.md                 this file
   LICENSE                   MIT, scoped to the original code and hand-crafted art
-  TODO.md                   milestone log (M1 through M10)
-  GAME_DESIGN.md            design doc: vision, systems, screens, research takeaways
-  BUILD_PLAN.md             build plan, numbers, milestones, testing protocol
-  ASSET_PLAN.md             asset categories and source policy
-  RESEARCH.md               research / search log (the "never search twice" file)
-  .gitignore                OS junk, node_modules, logs, temp scratch
+  .gitignore                OS junk plus the local-only working files
   assets/
     ref/                          <-- WEB ROOT: serve this directory
       eevee_tama/                 the game
@@ -471,27 +466,23 @@ eevee-tamagotchi/
                                   particles, dex_anim, font, audio, kenney source packs
       pokemonsleep/               chibi pet art (5 forms, normal + shiny)
       cafemix/                    profile face art
-      eeveelution-assets/         PMD multi-frame sprite source (Godot pack)
-      showdown/                   dex GIF sources (served copies in prod/dex_anim)
-      tamagotchi_original/        1996 P1 HUD reference
-      serebii/                    2019 Eevee x Tama reference sprites
-      tamagotchi_sim/             early reference web build
-      pokeapi/, pokeapi_shiny/, sketchfab/, deviantart/,
-      tumblr/, research/          additional source material
-      make_*.py                   Python (PIL) scripts that generate hand-crafted art
-      preview_*.html              asset audition pages
+      eeveelution-assets/         PMD 8-direction walk sheets + emote FX
+      tamagotchi_original/        1996 P1 HUD sprites (dock icons)
+      serebii/                    egg art (egg_colored.png)
   test/
     scenarios.js              26-scenario quality gate (6-device matrix, ~2 min)
     video.js                  full-playthrough showcase recorder (~3.5 min)
     shots.js                  key-state screenshots
     chibi_anim.js             per-form chibi gait verifier (contact sheets)
   showcase/
-    m9_*.png, tama_s*.png     verified screenshots of key states
-    video/                    full-playthrough.mp4 (3:34) + source webm
-    README.md                 screenshot index
-  notes/
-    m8/                       device-matrix verification shots
+    video/                    full-playthrough.mp4 (3:34)
 ```
+
+The tree above is what a fresh clone contains. Working files that are not
+published (research notes, source and reference art, art generator
+scripts, audition pages, the old MVP build, extra screenshots, and the
+raw video recording) live in the author's local copy and are listed in
+`.gitignore`.
 
 ## Testing and development tools
 
@@ -562,30 +553,36 @@ list.
 - Playwright teardown can leak `chrome.exe` processes on Windows; purge
   `ms-playwright` processes after runs.
 
-## Design docs
+## Asset sources and credits
 
-- `GAME_DESIGN.md`: the design source of truth (vision, research takeaways,
-  systems, screens, session shape).
-- `BUILD_PLAN.md`: milestones, balance numbers, and the testing protocol
-  (section 12).
-- `ASSET_PLAN.md`: asset categories, source policy (free-to-rip, licenses
-  noted), status workflow.
-- `RESEARCH.md`: every web search logged (query, tool, results) so research
-  is never repeated.
-- `TODO.md`: the milestone log, M1 (skeleton) through M10 (final showcase).
-- `showcase/README.md`: index of the verified screenshots.
+Only the assets the game loads at runtime are published in this repo. The
+main sources, in one line each:
+
+| Source | Used for | Status |
+|---|---|---|
+| Original hand-crafted art | title logo, slot cabinet, medal icons, fashion items, stones, and similar | MIT, original work |
+| Kenney (CC0 packs) | casino chips and boardgame icons, cards, tiles, particles, UI art, SFX and jingle sound files | CC0 |
+| Google Fonts (Press Start 2P, VT323) | pixel UI fonts in `prod/font/` | SIL OFL |
+| Official Pokémon artwork | dex animations in `prod/dex_anim/` | third-party, owned by Nintendo / Creatures Inc. / GAME FREAK |
+| Pokémon Sleep | chibi pet sprites in `pokemonsleep/` | third-party |
+| Fan-made PMD Eeveelutions pack | 8-direction walk sheets and emote FX in `eeveelution-assets/` | fan-made, third-party |
+| Café ReMix | profile face art in `cafemix/` | third-party |
+| 1996 P1 Tamagotchi | HUD dock icons in `tamagotchi_original/` | third-party |
+| 2019 Eevee x Tamagotchi (Serebii) | egg art in `serebii/egg_colored.png` | third-party |
+
+Per-asset source links and license notes are kept in the project's working
+files and are not published. Third-party assets remain the property of
+their respective owners.
 
 ## Conventions
 
 - Commits are milestone-scoped: `M#: summary`, with a detailed body.
-- Every web search is logged in `RESEARCH.md`; every candidate asset is
-  logged with name, source, style, formats, animation states, license, and
-  status (`NEW`, `REVIEWING`, `SHORTLIST`, `REJECTED`, `CHOSEN`).
 - The game stays zero-dependency and build-free; test tooling (Playwright)
   is dev-only.
-- `.gitignore` covers OS junk, editor files, `node_modules/`, logs, and
-  temp scratch. Reference asset packs under `assets/ref/` are intentionally
-  committed as provenance for every art file the game uses.
+- Only the assets the game loads at runtime are committed. Working files
+  (research notes, source and reference art, art generator scripts,
+  audition pages, the old MVP build, extra screenshots, and the raw video
+  recording) are gitignored and kept in the author's local copy.
 - This is a non-commercial fan project, with no ads and no monetization.
   See `LICENSE` for what the MIT license does and does not cover, and the
   Fan Project and Legal Notice below.
@@ -597,16 +594,15 @@ affiliated with, endorsed by, sponsored by, or connected to Nintendo,
 Creatures Inc., GAME FREAK, The Pokémon Company, or Bandai.
 
 - **Original work in this repo:** the game code (all vanilla JavaScript ES
-  modules, `sw.js`, and the test scripts), the hand-crafted art generated by
-  the `make_*.py` scripts (title logo, slot cabinet, medal icons, fashion
-  items, stones, and similar), and the design and research documents are
+  modules, `sw.js`, and the test scripts) and the hand-crafted art (title
+  logo, slot cabinet, medal icons, fashion items, stones, and similar) are
   original work, released under the MIT license in `LICENSE`.
-- **Third-party assets:** the repo bundles reference and production assets
-  from many sources, including official Pokémon artwork, fan-made sprite
-  packs, CC0 asset packs, and research material. Every source is logged in
-  `RESEARCH.md` and `ASSET_PLAN.md` with its license status where known.
-  Those assets remain the property of their respective owners; the MIT
-  license in `LICENSE` does not claim or license them.
+- **Third-party assets:** the game uses assets from many sources, including
+  official Pokémon artwork, fan-made sprite packs, and CC0 asset packs. The
+  main sources are listed in the [Asset sources and
+  credits](#asset-sources-and-credits) section above. Those assets remain
+  the property of their respective owners; the MIT license in `LICENSE`
+  does not claim or license them.
 - **Names and likenesses:** Pokémon, Eevee, the Eeveelutions, Tamagotchi,
   and all related names, characters, images, and elements are the property
   of their respective owners. They are used here for fan use and

@@ -16,3 +16,36 @@ npm-debug.log*
 # Temp / local scratch
 tmp/
 *.tmp
+
+# --- Local-only working files (kept on disk, not published) ---
+
+# Research notes
+RESEARCH.md
+
+# Source and reference art
+assets/ref/research/
+assets/ref/pokeapi/
+assets/ref/pokeapi_shiny/
+assets/ref/showdown/
+assets/ref/sketchfab/
+assets/ref/deviantart/
+assets/ref/tumblr/
+assets/ref/facebook_colorized_eeveelutions.jpg
+assets/ref/serebii/*
+!assets/ref/serebii/egg_colored.png
+assets/ref/eeveelution-assets/README.md
+
+# Dev artifacts (art generator scripts, audition pages, stale MVP index)
+assets/ref/make_*.py
+assets/ref/preview_*.html
+showcase/README.md
+
+# Old MVP prototype
+assets/ref/tamagotchi_sim/
+
+# Verification shots
+notes/
+
+# Showcase screenshots and raw recording (the mp4 stays published)
+showcase/*.png
+showcase/video/*.webm
