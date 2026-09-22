@@ -1,4 +1,4 @@
-// state.js — game state machine + tick pipeline (BUILD_PLAN §1, §7)
+// state.js: game state machine + tick pipeline (BUILD_PLAN §1, §7)
 import { CFG, A } from './config.js';
 import { rng } from './prng.js';
 
@@ -19,7 +19,7 @@ export function stageOf(total) {
   if (total < CFG.TIME.childEnd) return 'child';
   return 'adult';
 }
-// stage progression order — the stage check only moves forward, so a hatched
+// stage progression order, the stage check only moves forward, so a hatched
 // pet never regresses to egg (an early hatch at total<eggEnd must not flip
 // stage back to 'egg' + fire a spurious 'stage:egg' "grew up!" on next tick)
 export const STAGE_RANK = { egg: 0, baby: 1, child: 2, adult: 3 };
@@ -382,7 +382,7 @@ export function applyOffline(state, elapsedSec, ev) {
     const d = Math.min(step, mins); mins -= d;
     report.mins += d; // actual game-time consumed (stops early if the life ends)
     advance(state, d, ev, true);
-    // floor meters each step — a neglected pet can't hit 0 (or die) while away
+    // floor meters each step, a neglected pet can't hit 0 (or die) while away
     for (const k of ['meal', 'happy', 'energy']) state.stats[k] = Math.max(F, state.stats[k]);
   }
   report.mins = Math.round(report.mins);
@@ -441,7 +441,7 @@ export function advance(state, dtMin, ev) {
     wakeUp(state); ev && ev.push('woke');
   }
 
-  // ghost Eevee (qualifying nights, once per day) — drifts across the meadow
+  // ghost Eevee (qualifying nights, once per day), drifts across the meadow
   if (!state.ended) {
     if (!state._runtime) state._runtime = {};
     const evd = dailyEventDay(state);
@@ -509,7 +509,7 @@ export function advance(state, dtMin, ev) {
     state.life.maxHappy = Math.max(state.life.maxHappy, st.happy);
   }
 
-  // stage — progression only (see STAGE_RANK): never regresses a hatched pet to egg
+  // stage, progression only (see STAGE_RANK): never regresses a hatched pet to egg
   const ns = stageOf(state.total);
   if (ns !== state.stage && STAGE_RANK[ns] > STAGE_RANK[state.stage]) { state.stage = ns; ev && ev.push('stage:' + ns); }
 

@@ -1,4 +1,4 @@
-// main.js — boot, asset preload, rAF loop, input, screen routing
+// main.js: boot, asset preload, rAF loop, input, screen routing
 import { CFG, A, STAGE_LABEL } from './config.js';
 import {
   freshState, startEgg, tick, doPet, cleanFurball, feedMeal, feedSnack,
@@ -249,7 +249,7 @@ export function handleEvents() {
     } else if (e.startsWith('stage:')) {
       toast(s.pet.name + ' grew up!');
       G.fx.burst(G.pet.x, G.pet.y - 40, 'confetti', 16);
-      if (e === 'stage:adult') tip(s, 'adult', 'Adult! Try evolving — MENU → EVOLVE');
+      if (e === 'stage:adult') tip(s, 'adult', 'Adult! Try evolving, MENU → EVOLVE');
     } else if (e.startsWith('evolve:')) {
       startEvolveCinematic(e.slice(7));
     } else if (e === 'sleep' || e === 'rest') {
@@ -510,7 +510,7 @@ export function openEvolveSheet() {
   let html = `<div class="affchip"><img src="../prod/fx/heart_2x.png" alt="">AFFINITY<b>${aff}/100</b></div>`;
   if (evolved) {
     const dex = CFG.DEX.find((d) => d.key === s.form);
-    html += `<div class="evolved-note">${dex ? dex.name : s.form} — fully evolved this life</div>`;
+    html += `<div class="evolved-note">${dex ? dex.name : s.form}, fully evolved this life</div>`;
   }
   html += '<div class="sheet-sec">EVOLUTION STONES</div><div class="shopgrid">';
   for (const st of CFG.SHOP_STONES) {
@@ -766,7 +766,7 @@ function resumeGame() {
   if (!saved) { newGame(); return; }
   G.state = saved;
   if (G.state._runtime === undefined) G.state._runtime = {};
-  // M8: offline catch-up — elapsed real s × 2 game-min, cap 72 game-hrs, meters floor 10.
+  // M8: offline catch-up, elapsed real s × 2 game-min, cap 72 game-hrs, meters floor 10.
   // Scratch event array: the S_AWAY report tells the story (no toast/FX spam on resume).
   let report = null;
   const elapsed = Math.max(0, (Date.now() - (saved.savedAt || Date.now())) / 1000);
@@ -779,13 +779,13 @@ function resumeGame() {
   if (report) showAway(report);
 }
 
-// S_AWAY — "While You Were Away" report
+// S_AWAY, "While You Were Away" report
 export function showAway(report) {
   const list = $('away-list');
   list.innerHTML = '';
   const items = (report.items && report.items.length)
     ? report.items
-    : [{ text: 'Nothing much happened — ' + (G.state.pet.name || 'your pet') + ' is glad you’re back!' }];
+    : [{ text: 'Nothing much happened, ' + (G.state.pet.name || 'your pet') + ' is glad you’re back!' }];
   for (const it of items) {
     const li = document.createElement('li');
     li.textContent = it.text;
@@ -851,7 +851,7 @@ function loop(t) {
 
     // sick worry emote
     if (G.pet._worryNow) { G.pet._worryNow = false; G.fx.emote(G.pet.x, G.pet.y - 40, 'worry', null); }
-    // idle chatter — occasional personality emote bubble while the pet idles
+    // idle chatter, occasional personality emote bubble while the pet idles
     if (s.stage !== 'egg' && !s.ended && !s.sleeping && !s.sick && G.pet.state === 'idle' && (G.screen === 'main' || G.screen === 'casino')) {
       G._chatterT = (G._chatterT === undefined ? 15 + Math.random() * 15 : G._chatterT - dt);
       if (G._chatterT <= 0) {
@@ -862,12 +862,12 @@ function loop(t) {
     } else {
       G._chatterT = 15 + Math.random() * 15;
     }
-    // ghost Eevee monthly event (night, even month 15th) — M6
+    // ghost Eevee monthly event (night, even month 15th), M6
     // ended check
     if (s.ended && G.screen === 'main') showEnd(s.ended);
     // egg hatched → main screen
     if (s.stage !== 'egg' && G.screen === 'egg') setScreen('main');
-    // autosave — never save the title backdrop (would clobber a real save)
+    // autosave, never save the title backdrop (would clobber a real save)
     G.autosaveT += dt;
     if (G.autosaveT > 5) { G.autosaveT = 0; if (G.screen !== 'title' && G.screen !== 'loading') save(s); }
     if (G.screen === 'main' || G.screen === 'casino' || G.screen === 'egg') updateHud(t);
@@ -924,7 +924,7 @@ async function boot() {
   // save?
   G.hasSave = !!load();
   if (G.hasSave) $('btn-continue').classList.remove('hidden');
-  else $('title-hint').textContent = 'a new egg is waiting — tap to hatch'; // M9: first-run hint
+  else $('title-hint').textContent = 'a new egg is waiting, tap to hatch'; // M9: first-run hint
   G.state = freshState(); // backdrop state (title screen meadow, no pet)
   G.state.screen = 'title';
   setScreen('title');
@@ -939,7 +939,7 @@ async function boot() {
   window.addEventListener('pagehide', () => { if (G.state && G.screen !== 'title' && G.screen !== 'loading') save(G.state); });
   document.addEventListener('visibilitychange', () => { if (document.hidden && G.state && G.screen !== 'title' && G.screen !== 'loading') save(G.state); });
 
-  // M8: PWA — service worker (offline shell) + install prompt
+  // M8: PWA, service worker (offline shell) + install prompt
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('../sw.js').catch(() => {});
@@ -963,5 +963,5 @@ async function boot() {
 
 boot().catch((e) => {
   console.error(e);
-  $('loadlabel').textContent = 'LOAD ERROR — CHECK CONSOLE';
+  $('loadlabel').textContent = 'LOAD ERROR, CHECK CONSOLE';
 });

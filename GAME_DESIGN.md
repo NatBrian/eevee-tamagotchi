@@ -1,13 +1,13 @@
-# GAME DESIGN — Eevee-Tama (modern mobile-first Tamagotchi)
+# GAME DESIGN: Eevee-Tama (modern mobile-first Tamagotchi)
 
-> Design doc for the production rebuild. Mobile-first, touch-screen, portrait. Vanilla JS/HTML/CSS (zero deps) — stays true to the stack.
+> Design doc for the production rebuild. Mobile-first, touch-screen, portrait. Vanilla JS/HTML/CSS (zero deps), stays true to the stack.
 > Research sources: RESEARCH.md S13/S14 (Eevee×Tamagotchi), S25/S26 (original P1), + 2026 survey of **Tamagotchi Uni** (2023, Bandai's modern flagship), **Tamagotchi Paradise** (2024), mobile UX best practices. Reference screenshots in `assets/ref/research/` (montage: `refs_montage.png`).
 
 ---
 
 ## 1. Vision
 
-**A modern Eevee × Tamagotchi**: hatch an egg, raise Eevee through its life, and evolve it into one of **9 Eeveelutions** — collecting all 9 + 9 shinies across generations. Faithful to the 1996 Tamagotchi care loop and the 2019 Eevee×Tama evolution rules, but with **2026 mobile polish**: full-bleed animated meadow, personality, minigames, medals, shop, haptics, and chiptune audio. No emojis — every visual is a real, style-matched asset (see ASSET_PLAN.md).
+**A modern Eevee × Tamagotchi**: hatch an egg, raise Eevee through its life, and evolve it into one of **9 Eeveelutions**, collecting all 9 + 9 shinies across generations. Faithful to the 1996 Tamagotchi care loop and the 2019 Eevee×Tama evolution rules, but with **2026 mobile polish**: full-bleed animated meadow, personality, minigames, medals, shop, haptics, and chiptune audio. No emojis, every visual is a real, style-matched asset (see ASSET_PLAN.md).
 
 **Player fantasy:** "I have a real little Eevee living in my phone. It has a personality. I can grow all nine Eeveelutions, find the rare shinies, and make its meadow mine."
 
@@ -22,12 +22,12 @@
 | Minigames you actually play → earn points (rhythm, fast-food, cake factory) | ✅ **2 minigames** (Berry Catch, Eevee Dance) → Tama Coins + Happy |
 | Points → Tama Mall → accessories, furniture, room decor | ✅ **Shop** (Tama Coins): meadow decor, pet fashion, UI themes |
 | Milestone medals | ✅ **Medals** (~30) |
-| Tama Walk (accelerometer, collect materials) | ➕ v2 (DeviceMotion API — optional) |
+| Tama Walk (accelerometer, collect materials) | ➕ v2 (DeviceMotion API, optional) |
 | Pet speaks (voices) | ➖ No licensed Pokémon voice → **emote + speech bubbles** instead (PMD emotes already exist) |
 | Rooms (living/garden/bedroom/kitchen/bath) | ➖ Single rich **meadow scene** (our Kenney tiles + pet bed = "home"). Simpler = tighter |
 | Adults "leave to chase dreams" (soft ending) alongside death | ✅ **Two endings**: natural life → *Graduation* (farewell scene); neglect → *Death* (tombstone) |
 | Daily/monthly events (5th/15th/25th shop discounts, ghost on 15th) | ✅ **Monthly events** (cheap shop, rare shiny day, ghost Eevee easter egg) |
-| 4-stage life (baby 1h / child 24h / teen 24h / adult ∞) | ✅ 3 stages (egg → baby → child → adult) — matches Eevee×Tama |
+| 4-stage life (baby 1h / child 24h / teen 24h / adult ∞) | ✅ 3 stages (egg → baby → child → adult), matches Eevee×Tama |
 | Sickness only from real neglect; snacks overuse causes tummy ache | ✅ same |
 
 **Mobile UX rules we apply** (from mobile-game UI research):
@@ -77,7 +77,7 @@
 - Any stat at 0 for 6 consecutive game-hrs → **sick** (medicine icon, sad emote, needs medicine or Rawst)
 - Sick + 14 zero-hours → **death** (tombstone)
 - 5 furballs → Happy decay ×2 + "dirty" penalty
-- 3+ snacks/day → tummy ache (sick chance) — the Uni rule
+- 3+ snacks/day → tummy ache (sick chance), the Uni rule
 - Neglect while offline: meters floor at 10 (no death while away); **"While You Were Away"** report on return
 
 **Personality** (rolled at hatch, shown on profile):
@@ -105,12 +105,12 @@ At **adult** (or later), the pet can evolve **once** per life:
 
 ## 6. Screens (mobile portrait, max-width 480px)
 
-1. **Title** — logo + "TAP TO HATCH" + Day 1 07:00 (boot jingle)
-2. **Egg** — meadow + egg (2 crack frames, wobble on tap), progress ring
+1. **Title**, logo + "TAP TO HATCH" + Day 1 07:00 (boot jingle)
+2. **Egg**, meadow + egg (2 crack frames, wobble on tap), progress ring
 3. **Main Care** (the home, ~90% of play):
    - Full-bleed scene: sky → far meadow → grass band → decor (tree/tufts/mushroom/bed/snowman) → pet → FX
    - **Top HUD**: Day + clock (Press Start 2P), stage chip, 3 stat pips (P1-style icons: meal/fork-knife, happy/heart, energy/bolt) + alert icons (poop/sick)
-   - **Bottom dock** (thumb zone, 5 chunky circular buttons): 🍓 Feed · 🎾 Play · ❤️ Pet · 🧹 Clean · ⚙️ More — *icons drawn from our art (berry art, ball, pixel heart, P1 bathroom icon, gear); labels in VT323*
+   - **Bottom dock** (thumb zone, 5 chunky circular buttons): 🍓 Feed · 🎾 Play · ❤️ Pet · 🧹 Clean · ⚙️ More, *icons drawn from our art (berry art, ball, pixel heart, P1 bathroom icon, gear); labels in VT323*
    - Tap pet = pet (hearts), tap furball = clean (sparkles), long-press pet = profile
    - Day/night: sky tile swap + blue overlay + stars + firefly particles
 4. **Food menu** (bottom sheet): 5 meal berries + Rawst (health) + 4 snacks; art + name + effect + fave/disk markers
@@ -124,11 +124,11 @@ At **adult** (or later), the pet can evolve **once** per life:
 12. **While You Were Away** (offline report): what happened, current state, one-tap actions
 13. **Settings**: sound on/off, haptics on/off, reset, about
 
-## 7. Minigames — **Poké Casino** (touch, 10–30 s, win/lose → coins + Happy)
+## 7. Minigames: **Poké Casino** (touch, 10–30 s, win/lose → coins + Happy)
 
 "Play" = a **Poké Casino** corner (arcade vibe, faithful to the Pokémon Game Corners). Eevee joins you: sits beside the machine, cheers on wins (cheer emote), worries on losses (worry emote). Playing itself counts as *play* (+Happy); wins → **Tama Coins** + bonus Happy; losses → small +Happy (it's fun). **Daily free chips** so the pet never runs dry.
 
-1. **Eevee Slots** (Celadon/Goldenrod Game Corner, Gen 1–3) — the flagship
+1. **Eevee Slots** (Celadon/Goldenrod Game Corner, Gen 1–3), the flagship
    - 3 reels; bet 1–3 chips (activates 1 / 3 / 5 paylines)
    - Symbols (all official art): **7 · Poké Ball · Oran Berry · Sweet Heart · Eevee face**
    - Payouts (Game Corner style): 777 = **JACKPOT ×30** (confetti + bonus spin) · 3 balls ×10 · 3 berries ×5 · 3 hearts ×4 · 3 Eevee ×3 · any pair ×1.5
@@ -156,7 +156,7 @@ All three: full-bleed, single-thumb, big hitboxes, no text mid-play, result card
 
 ## 9. Audio & haptics
 
-- **BGM**: day loop (cheerful NES jingle), night loop (calm) — from Kenney Music Jingles (pick at audition, `preview_audio.html`)
+- **BGM**: day loop (cheerful NES jingle), night loop (calm), from Kenney Music Jingles (pick at audition, `preview_audio.html`)
 - **SFX**: feed crunch · pet bong+heart · furball drop · clean sparkle · sick error · medicine · UI click · evolution fanfare · death dirge · hatch crack
 - **Pet "voice"**: emote + speech bubble (no licensed Pokémon audio)
 - **Haptics** (Vibration API): light = tap/dock, medium = feed/clean/minigame hit, heavy pattern = evolve, long = death
@@ -164,12 +164,12 @@ All three: full-bleed, single-thumb, big hitboxes, no text mid-play, result card
 
 ## 10. Art direction & scene composition
 
-- **Layer stack (back→front)**: sky tile → far meadow strip (parallax-ish) → grass band (4 grass tiles repeat) → decor (tree, tufts ×4, bush, mushroom, snowman, pet bed — positions per seed) → pet + FX → foreground edge
+- **Layer stack (back→front)**: sky tile → far meadow strip (parallax-ish) → grass band (4 grass tiles repeat) → decor (tree, tufts ×4, bush, mushroom, snowman, pet bed, positions per seed) → pet + FX → foreground edge
 - **Pet**: PMD sprites ~2.5× scale, walks within grass band (x-axis wander), soft ellipse shadow, emotes pop above head; chibi forms for Espeon/Umbreon/Leafeon/Glaceon/Sylveon (native shinies); PMD forms get hue-rotate shiny filter
 - **Night**: darkened sky tile + 20% blue multiply overlay on scene + star dots + firefly particles
-- **UI**: candy-pixel style — rounded chunky buttons, pixel borders, pastel palette (sky #aee3ff, cream #fff3d6, pink #ffb3c8, grass green), Press Start 2P labels + VT323 body; panels = 9-slice pixel frames (Kenney UI pack ref)
+- **UI**: candy-pixel style, rounded chunky buttons, pixel borders, pastel palette (sky #aee3ff, cream #fff3d6, pink #ffb3c8, grass green), Press Start 2P labels + VT323 body; panels = 9-slice pixel frames (Kenney UI pack ref)
 - **Furball** (PIL) for poop · **pixel heart** (PIL) for petting · Kenney transparent particles for sparkle/clean/evolve · **tombstone** for death · **egg cracks** for hatch
-- **Casino furniture**: Kenney Boardgame Pack chips/dice/cards (flat vector — UI layer, fine next to pixel world) · **slot cabinet** = PIL pixel art in candy style (3-reel window, marquee, lever) · **roulette wheel** = canvas (12 colored segments + 4 chibi faces) · slot symbols = official item art (4 balls, Oran, Sweet Heart, Eevee face)
+- **Casino furniture**: Kenney Boardgame Pack chips/dice/cards (flat vector, UI layer, fine next to pixel world) · **slot cabinet** = PIL pixel art in candy style (3-reel window, marquee, lever) · **roulette wheel** = canvas (12 colored segments + 4 chibi faces) · slot symbols = official item art (4 balls, Oran, Sweet Heart, Eevee face)
 
 ## 11. Tech stack & technical plan
 
@@ -194,18 +194,18 @@ All three: full-bleed, single-thumb, big hitboxes, no text mid-play, result card
 
 ### Touch controls
 - **Pointer Events** everywhere (unifies touch/mouse/pen), `touch-action: none` on canvas, `user-select: none`, no 300 ms delay, no double-tap zoom.
-- One tiny input layer classifies **tap / long-press (350 ms) / drag** — no library.
+- One tiny input layer classifies **tap / long-press (350 ms) / drag**, no library.
 - Targets ≥ 48 px, ≥ 12 px spacing; **feedback appears above the finger**, never under it.
 - **Haptics**: Vibration API (Android/Chrome); degrades silently on iOS (no API).
 
 ### Other mobile features (PWA)
 - **Installable to home screen**: manifest + 192/512 icons + maskable icon + splash color → feels like a native app
-- **Offline-first**: everything local (already true — zero CDN), add a service worker to cache the app shell
+- **Offline-first**: everything local (already true, zero CDN), add a service worker to cache the app shell
 - **Instant resume + offline time catch-up** (the Tamagotchi essence) via `visibilitychange`/`pagehide` timestamps
 - **Fullscreen** API on demand, **Screen Wake Lock** while playing (Android), pull-to-refresh disabled (`overscroll-behavior: none`)
 - **Audio unlock on first tap** (iOS autoplay policy); optional Web Push "Eevee is hungry!" later (needs a hosted origin)
 
-### Module layout (no build step — plain ES modules over HTTP)
+### Module layout (no build step, plain ES modules over HTTP)
 ```
 index.html · style.css
 src/main.js     boot, asset preload (per-form lazy: PMD has ~900 files, load active form ≈60)
@@ -238,8 +238,8 @@ src/save.js     versioned localStorage
 
 | # | Decision | Status |
 |---|---|---|
-| 1 | **Minigames** | ✅ **CONFIRMED: Poké Casino** (Eevee Slots + Eeveelution Roulette + Card Flip) — classic casino formats = easy to build, Pokémon Game Corner lore, Kenney assets secured |
-| 2 | **Pacing** | 1 life ≈ 30–45 real min (1 game-hr = 30 s) — default unless user says otherwise |
-| 3 | **Endings** | Both: natural → Graduation; neglect → Death (tombstone) — default |
-| 4 | **Meta scope v1** | Full: personality + Poké Casino + shop + medals — default |
-| 5 | **Pet naming** | Auto-generated cute name + optional rename in profile — default |
+| 1 | **Minigames** | ✅ **CONFIRMED: Poké Casino** (Eevee Slots + Eeveelution Roulette + Card Flip), classic casino formats = easy to build, Pokémon Game Corner lore, Kenney assets secured |
+| 2 | **Pacing** | 1 life ≈ 30–45 real min (1 game-hr = 30 s), default unless user says otherwise |
+| 3 | **Endings** | Both: natural → Graduation; neglect → Death (tombstone), default |
+| 4 | **Meta scope v1** | Full: personality + Poké Casino + shop + medals, default |
+| 5 | **Pet naming** | Auto-generated cute name + optional rename in profile, default |

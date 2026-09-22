@@ -1,5 +1,5 @@
 // ============================================================
-// config.js — ALL game data tables (single source of truth)
+// config.js: ALL game data tables (single source of truth)
 // Numbers locked by BUILD_PLAN.md §1–§4
 // ============================================================
 
@@ -128,7 +128,7 @@ export const CFG = {
   PMD_DIRS: ['down', 'up', 'left', 'right', 'down left', 'down right', 'up left', 'up right'],
   PMD_DIRKEYS: { 'down': 'down', 'up': 'up', 'left': 'left', 'right': 'right',
                  'down left': 'dl', 'down right': 'dr', 'up left': 'ul', 'up right': 'ur' },
-  // frame counts (probed from disk — .png only, excludes Godot .import files)
+  // frame counts (probed from disk, .png only, excludes Godot .import files)
   PMD_FRAMES: {
     eevee:    { down: { idle: 2, move: 3, attack: 2, hurt: 1 }, side: { idle: 2, move: 3, attack: 2, hurt: 1 } },
     vaporeon: { down: { idle: 2, move: 3, attack: 2, hurt: 1 }, side: { idle: 2, move: 3, attack: 2, hurt: 1 } },
@@ -136,7 +136,7 @@ export const CFG = {
     flareon:  { down: { idle: 3, move: 3, attack: 1, hurt: 1 }, side: { idle: 3, move: 3, attack: 1, hurt: 1 } },
   },
   // per-form procedural gaits for the chibi forms (single-sprite art brought to
-  // life at runtime — each form walks and idles differently).
+  // life at runtime, each form walks and idles differently).
   // style: float | lope | flutter | skitter | sway
   CHIBI_ANIM: {
     espeon:  { style: 'float',   hopHz: 1.9, hopAmp: 4.0, lean: 0.05, waddle: 0.04, squash: 0.05, breathHz: 1.1, breathAmp: 1.1, twEvery: [4, 9]   },
@@ -194,7 +194,7 @@ export const CFG = {
       forms: ['vaporeon', 'jolteon', 'flareon', 'espeon'], colors: ['red', 'blue', 'green'] },
     cards: {
       count: 4, pay: 4,
-      // 4 unique cards — one rank per suit (♥Fire ♦Water ♣Grass ♠Thunder)
+      // 4 unique cards, one rank per suit (♥Fire ♦Water ♣Grass ♠Thunder)
       ranks: [
         { k: 'A', v: 4, suit: 'fire' },
         { k: 'K', v: 3, suit: 'water' },

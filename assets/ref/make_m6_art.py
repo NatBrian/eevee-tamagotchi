@@ -1,4 +1,4 @@
-# make_m6_art.py — M6 art: 4 fashion items, berry bush, ghost Eevee
+# make_m6_art.py: M6 art: 4 fashion items, berry bush, ghost Eevee
 # Outputs into assets/ref/eevee_tama/prod_art/ (manifest keys via A.fashion)
 import os
 from PIL import Image, ImageDraw, ImageFilter

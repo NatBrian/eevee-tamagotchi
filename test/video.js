@@ -1,5 +1,5 @@
 // ============================================================
-// test/video.js — Eevee-Tama FULL PLAYTHROUGH showcase video (FINAL)
+// test/video.js: Eevee-Tama FULL PLAYTHROUGH showcase video (FINAL)
 //
 // One continuous mobile playthrough covering the ENTIRE game:
 //
@@ -50,7 +50,7 @@ async function tapEl(page, selector) {
   if (!box) throw new Error('no box for ' + selector);
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
 }
-// tap a point in scene (logical) coordinates — viewport == scene (430x932 cover fit, scale 1)
+// tap a point in scene (logical) coordinates, viewport == scene (430x932 cover fit, scale 1)
 const tapScene = (page, x, y) => page.mouse.click(x, y);
 
 (async () => {
@@ -81,10 +81,10 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await G(() => { try { localStorage.clear(); } catch (e) {} });
   await page.reload({ waitUntil: 'load', timeout: 90000 });
   await waitFor(page, () => window.TamaGame && !window.__G.booting && window.__G.img.missing.length === 0, 45000, 'boot2');
-  console.log('ready — recording starts');
+  console.log('ready, recording starts');
 
   // ============ 1 · TITLE (first run) ============
-  await sleep(2600); // logo + first-run hint "a new egg is waiting — tap to hatch"
+  await sleep(2600); // logo + first-run hint "a new egg is waiting, tap to hatch"
   await tapEl(page, '#btn-hatch');
   await sleep(1400);
 
@@ -134,7 +134,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await T('rate', 64);
   await sleep(Math.min(30000, (toNight / 128) * 1000) + 400);
   await T('rate', 1);
-  await sleep(1200); // 20:00: auto-sleep (energy<40) — Zzz + sleep tip
+  await sleep(1200); // 20:00: auto-sleep (energy<40), Zzz + sleep tip
   await sleep(1600);
   // tap pet to wake (skip to 07:00 → crosses 1440 → CHILD stage-up)
   const petPos = await G(() => ({ x: window.__G.pet.x, y: window.__G.pet.y }));
@@ -216,7 +216,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await tapEl(page, '#casino-back');
   await sleep(1000);
 
-  // ============ 12 · EVOLUTION — Vaporeon (full cinematic) ============
+  // ============ 12 · EVOLUTION, Vaporeon (full cinematic) ============
   await tapEl(page, '#dock-menu');
   await sleep(800);
   await tapEl(page, '#sheet-body [data-go="evolve"]');
@@ -228,7 +228,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await sleep(1200); // white flash + sparkles
   await sleep(2200); // dex GIF + name card VAPORGEON… VAPORGEON
   await tapEl(page, '#evo-ok');
-  await sleep(2600); // back to meadow — Vaporeon idle + confetti
+  await sleep(2600); // back to meadow, Vaporeon idle + confetti
 
   // ============ 13 · EVOLUTION TOUR (all remaining forms, quick cuts) ============
   const tour = [
@@ -296,11 +296,11 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   // ============ 17 · GHOST EEVEE (night) ============
   await tapEl(page, '#sheet-close');
   await sleep(500);
-  // warpTo (absolute, forward) — the tour + dex/profile/medals leave the clock at
+  // warpTo (absolute, forward), the tour + dex/profile/medals leave the clock at
   // ~22:35, so warping to 21:30 would be a visible BACKWARD jump; 23:30 keeps it
   // forward, still night, with 450 game-min of margin before graduation (4320)
   // so the away beat below crosses it cleanly.
-  await T('warpTo', 3870); // Day 3 23:30, night (3870 < 4320 — alive)
+  await T('warpTo', 3870); // Day 3 23:30, night (3870 < 4320, alive)
   await sleep(600);
   await T('forceGhost', true);
   await sleep(2200); // "A ghost Eevee drifts by… TAP IT!" + drift in
@@ -314,7 +314,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await sleep(700);
   await tapEl(page, '#sheet-body [data-go="shop"]');
   await sleep(1600); // shop grid
-  await tapEl(page, '#sheet-body [data-shop="snowman"]'); // DECOR section — snowman pops into the meadow
+  await tapEl(page, '#sheet-body [data-shop="snowman"]'); // DECOR section, snowman pops into the meadow
   await sleep(1800); // purchase sparkle + new scene decor
   await G(() => { document.querySelector('#sheet-body [data-shop="scarf"]').scrollIntoView({ block: 'center' }); });
   await sleep(400);

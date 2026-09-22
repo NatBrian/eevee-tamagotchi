@@ -1,4 +1,4 @@
-// dev.js — window.TamaGame: test/dev API + time-mock harness (BUILD_PLAN §12.1)
+// dev.js: window.TamaGame: test/dev API + time-mock harness (BUILD_PLAN §12.1)
 import { A, CFG, STAGE_LABEL } from './config.js';
 import {
   clockOf, absTime, stageOf, careRank, countDex, applyOffline,
@@ -154,7 +154,7 @@ export function attachDev(G) {
       else { delete s._runtime.ghost; s._runtime.ghostDone = true; }
       return this.get();
     },
-    // casino harness: run n instant rounds (RTP tests) — opts: { bet, bets, pick }
+    // casino harness: run n instant rounds (RTP tests), opts: { bet, bets, pick }
     casinoSpin(game, n = 1, opts = {}) {
       if (!G.casino) return { error: 'no casino' };
       return G.casino.spinInstant(game, n, opts);

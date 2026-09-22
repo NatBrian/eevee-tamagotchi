@@ -1,4 +1,4 @@
-// save.js — localStorage persistence (schema v1, BUILD_PLAN §8)
+// save.js: localStorage persistence (schema v1, BUILD_PLAN §8)
 import { freshState } from './state.js';
 
 const KEY = 'eevee_tama_v1';
@@ -40,7 +40,7 @@ export function save(data) {
     copy.savedAt = Date.now();
     for (const k of STRIP) delete copy[k];
     localStorage.setItem(KEY, JSON.stringify(copy));
-  } catch (e) { /* storage full/blocked — non-fatal */ }
+  } catch (e) { /* storage full/blocked, non-fatal */ }
 }
 
 export function clearSave() {

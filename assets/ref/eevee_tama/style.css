@@ -1,5 +1,5 @@
 /* ============================================================
-   Eevee-Tama — mobile-first pixel UI (canvas world + DOM chrome)
+   Eevee-Tama: mobile-first pixel UI (canvas world + DOM chrome)
    ============================================================ */
 @font-face {
   font-family: 'PressStart2P';
@@ -133,7 +133,7 @@ html, body {
 .pip span { font-family: 'PressStart2P', monospace; font-size: 8px; color: var(--ink); min-width: 16px; text-align: right; }
 .pip.low { animation: lowflash 0.8s infinite; }
 @keyframes lowflash { 0%,100% { background: rgba(255,248,239,0.94); } 50% { background: #ffd9d2; } }
-/* compact HUD on narrow screens (e.g. 360px) — never clip the rightmost meter */
+/* compact HUD on narrow screens (e.g. 360px), never clip the rightmost meter */
 @media (max-width: 374px) {
   #hud-left, #hud-right { gap: 4px; }
   .chip { font-size: 7px; padding: 5px 6px; border-radius: 7px; }
@@ -198,7 +198,7 @@ body.in-casino #toasts { top: calc(148px + env(safe-area-inset-top)); }
   80% { opacity: 1; }
   100% { transform: translateY(-8px); opacity: 0; }
 }
-/* first-run context tips (M9) — gold, longer-lived, "TIP" badge */
+/* first-run context tips (M9), gold, longer-lived, "TIP" badge */
 .toast.tip {
   border-color: var(--gold);
   box-shadow: 0 3px 0 var(--gold);

@@ -1,5 +1,5 @@
 // ============================================================
-// test/scenarios.js — Eevee-Tama full 25-scenario regression (BUILD_PLAN.md §12)
+// test/scenarios.js: Eevee-Tama full 25-scenario regression (BUILD_PLAN.md §12)
 //
 // Run (from the repo root):
 //   node test/scenarios.js
@@ -63,7 +63,7 @@ async function bootReady(page) {
 
 // hatch + warp past the egg stage gate: stageOf(total<120)='egg' would revert a
 // total-0 hatch back to egg on the next tick, and egg-stage pets ignore
-// feedMeal/feedSnack/playGame — so every "live pet" setup lands at total 130 (baby).
+// feedMeal/feedSnack/playGame, so every "live pet" setup lands at total 130 (baby).
 async function aliveBaby(c) {
   await c.call('newEgg');
   await c.call('hatchNow');
@@ -97,7 +97,7 @@ const SCENARIOS = [
       await c.call('newEgg');
       let s = await c.st();
       c.ok(s.stage === 'egg' && s.screen === 'egg', `egg screen (stage=${s.stage} screen=${s.screen})`);
-      // egg wobble on tap — map the scene point (215,620) through the cover-scale scene transform
+      // egg wobble on tap, map the scene point (215,620) through the cover-scale scene transform
       await c.raw(() => {
         const g = window.__G;
         const r = g.canvas.getBoundingClientRect();
@@ -146,7 +146,7 @@ const SCENARIOS = [
         c.ok(await c.raw((f) => window.__G.state.dex[f + 'n'] === 1, form), `${k}: dex cell`);
         c.ok(await c.raw((f) => window.__G.state.medals['evo-' + f] === 1 && window.__G.state.medals.evoothers === 1, form), `${k}: evo medals`);
         c.ok(await c.raw(() => window.__G.screen === 'evo'), `${k}: cinematic screen`);
-        await closeEvo(c); // YAY! — clears the evoBusy latch for the next iteration
+        await closeEvo(c); // YAY!, clears the evoBusy latch for the next iteration
         c.ok(await c.raw(() => window.__G.screen === 'main'), `${k}: back to main after YAY`);
       }
     },
@@ -160,7 +160,7 @@ const SCENARIOS = [
       await c.call('setAffinity', 70);
       await c.call('warp', '10:05'); await c.wait(150);
       await c.call('snack', 'honey');
-      // the tick consumes _pendingEvolve within a frame and evolves — accept either
+      // the tick consumes _pendingEvolve within a frame and evolves, accept either
       c.ok(await c.raw(() => window.__G.state._pendingEvolve === 'espeon' || window.__G.state.form === 'espeon'), 'espeon queued by snack in window');
       await c.wait(450);
       c.ok((await c.st()).form === 'espeon', 'evolved espeon');
@@ -211,7 +211,7 @@ const SCENARIOS = [
       await aliveBaby(c);
       await c.call('setStats', 0, 0, 0, 100);
       await c.call('rate', 60);
-      await c.wait(5000); // 600 game-min ≈ 10h — from 07:10 → 19:10 (before 20:00 auto-sleep)
+      await c.wait(5000); // 600 game-min ≈ 10h, from 07:10 → 19:10 (before 20:00 auto-sleep)
       const s = await c.st();
       c.ok(s.sick === true, `sick after 6+ zero-hrs (sick=${s.sick} zeroH=${s.zeroH.toFixed(1)})`);
       const r = await c.call('medicine');
@@ -223,7 +223,7 @@ const SCENARIOS = [
     id: 'S09', name: 'Over-snack: 4th snack → -3 health + seeded tummy ache',
     async run(c) {
       await c.call('reset');
-      await aliveBaby(c); // egg-stage pets ignore feedSnack — must be a live baby
+      await aliveBaby(c); // egg-stage pets ignore feedSnack, must be a live baby
       let found = -1;
       for (let seed = 1; seed <= 100 && found < 0; seed++) {
         await c.call('seed', seed);
@@ -277,7 +277,7 @@ const SCENARIOS = [
       await c.raw(() => { window.__G.state.furballIn = 1; });
       await c.call('addMinutes', 60); await c.wait(300);
       c.ok((await c.st()).furballs === 0, 'grace: no furball within 10h of hatch');
-      // max 5 — past grace; each cycle: furballIn=1 + real-time advance crosses the 1-min timer
+      // max 5, past grace; each cycle: furballIn=1 + real-time advance crosses the 1-min timer
       await c.call('warpTo', 740); await c.wait(100);
       let s = await c.st();
       for (let i = 0; i < 20 && s.furballs < 5; i++) {
@@ -318,7 +318,7 @@ const SCENARIOS = [
       await c.call('warp', '06:58'); await c.wait(150);
       await c.wait(3000); // crosses 07:00 in real time
       const s = await c.st();
-      // energy decays slightly after waking — allow < 1
+      // energy decays slightly after waking, allow < 1
       c.ok(s.sleeping === false && Math.abs(s.stats.energy - 100) < 1, `natural wake at 07:00 (sleeping=${s.sleeping} energy=${s.stats.energy.toFixed(2)})`);
     },
   },
@@ -391,7 +391,7 @@ const SCENARIOS = [
         const msg = (await c.page.locator('#casino-msg').textContent()) || '';
         c.ok(new RegExp(`WIN \\+${t.expect}!`).test(msg), `${t.label}: "${msg.trim()}"`);
       }
-      // pet reaction on win (game:win → emote) — assert life.games incremented
+      // pet reaction on win (game:win → emote), assert life.games incremented
       // (playGame no-ops on egg-stage/ended pets, so the pet must be a live baby)
       const gamesBefore = await c.raw(() => window.__G.state.life.games);
       await c.raw(() => { const cas = window.__G.casino; cas.rtBets = new Set(['color:0']); window.__G.state.day.coins = 100; });
@@ -443,7 +443,7 @@ const SCENARIOS = [
     async run(c) {
       await c.call('reset');
       await aliveBaby(c);
-      // day 5/16 are past the day-4 07:00 graduation — push grad far out so the pet stays alive
+      // day 5/16 are past the day-4 07:00 graduation, push grad far out so the pet stays alive
       await c.raw(() => { window.__G._savedGrad = window.__CFG.TIME.grad; window.__CFG.TIME.grad = 1e9; });
       await c.call('setDay', 5);
       c.ok((await c.st()).event.sale === true, 'sale on dom 5');
@@ -467,7 +467,7 @@ const SCENARIOS = [
     async run(c) {
       const med = (key) => c.raw((k) => !!window.__G.state.medals[k], key);
       const waitTick = () => c.wait(380);
-      // life 1 — bulk (hatch at 130 so the hatch/meal1 condition medals can fire)
+      // life 1, bulk (hatch at 130 so the hatch/meal1 condition medals can fire)
       await c.call('reset');
       await c.call('newEgg'); await c.wait(150);
       await c.call('hatchNow'); await c.call('warpTo', 130); await waitTick();
@@ -488,8 +488,8 @@ const SCENARIOS = [
       await c.call('evolveTo', 'vaporeon'); await waitTick();
       c.ok(await med('evoothers'), 'evoothers'); c.ok(await med('evo-vaporeon'), 'evo-vaporeon'); c.ok(await med('sh-vaporeon'), 'sh-vaporeon');
       await c.call('warpTo', 30 * 1440); await waitTick();
-      c.ok(await med('day30'), 'day30'); // (life also graduates — medals still check)
-      // evolution tour lives — NO reset (allTime.lives must accumulate to 3 by flareon)
+      c.ok(await med('day30'), 'day30'); // (life also graduates, medals still check)
+      // evolution tour lives, NO reset (allTime.lives must accumulate to 3 by flareon)
       for (const form of ['jolteon', 'flareon', 'espeon', 'umbreon', 'leafeon', 'glaceon', 'sylveon']) {
         await c.call('newEgg'); await c.wait(150);
         await c.call('hatchNow'); await c.call('warpTo', 130); await waitTick();
@@ -806,7 +806,7 @@ async function runDevice(browser, dev) {
 
 (async () => {
   const t0 = Date.now();
-  console.log(`Eevee-Tama scenario suite — ${BASE}` +
+  console.log(`Eevee-Tama scenario suite, ${BASE}` +
     (ONLY_SCENOS.length ? ` [scenarios: ${ONLY_SCENOS.join(', ')}]` : '') +
     (ONLY_DEVS.length ? ` [devices: ${ONLY_DEVS.join(', ')}]` : ''));
   const browser = await chromium.launch({ headless: true });
@@ -827,7 +827,7 @@ async function runDevice(browser, dev) {
   console.log('\n================ SUMMARY ================');
   for (const { dev: name, results } of all) {
     const fails = results.filter((r) => !r.pass);
-    console.log(`${fails.length === 0 ? '✓' : '✗'} ${name}: ${results.length - fails.length}/${results.length} green${fails.length ? ` — ${fails.map((f) => f.id).join(', ')}` : ''}`);
+    console.log(`${fails.length === 0 ? '✓' : '✗'} ${name}: ${results.length - fails.length}/${results.length} green${fails.length ? `, ${fails.map((f) => f.id).join(', ')}` : ''}`);
   }
   console.log(`\n${allPass ? 'ALL GREEN' : 'FAILURES PRESENT'} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
   process.exit(allPass ? 0 : 1);

@@ -1,4 +1,4 @@
-// scene.js — canvas world compositor.
+// scene.js: canvas world compositor.
 // Static meadow (sky/far/grass/decor) is pre-rendered once per (sky variant, decor set)
 // into an offscreen layer; per frame = one big blit + dynamic elements. (BUILD_PLAN §5)
 import { CFG, A } from './config.js';
@@ -128,7 +128,7 @@ export class Scene {
       g.fillStyle = '#7fb75f';
       g.fillRect(ox, B.far[1] - 2, ow, 3);
     }
-    // grass — natural meadow: soft depth gradient + organically scattered tufts
+    // grass, natural meadow: soft depth gradient + organically scattered tufts
     {
       const g0 = B.grass[0];            // 470 (horizon of the field)
       const g1 = oy + oh;               // bottom of the static canvas
@@ -333,7 +333,7 @@ export class Scene {
 }
 
 // ============================================================
-// Fx — transient visual effects (not persisted)
+// Fx, transient visual effects (not persisted)
 // ============================================================
 export class Fx {
   constructor(scene) {
@@ -359,7 +359,7 @@ export class Fx {
       smoke: ['smoke_01'],
       heart: ['heart'],
     }[kind] || ['star_01'];
-    // particle sprites are 512px soft glows — render them SMALL (logical px)
+    // particle sprites are 512px soft glows, render them SMALL (logical px)
     const baseSize = opts.size !== undefined ? opts.size : ({ confetti: 15, sparkle: 13, magic: 20, smoke: 34, heart: 16 }[kind] || 15);
     const blend = (kind === 'sparkle' || kind === 'magic') ? 'lighter' : 'source-over';
     for (let i = 0; i < n; i++) {

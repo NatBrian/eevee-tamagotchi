@@ -1,4 +1,4 @@
-// casino.js — POKÉ CASINO: Eevee Slots · Eeveelution Roulette · Card Flip
+// casino.js: POKÉ CASINO: Eevee Slots · Eeveelution Roulette · Card Flip
 // Board is drawn on the main canvas inside the cabinet's screen recess;
 // all randomness goes through the shared seeded PRNG (prng.js).
 import { CFG, A } from './config.js';
@@ -118,7 +118,7 @@ export class Casino {
       this.rtWinT = 0;
       this.msg(this.rtBets.size ? '' : 'PICK A BET ON THE WHEEL');
     } else {
-      const forcedDeal = rng.takeForce('cards'); // M9: parity — forceNext({cards:[r0..r3]}) (ties allowed for push tests)
+      const forcedDeal = rng.takeForce('cards'); // M9: parity, forceNext({cards:[r0..r3]}) (ties allowed for push tests)
       this.cards = Array.isArray(forcedDeal) && forcedDeal.length === 4 ? forcedDeal : rng.shuffle([0, 1, 2, 3]);
       this.cardPick = -1;
       this.cardSpinT = 0;
@@ -296,7 +296,7 @@ export class Casino {
         total += w;
       }
     }
-    const win = total; // M9 balance: fractional coins (displays round) — keeps bet-1 RTP honest (S15)
+    const win = total; // M9 balance: fractional coins (displays round), keeps bet-1 RTP honest (S15)
     this.lineWins = wins;
     this.slotsWinT = 0;
     this.spinning = false;
@@ -760,7 +760,7 @@ export class Casino {
           if (w > 0 && syms.some((k) => k === this.luckyKey())) w *= C.slots.luckyMul;
           win += w;
         }
-        const winR = win; // M9 balance: no win rounding (fractional coins) — matches live resolveSlots
+        const winR = win; // M9 balance: no win rounding (fractional coins), matches live resolveSlots
         totalBet += B; totalWin += winR;
         changeCoins(s, -B, ev);
         if (winR > 0) { changeCoins(s, winR, ev); playGame(s, true, ev); }
@@ -784,7 +784,7 @@ export class Casino {
         if (win > 0) { changeCoins(s, win, ev); playGame(s, true, ev); }
         else playGame(s, false, ev);
       } else if (game === 'cards') {
-        const forcedDeal = rng.takeForce('cards'); // M9: harness parity — forceNext({cards:[r0,r1,r2,r3]}) (allows ties for push tests)
+        const forcedDeal = rng.takeForce('cards'); // M9: harness parity, forceNext({cards:[r0,r1,r2,r3]}) (allows ties for push tests)
         this.cards = Array.isArray(forcedDeal) && forcedDeal.length === 4 ? forcedDeal : rng.shuffle([0, 1, 2, 3]);
         const pick = opts.pick !== undefined ? opts.pick : rng.int(0, 3);
         const vals = this.cards.map((i) => C.cards.ranks[i].v);

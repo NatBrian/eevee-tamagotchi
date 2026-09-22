@@ -1,4 +1,4 @@
-/* Eevee-Tama — Tamagotchi MVP
+/* Eevee-Tama: Tamagotchi MVP
  * Assets: PMD (ArcherZenmi) · Pokémon Sleep (Serebii) · Café ReMix (Fandom) · PokeAPI · Eevee×Tamagotchi rules (Serebii)
  */
 "use strict";
@@ -144,7 +144,7 @@ function onHour(){
     if (S.form === "eevee"){
       const a = ageMin();
       if (S.stage === "baby" && a >= BABY_MAX){ S.stage = "child"; log("grew into a Child! (bigger now)", "good"); showEmote("surprise"); }
-      if (S.stage === "child" && a >= CHILD_MAX){ S.stage = "adult"; log("is now an Adult — it can evolve!", "good"); showEmote("cheer"); }
+      if (S.stage === "child" && a >= CHILD_MAX){ S.stage = "adult"; log("is now an Adult, it can evolve!", "good"); showEmote("cheer"); }
     }
     if (!S.sleeping && !S.busy && Math.random() < 0.12) moodEmote();
   }
@@ -541,7 +541,7 @@ function renderDex(){
       <div class="nm">${FORMS[id].name}</div><div class="shiny">✦ shiny</div>`;
     box.appendChild(cell);
   }
-  $("#dex-count").textContent = `— ${count}/9 forms`;
+  $("#dex-count").textContent = `${count}/9 forms`;
 }
 
 // ---------------- log ----------------

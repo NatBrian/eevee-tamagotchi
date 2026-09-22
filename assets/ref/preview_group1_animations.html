@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Group 1 — Animation States Demo (PokeAPI base + composed FX)</title>
+<title>Group 1: Animation States Demo (PokeAPI base + composed FX)</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
@@ -72,23 +72,23 @@
 </style>
 </head>
 <body>
-  <h1>Group 1 (PokeAPI 2D) — where the animations come from</h1>
+  <h1>Group 1 (PokeAPI 2D): where the animations come from</h1>
   <p class="sub">
     The contact sheet you saw is <b>static base art</b> (one pose per form). PokeAPI's <b>only</b> native animation is the
     <b>battle GIF</b> below. The Tamagotchi action states (happy, sad, angry, eating, petting, poop, sleep, evolve) are
-    <b>not pre-made</b> in official Pokémon art — they're <b>composed</b> from the base art + overlay FX + procedural motion.
+    <b>not pre-made</b> in official Pokémon art, they're <b>composed</b> from the base art + overlay FX + procedural motion.
     The grid below is a live proof-of-concept of exactly that.
   </p>
 
-  <h2>A. PokeAPI native animation (battle GIF — 25 frames, Eevee)</h2>
+  <h2>A. PokeAPI native animation (battle GIF, 25 frames, Eevee)</h2>
   <div class="gifwrap">
     <div class="gifbox">
       <img src="pokeapi/eevee_showdown.gif" alt="Eevee battle animation">
-      <div class="t">showdown/133.gif — idle + battle move (front-facing)</div>
+      <div class="t">showdown/133.gif: idle + battle move (front-facing)</div>
     </div>
     <div class="gifbox">
       <img src="pokeapi/eevee_showdown_shiny.gif" alt="Shiny Eevee battle animation">
-      <div class="t">showdown/shiny/133.gif — shiny variant, animated</div>
+      <div class="t">showdown/shiny/133.gif: shiny variant, animated</div>
     </div>
   </div>
 
@@ -109,9 +109,9 @@
   <div class="note">
     <b>Bottom line:</b> PokeAPI gives you <b>base art + shinies + battle animation</b>. To get all the Tamagotchi actions you either
     (1) <b>compose</b> them like the demo above (base art + overlay sprites + CSS/engine motion), or (2) use a source that ships
-    <b>pre-made action animations</b> — the <b>PMD bonus</b> (walk + attack + emotes), the <b>Eevee × Tamagotchi</b> (eat / sleep / furball / evolve),
-    or <b>Group 3 (3D)</b> (fully animatable). The overlay FX (hearts, tears, anger, Zzz, food, poop) are tiny standard game sprites
-    — easy to grab or draw, and PMD ships them for free.
+    <b>pre-made action animations</b>, the <b>PMD bonus</b> (walk + attack + emotes), the <b>Eevee × Tamagotchi</b> (eat / sleep / furball / evolve),
+    or <b>Group 3 (3D)</b> (fully animatable). The overlay FX (hearts, tears, anger, Zzz, food, poop) are tiny standard game sprites,
+    easy to grab or draw, and PMD ships them for free.
   </div>
 </body>
 </html>

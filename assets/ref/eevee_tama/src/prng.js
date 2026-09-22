@@ -1,4 +1,4 @@
-// prng.js — one seeded PRNG (mulberry32) for ALL game randomness.
+// prng.js: one seeded PRNG (mulberry32) for ALL game randomness.
 // Every scenario is reproducible via TamaGame.seed(n).
 let _state = 123456789 >>> 0;
 

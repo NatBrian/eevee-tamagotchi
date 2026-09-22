@@ -1,4 +1,4 @@
-# BUILD PLAN — Eevee-Tama production build (concrete)
+# BUILD PLAN: Eevee-Tama production build (concrete)
 
 > Companion to GAME_DESIGN.md. Everything is concrete: exact numbers, file paths, screen layouts, and per-milestone acceptance gates.
 > **Quality gate (standing rule):** after EVERY milestone, test with Playwright (3 mobile viewports: iPhone 15 Pro 393×852, Pixel 9 412×915, iPhone SE 375×667 + landscape check) and **vision-review every screenshot** for: no overflow/misalignment, crisp pixel art, spacing/typography, animation fluidity (60 fps via dev API FPS readout), and "fun/mesmerizing" feel. Iterate until it passes, then commit.
@@ -7,7 +7,7 @@
 
 - Production app: **`assets/ref/eevee_tama/`** (served at `http://localhost:8734/eevee_tama/`)
   - `index.html` · `style.css` · `manifest.webmanifest` · `sw.js`
-  - `src/main.js` (boot, screen router) · `config.js` (ALL data tables) · `state.js` (tick machine + **seeded PRNG**) · `scene.js` (canvas compositor) · `pet.js` (sprites + wander AI) · `casino.js` · `ui.js` (DOM) · `audio.js` (Web Audio + haptics) · `save.js` · `dev.js` (**TamaGame test/dev API — the time-mock harness**)
+  - `src/main.js` (boot, screen router) · `config.js` (ALL data tables) · `state.js` (tick machine + **seeded PRNG**) · `scene.js` (canvas compositor) · `pet.js` (sprites + wander AI) · `casino.js` · `ui.js` (DOM) · `audio.js` (Web Audio + haptics) · `save.js` · `dev.js` (**TamaGame test/dev API, the time-mock harness**)
   - `test/scenarios.js` (25-scenario suite, run in-page via Playwright)
 - MVP `tamagotchi_sim/` stays untouched (reference). Repo commits per milestone.
 
@@ -47,17 +47,17 @@ Rawst = health berry (nobody's fave). Names (20): Mochi, Biscuit, Coco, Pudding,
 
 1 currency = **Tama Coins** (chips). **Daily free 50** at each 07:00.
 
-**Eevee Slots** — 3 reels, bet 1/2/3 → 1/3/5 paylines (3 horizontal + 2 diagonals). Symbols (per-reel weights): 7 8% · Poké Ball 16% · Oran 24% · Sweet Heart 24% · Eevee face 28% (house edge ≈ small; pet-friendly). Three-of: 7 **×30** · ball **×10** · oran **×5** · heart **×4** · eevee **×3**; pair on a line **×1.5** (min 1); personality lucky symbol in three-of → **×1.2**. Reels stop staggered 0.5/0.9/1.3 s; jackpot = confetti + fanfare + bonus free spin.
+**Eevee Slots**, 3 reels, bet 1/2/3 → 1/3/5 paylines (3 horizontal + 2 diagonals). Symbols (per-reel weights): 7 8% · Poké Ball 16% · Oran 24% · Sweet Heart 24% · Eevee face 28% (house edge ≈ small; pet-friendly). Three-of: 7 **×30** · ball **×10** · oran **×5** · heart **×4** · eevee **×3**; pair on a line **×1.5** (min 1); personality lucky symbol in three-of → **×1.2**. Reels stop staggered 0.5/0.9/1.3 s; jackpot = confetti + fanfare + bonus free spin.
 
-**Eeveelution Roulette** — 12 slots = Vaporeon/Jolteon/Flareon/Espeon × red/blue/green. One coin. Bets: color **×2** · Eeveelution **×4** · exact slot **×12**. Canvas wheel, 3 s eased spin, Poké Ball lands (RNG pre-rolled). Landed form = pet's actual/future form → big cheer emote.
+**Eeveelution Roulette**, 12 slots = Vaporeon/Jolteon/Flareon/Espeon × red/blue/green. One coin. Bets: color **×2** · Eeveelution **×4** · exact slot **×12**. Canvas wheel, 3 s eased spin, Poké Ball lands (RNG pre-rolled). Landed form = pet's actual/future form → big cheer emote.
 
-**Card Flip** — 4 unique random cards (Kenney 52). Bet one. Highest rank **×4**, tie = push. Suits themed: ♥ Fire · ♦ Water · ♣ Grass · ♠ Thunder. 3D flip reveal, staggered 0.25 s.
+**Card Flip**, 4 unique random cards (Kenney 52). Bet one. Highest rank **×4**, tie = push. Suits themed: ♥ Fire · ♦ Water · ♣ Grass · ♠ Thunder. 3D flip reveal, staggered 0.25 s.
 
 SFX: bet = chip-lay · spin = card-slide/chips-collide · win = confirmation+coin · soft loss = error (low vol) · jackpot = bong + fanfare. Medals: Lucky Eevee (net +100 all-time) · Jackpot (a 777 line) · High Roller (net +500 one session).
 
 ## 4. Shop & medals
 
-**Shop (12):** Decor — snowman 100 · mushroom patch 80 · flower patch 80 · second tree 120 · berry bush 150 (PIL recolor) · Fashion (PIL pixel, worn by pet) — red bow 100 · blue scarf 120 · leaf hat 150 · star clip 200 · Themes — night 100 · sunset 100 (sky/accent recolor).
+**Shop (12):** Decor, snowman 100 · mushroom patch 80 · flower patch 80 · second tree 120 · berry bush 150 (PIL recolor) · Fashion (PIL pixel, worn by pet), red bow 100 · blue scarf 120 · leaf hat 150 · star clip 200 · Themes, night 100 · sunset 100 (sky/accent recolor).
 **Medals (36):** hatch · meal1 · pet10 · clean10 · meals50 · game1 · spins10 · lucky · jackpot · highroller · evo-any · 9× evolution · 9× shiny · dex9 · dex18 (Eevee Master) · adult · death1 · lives3 · rankS · day7 · day30.
 **Monthly events:** 5/15/25 shop 50% off · 10/20/30 shiny day (1/25) · 15th of even months: ghost Eevee visits at night.
 
@@ -121,13 +121,13 @@ slot cabinet (candy pixel, ~300×260) · medicine bottle · 4 fashion items (bow
 
 ## 11. Risks & mitigations
 
-- **iOS Safari gaps**: no Vibration API (degrade silently), no wake lock (skip), audio unlock (handled on first tap), `dvh` (iOS 15.4+ — fine)
+- **iOS Safari gaps**: no Vibration API (degrade silently), no wake lock (skip), audio unlock (handled on first tap), `dvh` (iOS 15.4+, fine)
 - **PMD per-form frame quirks** (sleep only vaporeon/jolteon/flareon): pet.js falls back to idle + Zzz for eevee
 - **18 dex GIFs weight** (~2–4 MB): lazy-load only when S_DEX opens; cache
 - **Pixel crispness at arbitrary DPI**: DPR-capped canvas (3×) + nearest-neighbor; verify in gate
 - **User audio picks pending**: M7 uses placeholders (NES00 day / NES16 night / NES01 evolve) until audition done
 
-## 12. Testing protocol (standing rule — every milestone)
+## 12. Testing protocol (standing rule, every milestone)
 
 ### 12.1 Time mocking & determinism (dev API = test harness, `src/dev.js`)
 All randomness (shiny roll, furball timing, personality, names, casino reels, roulette ball, card draw, monthly-event rolls) flows through **one seeded PRNG (mulberry32)** → every scenario is reproducible. `window.TamaGame` exposes:
@@ -136,7 +136,7 @@ All randomness (shiny roll, furball timing, personality, names, casino reels, ro
 - **RNG**: `seed(n)` · `forceNext({ spin:[a,b,c], roulette:slotIdx, cards:[r1..r4], shiny:bool })`
 - **Readout**: `get()` (full state JSON for assertions) · `fps()` (avg + p95 frame ms, rolling 2 s) · `screenshots` are taken with `freeze()` on
 
-### 12.2 Scenario suite (`test/scenarios.js` — run in-page via Playwright `evaluate`)
+### 12.2 Scenario suite (`test/scenarios.js`, run in-page via Playwright `evaluate`)
 Each scenario = setup (dev API) → action → **assert on `get()` + DOM** → screenshot evidence → PASS/FAIL. Green board required before a milestone commits.
 
 | # | Scenario (time-gated ones use clock mock) |
@@ -165,9 +165,9 @@ Each scenario = setup (dev API) → action → **assert on `get()` + DOM** → s
 | S22 | Daily free 50 coins at 07:00 (not before/after) |
 | S23 | Rename + care rank S (no sickness, Happy avg ≥85) |
 | S24 | Reload mid-life (all 9 screens) → state byte-identical |
-| S25 | Dock/sheet touch flows: tap feed→meal, long-press pet→profile, tap furball→clean, casino SPIN — via Playwright `touchscreen` |
+| S25 | Dock/sheet touch flows: tap feed→meal, long-press pet→profile, tap furball→clean, casino SPIN, via Playwright `touchscreen` |
 
-### 12.3 Playwright device matrix (MCP) — "correct mobile resolutions"
+### 12.3 Playwright device matrix (MCP): "correct mobile resolutions"
 | Device | Viewport | DPR | Browser | Purpose |
 |---|---|---|---|---|
 | iPhone 15 Pro | 393×852 | 3 | mobile Safari | primary |
@@ -186,7 +186,7 @@ Every screen of a milestone is screenshotted on **all six**; the three phone siz
 - Console: **zero errors / uncaught exceptions** during the scenario run
 - Touch targets: dock & sheet buttons ≥ 48 px, gaps ≥ 12 px (computed-style scan)
 - **Fluidity**: `fps()` avg ≥ 55 and p95 frame ≤ 33 ms during walk cycle AND slot spin AND roulette spin
-- Pixel crispness: pet-sprite edge spot-check — no half-alpha bleed (nearest-neighbor intact)
+- Pixel crispness: pet-sprite edge spot-check, no half-alpha bleed (nearest-neighbor intact)
 - Safe areas: HUD top ≥ `safe-area-inset-top`, dock bottom ≥ `safe-area-inset-bottom`
 - No dead ends: every screen reachable has a visible back/close/continue
 

@@ -1,5 +1,5 @@
 // ============================================================
-// test/chibi_anim.js — per-form chibi gait vision-verification (M9.1)
+// test/chibi_anim.js: per-form chibi gait vision-verification (M9.1)
 //
 // For each of the 5 chibi forms (espeon/umbreon/leafeon/glaceon/sylveon):
 //   · 10 frames across a rightward walk (hop/lean/squash/dust per form)
@@ -107,5 +107,5 @@ async function waitFor(page, fn, timeoutMs, label) {
   fs.writeFileSync(path.join(OUT, 'list.txt'), files.map((f) => `file '${f}'`).join('\n'));
   ctx.close();
   await browser.close();
-  console.log('OK — frames:', files.length, 'at', OUT);
+  console.log('OK, frames:', files.length, 'at', OUT);
 })().catch((e) => { console.error('FAIL:', e.message); process.exit(1); });

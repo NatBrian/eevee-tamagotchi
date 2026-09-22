@@ -1,4 +1,4 @@
-// sw.js — Eevee-Tama service worker (M8)
+// sw.js: Eevee-Tama service worker (M8)
 // Shell + code: network-first (stays fresh in dev; offline = last known)
 // Assets (images/fonts/audio): cache-first (immutable by name)
 const CACHE = 'eevee-tama-v1';

@@ -1,9 +1,9 @@
-// pet.js — PMD/chibi sprite rendering, 8-dir wander AI, depth scaling
+// pet.js: PMD/chibi sprite rendering, 8-dir wander AI, depth scaling
 //   · PMD forms (CFG.PMD_FORMS): true 8-direction animated sprites.
 //   · Chibi forms (all others): a single detailed sprite brought to life at
-//     runtime with a PER-FORM procedural gait (CFG.CHIBI_ANIM) — each form
+//     runtime with a PER-FORM procedural gait (CFG.CHIBI_ANIM), each form
 //     has its own walk cycle (hop rhythm/height, lean, waddle, squash &
-//     stretch, foot dust), its own breathing, and idle ear twitches — so no
+//     stretch, foot dust), its own breathing, and idle ear twitches, so no
 //     form ever renders as a static sliding image.
 import { CFG, A, STAGE_SCALE } from './config.js';
 
@@ -77,7 +77,7 @@ export class Pet {
     return this.dir.includes('left') ? -1 : this.dir.includes('right') ? 1 : 0;
   }
 
-  // chibi walk cycle — per-form gait from CFG.CHIBI_ANIM
+  // chibi walk cycle, per-form gait from CFG.CHIBI_ANIM
   walkChibi(dt, P) {
     const ds = this.depthScale();
     this._walkT += dt;
@@ -107,7 +107,7 @@ export class Pet {
     this._prevAir = air;
   }
 
-  // chibi idle — per-form breathing + occasional ear/head twitch
+  // chibi idle, per-form breathing + occasional ear/head twitch
   idleChibi(dt, P) {
     const br = 6.2832 * P.breathHz * this._animT;
     this.bob = Math.sin(br) * P.breathAmp;
@@ -155,7 +155,7 @@ export class Pet {
       return;
     }
     this._animT += dt;
-    // per-form gait params (null for PMD forms — they use real sprite frames)
+    // per-form gait params (null for PMD forms, they use real sprite frames)
     const P = CFG.PMD_FORMS.includes(this.form) ? null : (CFG.CHIBI_ANIM[this.form] || CFG.CHIBI_ANIM.espeon);
     if (this.sleeping) {
       // drift to rest spot
@@ -256,7 +256,7 @@ export class Pet {
     const x = Math.round(this.x), feetY = Math.round(this.y + this.bob);
     const w = Math.round(m.w), h = Math.round(m.h);
     const isChibi = !CFG.PMD_FORMS.includes(this.form);
-    // shadow — shrinks as the pet lifts off the ground
+    // shadow, shrinks as the pet lifts off the ground
     const lift = isChibi ? Math.min(1, Math.max(0, -this.bob) / 9) : 0;
     const shs = 1 - 0.16 * lift;
     ctx.fillStyle = 'rgba(0,0,0,0.20)';

@@ -1,4 +1,4 @@
-// audio.js — Web Audio mixer + haptics (M7)
+// audio.js: Web Audio mixer + haptics (M7)
 //
 // BGM: day/night loops. CFG.AUDIO.tracks[key] = { file, synth }:
 //   file set   -> ogg decoded once + echo-tail seamless loop
@@ -112,7 +112,7 @@ function noteFreq(n) {
 }
 
 const CHIPTUNES = {
-  // bright cozy day loop — C major pentatonic, 92 bpm, square lead + triangle bass
+  // bright cozy day loop, C major pentatonic, 92 bpm, square lead + triangle bass
   day: {
     bpm: 92, bars: 8, leadType: 'square', leadVol: 0.04, bassVol: 0.085, filterHz: 2200, hat: true,
     melody: [
@@ -132,7 +132,7 @@ const CHIPTUNES = {
       [6, 0, 'C3', 7], [6, 8, 'C3', 7], [7, 0, 'G2', 7], [7, 8, 'G2', 7],
     ],
   },
-  // dreamy night loop — A minor music-box, 64 bpm, sine pings + echo
+  // dreamy night loop, A minor music-box, 64 bpm, sine pings + echo
   night: {
     bpm: 64, bars: 8, leadType: 'sine', leadVol: 0.075, bassVol: 0.07, filterHz: 3200,
     staccato: true, delay: true, hat: false,
