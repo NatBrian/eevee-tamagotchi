@@ -1,13 +1,24 @@
 // ============================================================
-// test/video.js — Eevee-Tama FULL PLAYTHROUGH showcase video
+// test/video.js — Eevee-Tama FULL PLAYTHROUGH showcase video (FINAL)
 //
-// Records one continuous mobile playthrough of the entire game:
-//   title → egg → hatch → care loop (feed/pet/ball/clean) →
-//   night + sleep → sickness + medicine → stage-ups →
-//   POKÉ CASINO (slots + 777 jackpot + free spin, roulette, card flip) →
-//   Vaporeon evolution cinematic → Eeveelution tour (all 8 + shiny Glaceon) →
-//   Dex 9/9 → profile → medals → ghost Eevee → shop (fashion + sky) →
-//   "While you were away" report → GRADUATION → new egg → final Dex → title.
+// One continuous mobile playthrough covering the ENTIRE game:
+//
+//  ACT 1 · LIFE 1 (main pet)
+//   title → egg → hatch → meal → snack → pet → ball →
+//   furball tap-clean + dock-clean → night sleep + wake (child) →
+//   sickness + medicine → adult → POKÉ CASINO (forced LOSS → small
+//   WIN → bet 3 → 777 JACKPOT + free spin · roulette win · card flip) →
+//   Vaporeon evolution cinematic → tour of all remaining forms
+//   (Jolteon, Flareon, Espeon, Umbreon, Leafeon, SHINY Glaceon, Sylveon) →
+//   Pokédex 9/18 → long-press profile + RENAME → medals → ghost Eevee →
+//   shop (decor + fashion + sky) → "While you were away" → GRADUATION
+//
+//  ACT 2 · LIFE 2 (the other ending)
+//   new egg → hatch → neglect → SICK → DEATH (tombstone + R.I.P. card)
+//
+//  ACT 3 · LIFE 3 (wrap-up)
+//   new egg → hatch + adult cascade → final Pokédex → SETTINGS
+//   (sound toggle) → reset → title outro
 //
 // Run (repo root, needs the local server on :8734):
 //   $env:NODE_PATH = "<npx cache dir with playwright>\node_modules"; node test\video.js
@@ -82,33 +93,41 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await T('rate', 8); // 120 game-min → 7.5 s real
   await waitFor(page, () => window.TamaGame.get().stage === 'baby', 15000, 'hatch');
   await T('rate', 1);
-  await sleep(2600); // confetti + "It's Mochi!" + first-run FEED tip
+  await sleep(2600); // confetti + "It's <name>!" + first-run FEED tip
 
-  // ============ 3 · FEED ============
+  // ============ 3 · FEED (meal) ============
   await tapEl(page, '#dock-feed');
   await sleep(1000);
   await tapEl(page, '#sheet-body [data-food="meal:oran"]');
   await sleep(3000); // eat anim + emote bubble
 
-  // ============ 4 · PET ============
+  // ============ 4 · FEED (snack) ============
+  await tapEl(page, '#dock-feed');
+  await sleep(900);
+  await tapEl(page, '#sheet-body [data-food="snack:honey"]');
+  await sleep(2400); // snack emote + happy bump
+
+  // ============ 5 · PET ============
   await tapEl(page, '#dock-pet');
   await sleep(1800); // heart burst + emote
 
-  // ============ 5 · GIVE BALL ============
+  // ============ 6 · GIVE BALL ============
   await tapEl(page, '#dock-play');
   await sleep(900);
   await tapEl(page, '#sheet-body [data-ball="1"]');
   await sleep(2600); // ball arc + cheer
 
-  // ============ 6 · FURBALL ============
-  await T('addPoop', 1);
+  // ============ 7 · FURBALLS (tap-clean + dock clean) ============
+  await T('addPoop', 2);
   await sleep(1600); // "A furball appeared!" + tip
   const fb = await G(() => window.__G.state.furballs[0]);
-  if (fb) { await tapScene(page, fb.x, fb.y); }
+  if (fb) await tapScene(page, fb.x, fb.y);
   await sleep(1600); // clean sparkle
+  await tapEl(page, '#dock-clean'); // dock button cleans the rest
+  await sleep(1600); // sparkle burst
 
-  // ============ 7 · TIME-LAPSE → NIGHT → SLEEP → WAKE (day 2, child) ============
-  // top up meters so the 12h lapse stays healthy (auto-sleep still needs energy < 40 at 20:00)
+  // ============ 8 · TIME-LAPSE → NIGHT → SLEEP → WAKE (day 2, child) ============
+  // top up meters so the 13h lapse stays healthy (auto-sleep still needs energy < 40 at 20:00)
   await G(() => { const s = window.__G.state; s.stats = { meal: 100, happy: 100, energy: 100, health: 100 }; s.zeroH = 0; s.sickZeroH = 0; s.sick = false; });
   const totalNow = (await S()).total;
   const toNight = 1200 - totalNow; // 20:00 day 1
@@ -122,13 +141,13 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await tapScene(page, petPos.x, petPos.y - 30);
   await sleep(3200); // "Good morning!" + "grew up!" confetti (child)
 
-  // ============ 8 · SICKNESS + MEDICINE ============
+  // ============ 9 · SICKNESS + MEDICINE ============
   await T('setSick', true);
   await sleep(2000); // SICK badge + MEDICINE button + tip
   await tapEl(page, '#med-btn');
   await sleep(2200); // "All better!" sparkle
 
-  // ============ 9 · TIME-LAPSE → ADULT (day 3 07:00) ============
+  // ============ 10 · TIME-LAPSE → ADULT (day 3 07:00) ============
   {
     const t0 = (await S()).total;
     await T('rate', 64);
@@ -139,18 +158,36 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   // keep the pet healthy for the rest of the playthrough (clears any zero-hour buildup)
   await G(() => { const s = window.__G.state; s.stats = { meal: 100, happy: 100, energy: 100, health: 100 }; s.zeroH = 0; s.sickZeroH = 0; s.sick = false; });
 
-  // ============ 10 · POKÉ CASINO ============
+  // ============ 11 · POKÉ CASINO (loss → win → JACKPOT → roulette → cards) ============
   await tapEl(page, '#dock-play');
   await sleep(900);
   await tapEl(page, '#sheet-body [data-casino="slots"]'); // casino tip toast
   await sleep(1600); // cabinet + pet walks to machine
+  // deterministic casino: find a PRNG seed whose spin 1 is a clean loss and spin 2 a small win
+  // (spinInstant parity: same 9 weighted draws per round as the live reels)
+  const probe = await G(() => {
+    const G2 = window.__G, c = G2.casino;
+    let found = null;
+    for (let n = 1; n <= 500000 && found === null; n++) {
+      window.TamaGame.seed(n);
+      const r1 = c.spinInstant('slots', 1, { bet: 2 });
+      if (r1.totalWin !== 0) continue;
+      const r2 = c.spinInstant('slots', 1, { bet: 2 });
+      if (r2.totalWin > 0 && r2.totalWin < 10) found = n;
+    }
+    if (found !== null) window.TamaGame.seed(found);
+    G2.state.day.coins = 200;
+    return found;
+  });
+  console.log('casino loss seed:', probe);
   await tapEl(page, '#casino-spin');
-  await sleep(2600); // reels
+  await sleep(2600); // reels → LOSS (pet worries)
   await tapEl(page, '#casino-spin');
-  await sleep(2600);
-  // 777 JACKPOT
+  await sleep(2600); // reels → small WIN (pet cheers)
+  // 777 JACKPOT at max bet (3 chips → 5 lines)
+  await tapEl(page, '#casino-bet .betbtn[data-bet="3"]');
+  await sleep(400);
   await T('forceNext', { slots: 'jackpot' });
-  await G(() => { window.__G.state.day.coins = Math.max(window.__G.state.day.coins, 30); });
   await tapEl(page, '#casino-spin');
   await sleep(3600); // 777 + confetti + "JACKPOT! +FREE SPIN"
   await tapEl(page, '#casino-spin'); // bonus free spin
@@ -163,23 +200,23 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await sleep(500);
   await T('forceNext', { roulette: 0 }); // seg 0: red + vaporeon → win 2+4
   await tapEl(page, '#casino-spin');
-  await sleep(3600); // wheel spin (3 s) + "WIN +6!"
+  await sleep(3600); // wheel spin (3 s) + "WIN +12!"
   await sleep(1200);
   // CARD FLIP
   await tapEl(page, '#casino-tabs .ctab[data-game="cards"]');
   await T('forceNext', { cards: [1, 2, 3, 0] }); // A♥Fire (top) on card 4
-  await G(() => window.__G.casino.switchGame('cards')); // re-deal consumes force
+  await G(() => { window.__G.casino.switchGame('cards'); }); // re-deal consumes force
   await sleep(1400); // 4 face-down cards
   const rect = await G(() => { const r = window.__G.casino.cardRect(3); return { x: r.x + r.w / 2, y: r.y + r.h / 2 }; });
   await tapScene(page, rect.x, rect.y); // pick card 4
   await sleep(600);
   await tapEl(page, '#casino-spin');
-  await sleep(2600); // staggered 3D flips → "WIN +4!"
+  await sleep(2600); // staggered 3D flips → "WIN +8!"
   await sleep(1200);
   await tapEl(page, '#casino-back');
   await sleep(1000);
 
-  // ============ 11 · EVOLUTION — Vaporeon (full cinematic) ============
+  // ============ 12 · EVOLUTION — Vaporeon (full cinematic) ============
   await tapEl(page, '#dock-menu');
   await sleep(800);
   await tapEl(page, '#sheet-body [data-go="evolve"]');
@@ -193,7 +230,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await tapEl(page, '#evo-ok');
   await sleep(2600); // back to meadow — Vaporeon idle + confetti
 
-  // ============ 12 · EVOLUTION TOUR (all remaining forms, quick cuts) ============
+  // ============ 13 · EVOLUTION TOUR (all remaining forms, quick cuts) ============
   const tour = [
     { form: 'jolteon',  stone: 'thunder' },
     { form: 'flareon',  stone: 'fire' },
@@ -219,24 +256,36 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
     await sleep(1500); // flash + GIF
     await sleep(1600); // name card (+ SHINY! banner for glaceon)
     await tapEl(page, '#evo-ok');
-    await sleep(1300); // hold on the new form
+    await sleep(1300); // hold on the new form (each walks its own gait)
   }
 
-  // ============ 13 · POKÉDEX (9/9 + shiny) ============
+  // ============ 14 · POKÉDEX (9/18 + shiny) ============
   await tapEl(page, '#dock-menu');
   await sleep(700);
   await tapEl(page, '#sheet-body [data-go="dex"]');
   await sleep(3200);
 
-  // ============ 14 · PROFILE ============
+  // ============ 15 · PROFILE (long-press pet) + RENAME ============
   await tapEl(page, '#sheet-close');
   await sleep(500);
-  await tapEl(page, '#dock-menu');
-  await sleep(700);
-  await tapEl(page, '#sheet-body [data-go="profile"]');
-  await sleep(3200); // face, name, chips, stat bars
+  await G(() => { window.__G.state.furballs.length = 0; }); // no stray furball steals the hit
+  const pp = await G(() => ({ x: window.__G.pet.x, y: window.__G.pet.y }));
+  await page.mouse.move(pp.x, pp.y - 30);
+  await page.mouse.down();
+  await sleep(700); // long-press (350 ms threshold) → profile
+  await page.mouse.up();
+  await sleep(900); // profile sheet slides up
+  const newName = await G(() => {
+    const cur = window.__G.state.pet.name;
+    return ['Biscuit', 'Dango', 'Yuki', 'Zephyr'].find((n) => n !== cur) || 'Dango';
+  });
+  await tapEl(page, '#rename-btn');
+  await sleep(400);
+  await page.fill('#rename-input', newName);
+  await tapEl(page, '#rename-save');
+  await sleep(3200); // renamed profile: face, name, personality, rank, stat bars
 
-  // ============ 15 · MEDALS ============
+  // ============ 16 · MEDALS ============
   await tapEl(page, '#sheet-close');
   await sleep(500);
   await tapEl(page, '#dock-menu');
@@ -244,7 +293,7 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await tapEl(page, '#sheet-body [data-go="medals"]');
   await sleep(3200);
 
-  // ============ 16 · GHOST EEVEE (night) ============
+  // ============ 17 · GHOST EEVEE (night) ============
   await tapEl(page, '#sheet-close');
   await sleep(500);
   // warpTo (absolute, forward) — the tour + dex/profile/medals leave the clock at
@@ -259,22 +308,26 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   if (gh) await tapScene(page, gh.x, gh.y);
   await sleep(2400); // "GHOST EEVEE! +5 COINS" magic burst
 
-  // ============ 17 · SHOP (fashion + sky) ============
-  await G(() => { window.__G.state.day.coins = 300; }); // fund the beat: scarf 120 + sunset sky 100 (natural flow lands ~76 — both would silently fail)
+  // ============ 18 · SHOP (decor + fashion + sky) ============
+  await G(() => { window.__G.state.day.coins = 350; }); // fund the beat: snowman 100 + scarf 120 + sunset sky 100
   await tapEl(page, '#dock-menu');
   await sleep(700);
   await tapEl(page, '#sheet-body [data-go="shop"]');
   await sleep(1600); // shop grid
+  await tapEl(page, '#sheet-body [data-shop="snowman"]'); // DECOR section — snowman pops into the meadow
+  await sleep(1800); // purchase sparkle + new scene decor
+  await G(() => { document.querySelector('#sheet-body [data-shop="scarf"]').scrollIntoView({ block: 'center' }); });
+  await sleep(400);
   await tapEl(page, '#sheet-body [data-shop="scarf"]'); // Blue Scarf → equipped
   await sleep(1800); // pet wears it
-  await G(() => { document.querySelector('#sheet-body [data-shop="sunset"]').scrollIntoView({ block: 'center' }); }); // SKIES is below the sheet fold — bring it into view or the raw tap lands off-sheet
+  await G(() => { document.querySelector('#sheet-body [data-shop="sunset"]').scrollIntoView({ block: 'center' }); }); // SKIES is below the sheet fold
   await sleep(400);
   await tapEl(page, '#sheet-body [data-shop="sunset"]'); // Sunset Sky → sky changes
   await sleep(2600); // sky shift
   await tapEl(page, '#sheet-close');
   await sleep(800);
 
-  // ============ 18 · WHILE YOU WERE AWAY (→ graduation) ============
+  // ============ 19 · WHILE YOU WERE AWAY (→ graduation) ============
   await G(() => { const s = window.__G.state; s.stats = { meal: 100, happy: 100, energy: 100, health: 100 }; s.zeroH = 0; s.sickZeroH = 0; s.sick = false; s.day.snacks = 4; s.furballs.push({ x: 140, y: 720, small: true }, { x: 320, y: 780, small: false }); });
   const away = await T('simulateOffline', 360); // 12 game-hrs → crosses day 4 07:00
   await T('showAway', away.report);
@@ -282,20 +335,52 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await tapEl(page, '#away-ok');
   await sleep(3600); // GRADUATION! farewell card + care rank
 
-  // ============ 19 · NEW EGG ============
+  // ============ 20 · NEW EGG (life 2) ============
   await tapEl(page, '#end-new');
   await sleep(2000);
 
-  // ============ 20 · FINAL DEX + TITLE OUTRO ============
+  // ============ 21 · NEGLECT → SICK → DEATH (the other ending) ============
+  await T('hatchNow');
+  await sleep(1800); // "It's <name>!" + confetti + FEED tip
+  // starve + sicken: SICK badge shows for ~5.5 game-hrs, then health 0 → death
+  await G(() => { const s = window.__G.state; s.stats = { meal: 0, happy: 0, energy: 0, health: 30 }; s.zeroH = 6; s.sickZeroH = 6; s.sick = true; s.furballIn = 1e9; });
+  await T('rate', 64);
+  await sleep(2600); // sick badge + medicine button + sad pet (sickZeroH 6 → 11.6, alive)
+  await G(() => { window.__G.state.stats.health = 0; });
+  await sleep(600); // next tick: sick + health 0 → DEATH
+  await T('rate', 1);
+  await sleep(4200); // tombstone + "R.I.P. <NAME>" card
+
+  // ============ 22 · NEW EGG (life 3) ============
+  await tapEl(page, '#end-new');
+  await sleep(1200);
+
+  // ============ 23 · HATCH + ADULT CASCADE (single name) ============
   await T('hatchNow');
   await T('warpTo', 2900);
   await sleep(400);
+
+  // ============ 24 · FINAL DEX ============
   await tapEl(page, '#dock-menu');
   await sleep(700);
   await tapEl(page, '#sheet-body [data-go="dex"]');
-  await sleep(3400); // full 9/9 dex + shiny badge
+  await sleep(3400); // full 9/18 dex + shiny badge
+
+  // ============ 25 · SETTINGS (sound toggle) ============
   await tapEl(page, '#sheet-close');
-  await sleep(900);
+  await sleep(500);
+  await tapEl(page, '#dock-menu');
+  await sleep(700);
+  await tapEl(page, '#sheet-body [data-go="settings"]');
+  await sleep(1800); // SOUND / HAPTICS / INSTALL / ABOUT / RESET rows
+  await tapEl(page, '#sheet-body [data-sett="sound"]');
+  await sleep(700); // OFF
+  await tapEl(page, '#sheet-body [data-sett="sound"]');
+  await sleep(700); // ON
+  await tapEl(page, '#sheet-close');
+  await sleep(800);
+
+  // ============ 26 · TITLE OUTRO ============
   await T('reset'); // title outro
   await sleep(3200); // logo
 

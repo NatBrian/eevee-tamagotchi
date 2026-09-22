@@ -125,6 +125,15 @@
 - [x] Q-gate `DEVKEYS=iphone15` 26/26 green (123 s) after the stage fix · fps 60 / p95 16.8
 - [x] Re-recorded showcase video (run10, 3:09, 0 console errors) — frame-verified end-to-end: opening (title→egg→hatch Tofu→FEED→dusk→night zzz→sick), casino roulette, 9-form chibi tour (incl. SHINY Glaceon), dex 9/18, profile, medals, ghost +5 coins, **shop payoff on screen: 300→180 Blue Scarf OWNED + Sunset Sky OWNED**, away "Away 7h 30m · Now Day 4 07:27" over sunset sky (scarf on Sylveon, MEDAL · S-Rank Care), clean graduation → new egg → **single-name hatch cascade** (stage-revert fix) → dex 9/18 over sunset sky → title outro (fresh day sky, theme reset)
 
+### M10 — FINAL showcase video (full game, all interactions)
+- [x] `test/video.js` rebuilt as a 26-beat, 3-act playthrough covering every game system:
+  - **Act 1 (life 1):** title → egg wobble → hatch → meal → **snack** → pet → ball → **furball tap-clean + dock CLEAN button** → night sleep (Zzz) + wake → **child** → sick + medicine → **adult** → casino (**deterministic seed-probed LOSS "SO CLOSE…"** → small WIN → **bet 3** → 777 JACKPOT + free spin + medal → roulette win → card flip) → Vaporeon cinematic → tour of all 7 remaining forms (incl. SHINY Glaceon; Umbreon rolled a natural 1/50 shiny this run) → dex 9/18 → **long-press profile + rename** → medals → ghost Eevee +5 → **shop: decor (snowman) + fashion (scarf) + sky (sunset)** → away report → **GRADUATION (rank S)**
+  - **Act 2 (life 2):** new egg → hatch → neglect → **SICK (all meters 0, badge + MEDICINE button)** → **DEATH (tombstone + "R.I.P." card)** — the second ending
+  - **Act 3 (life 3):** new egg → hatch + **single-name adult cascade** → final dex → **SETTINGS (sound toggle, install/about/reset rows)** → reset → title outro
+- [x] Casino determinism: in-page PRNG seed probe via `spinInstant` parity (9 weighted draws/round, identical to live reels) finds a seed whose round 1 is a clean loss and round 2 a small win (this run: seed 10)
+- [x] Re-recorded `showcase/video/full-playthrough.mp4` (**3:34**, 0 console errors) — frame-verified end to end (27-frame grid + full-res spot checks: snack eat, SO CLOSE loss, WIN +2, 777 WIN +18, Umbreon SHINY card, renamed profile "Biscuit" RANK A, snowman in meadow, sunset shop, away/graduation, R.I.P. card + tombstone, adult cascade, final dex 9/18 w/ shiny badges, settings, title)
+- [x] Q-gate `DEVKEYS=iphone15` 26/26 green (125 s) — no game-code changes (video script only)
+
 ## Phase 7 — Polish / future
 - [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + extra minigames
 - [ ] Optional 3D tier (Pokedex 3D Pro) if a richer look is wanted
