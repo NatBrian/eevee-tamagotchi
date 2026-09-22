@@ -1,0 +1,12 @@
+# netlify.toml: static deploy, no build step
+# Publish assets/ref as the web root so the game's relative "../" asset
+# paths and the service worker resolve correctly. The site root
+# redirects to the game.
+
+[build]
+  publish = "assets/ref"
+
+[[redirects]]
+  from = "/"
+  to = "/eevee_tama/"
+  status = 301
