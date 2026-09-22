@@ -260,12 +260,15 @@ const tapScene = (page, x, y) => page.mouse.click(x, y);
   await sleep(2400); // "GHOST EEVEE! +5 COINS" magic burst
 
   // ============ 17 · SHOP (fashion + sky) ============
+  await G(() => { window.__G.state.day.coins = 300; }); // fund the beat: scarf 120 + sunset sky 100 (natural flow lands ~76 — both would silently fail)
   await tapEl(page, '#dock-menu');
   await sleep(700);
   await tapEl(page, '#sheet-body [data-go="shop"]');
   await sleep(1600); // shop grid
   await tapEl(page, '#sheet-body [data-shop="scarf"]'); // Blue Scarf → equipped
   await sleep(1800); // pet wears it
+  await G(() => { document.querySelector('#sheet-body [data-shop="sunset"]').scrollIntoView({ block: 'center' }); }); // SKIES is below the sheet fold — bring it into view or the raw tap lands off-sheet
+  await sleep(400);
   await tapEl(page, '#sheet-body [data-shop="sunset"]'); // Sunset Sky → sky changes
   await sleep(2600); // sky shift
   await tapEl(page, '#sheet-close');

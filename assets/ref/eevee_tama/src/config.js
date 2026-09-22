@@ -135,6 +135,16 @@ export const CFG = {
     jolteon:  { down: { idle: 2, move: 3, attack: 2, hurt: 1 }, side: { idle: 2, move: 3, attack: 2, hurt: 1 } },
     flareon:  { down: { idle: 3, move: 3, attack: 1, hurt: 1 }, side: { idle: 3, move: 3, attack: 1, hurt: 1 } },
   },
+  // per-form procedural gaits for the chibi forms (single-sprite art brought to
+  // life at runtime — each form walks and idles differently).
+  // style: float | lope | flutter | skitter | sway
+  CHIBI_ANIM: {
+    espeon:  { style: 'float',   hopHz: 1.9, hopAmp: 4.0, lean: 0.05, waddle: 0.04, squash: 0.05, breathHz: 1.1, breathAmp: 1.1, twEvery: [4, 9]   },
+    umbreon: { style: 'lope',    hopHz: 2.4, hopAmp: 6.5, lean: 0.13, waddle: 0.09, squash: 0.08, breathHz: 1.3, breathAmp: 1.4, twEvery: [3, 8]   },
+    leafeon: { style: 'flutter', hopHz: 2.9, hopAmp: 5.0, lean: 0.09, waddle: 0.06, squash: 0.06, breathHz: 1.5, breathAmp: 1.3, twEvery: [3, 8]   },
+    glaceon: { style: 'skitter', hopHz: 3.7, hopAmp: 3.4, lean: 0.07, waddle: 0.04, squash: 0.05, breathHz: 1.7, breathAmp: 1.1, twEvery: [2.5, 7] },
+    sylveon: { style: 'sway',    hopHz: 1.7, hopAmp: 4.5, lean: 0.04, waddle: 0.12, squash: 0.05, breathHz: 1.0, breathAmp: 1.2, twEvery: [5, 10]  },
+  },
   EMOTE_DIR: '../eeveelution-assets/pmd_effects/',
   EMOTES: { cheer: 2, chat: 3, confused: 10, shock: 2, surprise: 5, water: 3, worry: 2 },
   EMOTE_SCALE: 3,

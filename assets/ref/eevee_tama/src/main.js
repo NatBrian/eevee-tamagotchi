@@ -851,6 +851,17 @@ function loop(t) {
 
     // sick worry emote
     if (G.pet._worryNow) { G.pet._worryNow = false; G.fx.emote(G.pet.x, G.pet.y - 40, 'worry', null); }
+    // idle chatter — occasional personality emote bubble while the pet idles
+    if (s.stage !== 'egg' && !s.ended && !s.sleeping && !s.sick && G.pet.state === 'idle' && (G.screen === 'main' || G.screen === 'casino')) {
+      G._chatterT = (G._chatterT === undefined ? 15 + Math.random() * 15 : G._chatterT - dt);
+      if (G._chatterT <= 0) {
+        G._chatterT = 22 + Math.random() * 24;
+        const per = CFG.PERSONALITIES[s.pet.personality];
+        if (per) G.fx.emote(G.pet.x, G.pet.y - 40, per.emote, per.bubble);
+      }
+    } else {
+      G._chatterT = 15 + Math.random() * 15;
+    }
     // ghost Eevee monthly event (night, even month 15th) — M6
     // ended check
     if (s.ended && G.screen === 'main') showEnd(s.ended);
@@ -893,6 +904,7 @@ async function boot() {
   G.scene = new Scene(G.img);
   G.fx = new Fx(G.scene);
   G.pet = new Pet(G.img);
+  G.pet.fx = G.fx; // chibi walk foot-dust bursts
   G.casino = new Casino(G);
   G.audio = new AudioSys(G);
   resize();

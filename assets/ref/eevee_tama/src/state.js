@@ -19,6 +19,10 @@ export function stageOf(total) {
   if (total < CFG.TIME.childEnd) return 'child';
   return 'adult';
 }
+// stage progression order — the stage check only moves forward, so a hatched
+// pet never regresses to egg (an early hatch at total<eggEnd must not flip
+// stage back to 'egg' + fire a spurious 'stage:egg' "grew up!" on next tick)
+export const STAGE_RANK = { egg: 0, baby: 1, child: 2, adult: 3 };
 export function skyVariantOf(total, theme) {
   if (theme && theme !== 'day') return theme; // shop theme override
   const h = absTime(total) / 60;
@@ -505,9 +509,9 @@ export function advance(state, dtMin, ev) {
     state.life.maxHappy = Math.max(state.life.maxHappy, st.happy);
   }
 
-  // stage
+  // stage — progression only (see STAGE_RANK): never regresses a hatched pet to egg
   const ns = stageOf(state.total);
-  if (ns !== state.stage) { state.stage = ns; ev && ev.push('stage:' + ns); }
+  if (ns !== state.stage && STAGE_RANK[ns] > STAGE_RANK[state.stage]) { state.stage = ns; ev && ev.push('stage:' + ns); }
 
   // auto evolutions
   if (state.stage === 'adult' && state.form === 'eevee' && !state.pet.evolved) {

@@ -117,6 +117,14 @@
 - [x] README "How to run" + repo layout
 - [x] Final commit
 
+### M9.1 — Per-form chibi gaits + showcase video fixes ✅
+- [x] The 5 chibi forms shared "the same static animation" (PMD 8-dir art only exists for eevee/flareon/jolteon/vaporeon) → per-form procedural gaits via `CFG.CHIBI_ANIM` (`config.js`): espeon **float** (slow hover-bob), umbreon **lope** (springy bounce), leafeon **flutter** (quick light steps), glaceon **skitter** (fast tiny hops), sylveon **sway** (gentle side-to-side sway); each with own breathHz/breathAmp + idle ear-twitch timing; squash-stretch on landings, foot dust, foot pivot, shadow shrink while airborne (`pet.js` walkChibi/idleChibi/resetChibi) + idle personality chatter wired (`main.js` `G.pet.fx`)
+- [x] `test/chibi_anim.js` — standing per-form gait contact-sheet verifier (all 5 gaits distinct, vision-verified)
+- [x] Bug found via frame-level verification of the showcase video's final beat: `hatchNow` on an egg with total < eggEnd force-sets stage='baby', but the next tick's stage check reverted it to 'egg' (`stageOf(total<120)='egg'`) and fired a spurious `'stage:egg'` "grew up!" toast under the roll-1 name, then the subsequent `warpTo` natural-hatched a second time (roll-2 name) → two-name toast stack (run9: "Riko grew up!" + "It's Ash!"; the egg-stage `s.stage !== 'egg'` guard also swallowed "It's Riko!", and `startEgg` medal carryover suppressed the medal toasts). Fix: `STAGE_RANK` progression guard in the `advance()` stage check — stage only moves forward, a hatched pet never regresses to egg (`state.js`)
+- [x] Showcase video shop-beat fix (`test/video.js`): natural coin flow lands ~55 at the shop so both purchases silently failed (runs 6–8) → top coins to 300 before the shop + `scrollIntoView` on the SKIES row (sheet body is scrollable; `tapEl` is a raw layout-coord click that missed below-the-fold)
+- [x] Q-gate `DEVKEYS=iphone15` 26/26 green (123 s) after the stage fix · fps 60 / p95 16.8
+- [x] Re-recorded showcase video (run10, 3:09, 0 console errors) — frame-verified end-to-end: opening (title→egg→hatch Tofu→FEED→dusk→night zzz→sick), casino roulette, 9-form chibi tour (incl. SHINY Glaceon), dex 9/18, profile, medals, ghost +5 coins, **shop payoff on screen: 300→180 Blue Scarf OWNED + Sunset Sky OWNED**, away "Away 7h 30m · Now Day 4 07:27" over sunset sky (scarf on Sylveon, MEDAL · S-Rank Care), clean graduation → new egg → **single-name hatch cascade** (stage-revert fix) → dex 9/18 over sunset sky → title outro (fresh day sky, theme reset)
+
 ## Phase 7 — Polish / future
 - [ ] More faithful Tamagotchi shell skin (A/B/C button layout) + extra minigames
 - [ ] Optional 3D tier (Pokedex 3D Pro) if a richer look is wanted
