@@ -11,14 +11,11 @@ JavaScript ES modules, one canvas, no build step, no framework, no CDN. It
 runs from any static file server and installs as a PWA on Android, desktop
 Chrome, and iOS (add to home screen).
 
-**Status:** complete through milestone M10. The full game is playable, the
-26-scenario test suite is green on a 6-device mobile matrix, and a 3:34
-full-playthrough showcase video lives in `showcase/video/`.
 
-**Fan project:** this is a non-commercial fan project, not affiliated with
-or endorsed by Nintendo, Creatures Inc., GAME FREAK, The Pokémon Company, or
-Bandai. See the [Fan Project and Legal
-Notice](#fan-project-and-legal-notice) at the end of this file.
+
+https://github.com/user-attachments/assets/cb621983-78fd-45a8-bc9e-d4f462b23675
+
+
 
 ---
 
@@ -63,8 +60,6 @@ Feature list:
 - **Full chiptune audio**: BGM (day/night/sleep moods) and 40+ SFX are
   synthesized live with Web Audio (no audio files), plus haptics where the
   device supports them.
-- **Installable PWA** with a service worker for offline play.
-- No emojis anywhere in the UI; every visual is a real, style-matched asset.
 
 ## How to use it
 
@@ -464,11 +459,6 @@ eevee-tamagotchi/
       sw.js                       service worker
       prod/                       production art: scene, fx, items, stones,
                                   particles, dex_anim, font, audio, kenney source packs
-      pokemonsleep/               chibi pet art (5 forms, normal + shiny)
-      cafemix/                    profile face art
-      eeveelution-assets/         PMD 8-direction walk sheets + emote FX
-      tamagotchi_original/        1996 P1 HUD sprites (dock icons)
-      serebii/                    egg art (egg_colored.png)
   test/
     scenarios.js              26-scenario quality gate (6-device matrix, ~2 min)
     video.js                  full-playthrough showcase recorder (~3.5 min)
@@ -498,14 +488,6 @@ quality floors (fps 55 on the primary phone, 45 elsewhere, 42 landscape;
 frame p95 <= 34 ms), report zero console errors, and pass all
 scenario assertions. A typical full run takes about 2 minutes.
 
-### Vision rule
-
-Every visual change is verified with Playwright screenshots **and** an
-actual look at the frames (contact sheets for anything animated). The
-standing bar is "fun and mesmerizing": toasts, emotes, and confetti must
-read correctly at phone scale. Close all Playwright browsers when a run
-finishes.
-
 ### Dev API (`window.TamaGame`)
 
 `dev.js` exposes the harness used by all tests and by manual play in the
@@ -523,22 +505,6 @@ console:
 | UI | `show(screen)`, `openMenu()`, `openProfile()`, `openFood()`, `openPlay()`, `openSheet(which)`, `emote(type, bubble)`, `burst(kind, n)`, `toast(msg)`, `reset()` |
 | Audio | `audioUnlock()`, `setBgm(track)`, `setBgmMood(m)`, `fireEvent(name)`, `fireSfx(name, opts)` |
 | Casino | `casinoSpin(game, n, opts)` (instant harness rounds, RTP parity with live reels) |
-
-### Writing a new test
-
-The established pattern (see `test/scenarios.js`):
-
-```js
-const T = (m, ...a) => page.evaluate(([mm, aa]) => window.TamaGame[mm](...aa), [m, a]);
-// boot guard:
-await waitFor(page, () => window.TamaGame && window.__G && !window.__G.booting
-  && window.__G.img.missing.length === 0, 45000, 'boot');
-```
-
-Boot on a fresh profile (`localStorage.clear()` + reload), drive the game
-through `T(...)` for state and Playwright mouse events for real UI, assert
-on `TamaGame.get()`, and collect `pageerror` / console errors into a fail
-list.
 
 ### Gotchas
 
@@ -574,18 +540,6 @@ Per-asset source links and license notes are kept in the project's working
 files and are not published. Third-party assets remain the property of
 their respective owners.
 
-## Conventions
-
-- Commits are milestone-scoped: `M#: summary`, with a detailed body.
-- The game stays zero-dependency and build-free; test tooling (Playwright)
-  is dev-only.
-- Only the assets the game loads at runtime are committed. Working files
-  (research notes, source and reference art, art generator scripts,
-  audition pages, the old MVP build, extra screenshots, and the raw video
-  recording) are gitignored and kept in the author's local copy.
-- This is a non-commercial fan project, with no ads and no monetization.
-  See `LICENSE` for what the MIT license does and does not cover, and the
-  Fan Project and Legal Notice below.
 
 ## Fan Project and Legal Notice
 
@@ -597,8 +551,7 @@ Creatures Inc., GAME FREAK, The Pokémon Company, or Bandai.
   modules, `sw.js`, and the test scripts) and the hand-crafted art (title
   logo, slot cabinet, medal icons, fashion items, stones, and similar) are
   original work, released under the MIT license in `LICENSE`.
-- **Third-party assets:** the game uses assets from many sources, including
-  official Pokémon artwork, fan-made sprite packs, and CC0 asset packs. The
+- **Third-party assets:** the game uses assets from many sources. The
   main sources are listed in the [Asset sources and
   credits](#asset-sources-and-credits) section above. Those assets remain
   the property of their respective owners; the MIT license in `LICENSE`
